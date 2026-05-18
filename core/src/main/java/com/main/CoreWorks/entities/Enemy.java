@@ -1,12 +1,11 @@
 package com.main.CoreWorks.entities;
 
+import com.badlogic.gdx.utils.Array;
 import com.main.CoreWorks.moveset.Move;
-
-import java.util.ArrayList;
 
 public class Enemy extends Character {
 
-    private ArrayList<Move> moveset = new ArrayList<>();
+    private Array<Move> moveset = new Array<>();
     private int moveTimer;
     private int currMoveIndex = 0;
 
@@ -31,7 +30,7 @@ public class Enemy extends Character {
         Move move = moveset.get(currMoveIndex);
         move.execute(target);
 
-        currMoveIndex = (currMoveIndex + 1) % moveset.size();
+        currMoveIndex = (currMoveIndex + 1) % moveset.size;
         moveTimer = moveset.get(currMoveIndex).getChargeTime();
     }
 }

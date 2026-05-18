@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 // Note, the above license and copyright applies to this file only.
-package com.main.test.lwjgl3;
+package com.main.CoreWorks.lwjgl3;
 
 import com.badlogic.gdx.Version;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3NativesLoader;

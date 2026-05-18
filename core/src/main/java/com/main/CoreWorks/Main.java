@@ -1,4 +1,4 @@
-package com.main.test;
+package com.main.CoreWorks;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Texture;

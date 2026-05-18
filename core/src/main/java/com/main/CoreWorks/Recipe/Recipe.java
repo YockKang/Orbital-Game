@@ -10,19 +10,28 @@ public class Recipe {
     protected final Array<Integer> outputMult;
     protected final int duration;
     protected final String name;
+    protected final String id;
 
     public Recipe(Array<Resource> inputs,
                   Array<Resource> outputs,
                   Array<Integer> inputMultiple,
                   Array<Integer> outputMultiple,
                   int dur,
-                  String name) {
+                  String name,
+                  String id) {
         this.input = inputs;
         this.inputMult = inputMultiple;
         this.output = outputs;
         this.outputMult = outputMultiple;
         this.duration = dur;
         this.name = name;
+        this.id = id;
+        while (this.inputMult.size < this.input.size) {
+            this.inputMult.add(0);
+        }
+        while (this.outputMult.size < this.output.size) {
+            this.inputMult.add(0);
+        }
     }
 
     public Recipe(Resource[] inputs,
@@ -30,25 +39,45 @@ public class Recipe {
                   Integer[] inputMultiple,
                   Integer[] outputMultiple,
                   int dur,
-                  String name) {
+                  String name,
+                  String id) {
         this.input = new Array<Resource>(inputs);
         this.output = new Array<Resource>(outputs);
         this.inputMult = new Array<Integer>(inputMultiple);
         this.outputMult = new Array<Integer>(outputMultiple);
         this.duration = dur;
         this.name = name;
+        this.id = id;
+        while (this.inputMult.size < this.input.size) {
+            this.inputMult.add(0);
+        }
+        while (this.outputMult.size < this.output.size) {
+            this.inputMult.add(0);
+        }
     }
 
 
     @Override
     public String toString() {
         StringBuilder inputStr = new StringBuilder(" ");
-        for (Resource r : this.input) {
-            inputStr.append(r).append(" ");
+        for (int i = 0; i < this.input.size; i++) {
+            inputStr.append(input.get(i).toString()).append(" x");
+            try {
+                inputStr.append(input.get(i).toString());
+            } catch (Exception e) {
+                inputStr.append("0");
+            }
+            inputStr.append(" ");
         }
         StringBuilder outputStr = new StringBuilder(" ");
-        for (Resource r : this.input) {
-            outputStr.append(r).append(" ");
+        for (int i = 0; i < this.input.size; i++) {
+            outputStr.append(input.get(i).toString()).append(" x");
+            try {
+                outputStr.append(input.get(i).toString());
+            } catch (Exception e) {
+                outputStr.append("0");
+            }
+            outputStr.append(" ");
         }
         return this.name + ":\n" + "["  + inputStr + "]\n" + duration + "\n["  + outputStr + "]";
     }
@@ -57,8 +86,16 @@ public class Recipe {
         return input;
     }
 
+    public Array<Integer> getInputMultipliers() {
+        return inputMult;
+    }
+
     public Array<Resource> getOutputs() {
         return output;
+    }
+
+    public Array<Integer> getOutputMultipliers() {
+        return outputMult;
     }
 
     public int getDuration() {

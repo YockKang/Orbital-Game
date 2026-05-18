@@ -1,9 +1,7 @@
 package com.main.CoreWorks.Buildings;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Queue;
 import com.main.CoreWorks.Recipe.Recipe;
-import com.main.CoreWorks.Resources.Resource;
 
 public abstract class Building {
 
@@ -13,10 +11,10 @@ public abstract class Building {
     protected boolean onGrid = false;
     protected int cooldownTimer;
     protected int currCooldown = 0;
-    protected int inBufferSize;
-    protected int outBufferSize;
-    protected Array<Queue<Resource>> inputBuffer;
-    protected Array<Queue<Resource>> outputBuffer;
+    protected Array<Integer> inputBufferSize;
+    protected Array<Integer> outputBufferSize;
+    protected Array<Integer> inputBuffer;
+    protected Array<Integer> outputBuffer;
     protected int xCoord = -1; // bottom is 0
     protected int yCoord = -1; // left is 0
     protected int rotation = 0; // 0 is "up"
@@ -30,15 +28,15 @@ public abstract class Building {
     protected int HP;
 
     public Building(int coolDown,
-                    int inBuffer,
-                    int outBuffer,
-                    Array<Queue<Resource>> inputs,
-                    Array<Queue<Resource>> outputs,
+                    Array<Integer> inBuffer,
+                    Array<Integer> outBuffer,
+                    Array<Integer> inputs,
+                    Array<Integer> outputs,
                     boolean[][][] shape,
                     String nameIn) {
         cooldownTimer = coolDown;
-        inBufferSize = inBuffer;
-        outBufferSize = outBuffer;
+        inputBufferSize = inBuffer;
+        outputBufferSize = outBuffer;
         inputBuffer = inputs;
         outputBuffer = outputs;
         name = nameIn;
@@ -72,11 +70,11 @@ public abstract class Building {
     }
 
     public void clear() {
-        for (Queue<Resource> q : inputBuffer) {
-            q.clear();
+        for (Integer q : inputBuffer) {
+            q = 0;
         }
-        for (Queue<Resource> q : outputBuffer) {
-            q.clear();
+        for (Integer q : outputBuffer) {
+            q = 0;
         }
         currCooldown = 0;
     }

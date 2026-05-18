@@ -15,4 +15,9 @@ public class DamageMove extends Move {
     public void execute(Character target) {
         target.takeDamage(damage);
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

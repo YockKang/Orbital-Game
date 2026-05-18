@@ -15,4 +15,9 @@ public class HealMove extends Move {
     public void execute(Character target) {
         target.heal(heal);
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

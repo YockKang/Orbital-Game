@@ -25,6 +25,9 @@ public class FactoryGrid {
     public Boolean checkValidPosition(Building bldg, int x, int y, int rot) {
         bldg.setRotation(rot);
         boolean[][] shp = bldg.getShape();
+        if (x < 0 || y < 0 || y + shp.length > maxHeight || x + shp[0].length > maxWidth) {
+            return false;
+        }
         for (int shpY = 0; shpY < shp.length; shpY++) {
             for (int shpX = 0; shpX < shp.length; shpX++) {
                 if (shp[shpY][shpX]) {
@@ -77,8 +80,12 @@ public class FactoryGrid {
         bldg.setPos(-1, -1);
     }
 
-    public Building getBuilding(int x, int y) {
+    public Building getBuildingAt(int x, int y) {
         return grid.get(y).get(x);
+    }
+
+    public Array<Building> getBuildings() {
+        return buildingList;
     }
 
 }

@@ -24,6 +24,16 @@ public class CombatSim {
         }
     }
 
+    /*
+    How does advanceTick resolve combat? (First iteration for milestone 1)
+        1. Resolves all factory moves
+        2. Checks and removes any dead enemies (prevents dead enemies from taking moves otherwise)
+        3. Checks if player has won / lost
+        4. If not, enemies now resolve their attacks (if any)
+        5. Checks and removes any dead enemies (status effects deaths)
+        6. Checks if player has won / lost once more
+     */
+
     public void advanceTick() {
         if (win || lost) {
             return;

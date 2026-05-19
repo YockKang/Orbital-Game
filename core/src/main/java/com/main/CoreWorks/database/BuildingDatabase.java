@@ -7,4 +7,5 @@ public class BuildingDatabase {
     public static Building createMiner() {
         return null;
     }
+
 }

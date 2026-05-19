@@ -3,6 +3,7 @@ package com.main.CoreWorks.Factory;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.main.CoreWorks.Recipe.Recipe;
+import com.main.CoreWorks.Resources.Resource;
 import com.main.CoreWorks.moveset.Move;
 
 public abstract class Building {
@@ -13,66 +14,137 @@ public abstract class Building {
     protected boolean onGrid = false;
     protected int cooldownTimer;
     protected int currCooldown = 0;
-    protected Array<Integer> inputBufferSize;
-    protected Array<Integer> outputBufferSize;
-    protected Array<Integer> inputBuffer;
-    protected Array<Integer> outputBuffer;
+    protected Array<ResourceBuffer> inputBuffer;
+    protected Array<ResourceBuffer> outputBuffer;
+    protected int capacityMult = 5;
     protected int xCoord = -1; // bottom is 0
     protected int yCoord = -1; // left is 0
-    protected int rotation = 0; // 0 is "up"
+    protected int rotation = 0; // 0 is "up", +1 for clockwise rotation
     protected String name;
     protected Recipe recipe = null;
-    /*
-    protected Queue<IOPort> inPorts;
-    protected Queue<IOPort> outPorts;
-     */
+    protected Queue<IOPort> ports;
 
-
-    protected boolean[][][] shape;
+    protected boolean[][] shape;
     /*
     SHAPE GUIDE
-    stores all rotations and then the 2d representation of which tiles are filled
-
-    e.g. 1 by 1
-
-    { {{true}}, {{true}}, {{true}}, {{true}} }
+    stores the shape that is "up"
 
     e.g. 2 by 2 L
 
-    { {{true, true},
-       {true, false}},
-
-      {{true, false},
-       {true, true}},
-
-      {{false, true},
-       {true, true}},
-
-      {{true, true},
-       {false, true}} }
+    {{true, true},
+     {true, false}}
      */
 
     // ?? fields
     protected int HP;
 
     public Building(int coolDown,
-                    Array<Integer> inBuffer,
-                    Array<Integer> outBuffer,
-                    Array<Integer> inputs,
-                    Array<Integer> outputs,
-                    boolean[][][] shape,
+                    Array<ResourceBuffer> inputs,
+                    Array<ResourceBuffer> outputs,
+                    boolean[][] shape,
                     String nameIn) {
         cooldownTimer = coolDown;
-        inputBufferSize = inBuffer;
-        outputBufferSize = outBuffer;
         inputBuffer = inputs;
         outputBuffer = outputs;
         name = nameIn;
+        this.shape = shape;
     }
 
     @Override
     public String toString() {
         return name;
+    }
+
+    protected int[] getGlobalCoord(int x , int y) {
+        int shapeW = shape[0].length;
+        int shapeH = shape.length;
+        int globalX = 0;
+        int globalY = 0;
+
+        switch (rotation) {
+            case 0 -> {
+                globalX = x;
+                globalY = y;
+            }
+            case 1 -> {
+                globalX = y + yCoord;
+                globalY = shapeW - 1 - x;
+            }
+            case 2 -> {
+                globalX = shapeW - 1 - x;
+                globalY = shapeH - 1 - y;
+            }
+            case 3 -> {
+                globalX = shapeH - 1 - y;
+                globalY = x;
+            }
+        }
+
+        globalX += xCoord;
+        globalY += yCoord;
+        return new int[] {globalX, globalY};
+    }
+
+    /*
+    public boolean resourceTransfer(Array<Array<Building>> grid) {
+        // resource transfer is "pushy", suppliers will push to consumers
+
+        Array<Resource> outputs = recipe.getOutputs();
+
+        for (IOPort p : ports) {
+            p.disableOutputFull();
+            int[] targetCoord = getGlobalCoord(p.getX(), p.getY());
+            int portGlobalDir = (p.getDir() + rotation) % 4;
+
+            switch (portGlobalDir) {
+                case 0 -> {
+                    targetCoord[0]++;
+                }
+                case 1 -> {
+                    targetCoord[1]++;
+                }
+                case 2 -> {
+                    targetCoord[0]--;
+                }
+                case 3 -> {
+                    targetCoord[1]--;
+                }
+            }
+            Building target = grid.get(targetCoord[1]).get(targetCoord[0]);
+            p.setTarget(target);
+        }
+
+        for (int i = 0; i < outputBuffer.size; i++) {
+
+        }
+        return false;
+    }
+     */
+
+
+    public void setRecipe(Recipe rec) {
+        // write new recipe
+        this.recipe = rec;
+
+        // grab new inputs
+        Array<Resource> inputs = this.recipe.getInputs();
+        Array<Integer> inputMults = this.recipe.getInputMultipliers();
+        // reset queues
+        this.inputBuffer.clear();
+        for (int i  = 0; i < inputs.size; i++) {
+            this.inputBuffer.add(new ResourceBuffer(inputs.get(i), capacityMult * inputMults.get(i)));
+        }
+        this.inputBuffer.shrink();
+
+        // grab new outputs
+        Array<Resource> outputs = this.recipe.getOutputs();
+        Array<Integer> outputMults = this.recipe.getOutputMultipliers();
+        // reset queues
+        this.outputBuffer.clear();
+        for (int i  = 0; i < outputs.size; i++) {
+            this.outputBuffer.add(new ResourceBuffer(outputs.get(i), capacityMult * outputMults.get(i)));
+        }
+        this.outputBuffer.shrink();
     }
 
     public abstract Move updateTick();
@@ -94,11 +166,11 @@ public abstract class Building {
     }
 
     public void clear() {
-        for (Integer q : inputBuffer) {
-            q = 0;
+        for (ResourceBuffer b : inputBuffer) {
+            b.setCurrent(0);
         }
-        for (Integer q : outputBuffer) {
-            q = 0;
+        for (ResourceBuffer b : outputBuffer) {
+            b.setCurrent(0);
         }
         currCooldown = 0;
     }
@@ -106,10 +178,6 @@ public abstract class Building {
     public void setPos(int x, int y) {
         xCoord = x;
         yCoord = y;
-    }
-
-    public int[] getPos() {
-        return new int[] {getX(), getY()};
     }
 
     public int getX() {
@@ -121,11 +189,15 @@ public abstract class Building {
     }
 
     public boolean[][] getShape() {
-        return shape[rotation];
+        return shape;
     }
 
     public void setRotation(int rot) {
         rotation = rot;
+    }
+
+    public int getRotation() {
+        return rotation;
     }
 
     public void putOnGrid() {
@@ -136,34 +208,19 @@ public abstract class Building {
         onGrid = false;
     }
 
-    /*
+    public void addPort(int x, int y, int dir, int speed) {
+        IOPort port = new IOPort(x, y, dir, speed);
+        ports.addLast(port);
+    }
+
     public void addPort(IOPort port) {
-        inPorts.addLast(port);
+        ports.addLast(port);
     }
 
-    public void addInPort(int x, int y, int dir) {
-        IOPort port = new IOPort(x, y, dir, "IN");
-        inPorts.addLast(port);
-    }
 
-    public void addOutPort(int x, int y, int dir) {
-        IOPort port = new IOPort(x, y, dir, "OUT");
-        outPorts.addLast(port);
+    public void clearPorts() {
+        ports.clear();
     }
-
-    public void clearInPorts() {
-        inPorts.clear();
-    }
-
-    public void clearOutPorts() {
-        outPorts.clear();
-    }
-
-    public void clearAllPorts() {
-        clearInPorts();
-        clearOutPorts();
-    }
-     */
 
     /*
 	    Bool isEnabled

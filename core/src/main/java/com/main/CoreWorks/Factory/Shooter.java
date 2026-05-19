@@ -12,18 +12,15 @@ public class Shooter extends Building {
     protected int magSize;
     protected float baseDmg;
 
-    public Shooter(int coolDown, int magSize, boolean[][][] shape) {
+    public Shooter(int coolDown, int magSize, boolean[][] shape) {
         super(coolDown,
-            new Array<Integer>(0),
-            new Array<Integer>(0),
-            new Array<Integer>(0),
-            new Array<Integer>(0),
+            new Array<ResourceBuffer>(0),
+            new Array<ResourceBuffer>(0),
             shape,
             "shooter");
         this.magazine = new Queue<>(magSize);
         this.magSize = magSize;
     }
-
 
     @Override
     public String toString() {
@@ -47,7 +44,7 @@ public class Shooter extends Building {
         return null;
     }
     public void addToMag(Resource x) {
-        ;
+        magazine.addLast(x);
     }
 
     public DamageMove shoot() {

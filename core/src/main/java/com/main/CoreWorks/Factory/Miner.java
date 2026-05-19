@@ -9,23 +9,19 @@ public class Miner extends Building {
 
     protected int mineMultiplier;
 
-    public Miner(int coolDown, int outBufferSize, boolean[][][] shape, int mineMult) {
+    public Miner(int coolDown, boolean[][] shape, int mineMult) {
         super(coolDown,
-            new Array<Integer>(0),
-            new Array<Integer>(0),
-            new Array<Integer>(0),
-            new Array<Integer>(0),
+            new Array<ResourceBuffer>(0),
+            new Array<ResourceBuffer>(0),
             shape,
             "miner");
         this.mineMultiplier = mineMult;
     }
 
-    public Miner(int coolDown, Array<Integer> outBufferSize, boolean[][][] shape, int mineMult, Recipe rec) {
+    public Miner(int coolDown, boolean[][] shape, int mineMult, Recipe rec) {
         super(coolDown,
-            new Array<Integer>(0),
-            outBufferSize,
-            new Array<Integer>(0),
-            new Array<Integer>(0),
+            new Array<ResourceBuffer>(0),
+            new Array<ResourceBuffer>(0),
             shape,
             "miner");
         this.mineMultiplier = mineMult;
@@ -39,8 +35,6 @@ public class Miner extends Building {
             .append(name)
             .append('\n')
             .append(recipe)
-            .append("\nOutput Capacity ")
-            .append(outputBufferSize)
             .append("\nOutput Buffer ")
             .append(outputBuffer)
             .toString();
@@ -59,32 +53,20 @@ public class Miner extends Building {
         return null;
     }
 
-    public void setRecipe(Recipe rec) {
-        // write new recipe
-        this.recipe = rec;
-        // grab new outputs
-        Array<Resource> Outputs = this.recipe.getOutputs();
-        // reset queues
-        this.outputBuffer.clear();
-        for (Resource item : Outputs) {
-            this.outputBuffer.add(0);
-        }
-        this.outputBuffer.shrink();
-    }
-
     public boolean mine() {
         Array<Integer> mults = this.recipe.getOutputMultipliers();
         // attempt to extract all into buffers
         for (int i = 0; i < mults.size; i++) {
-            int expected = this.outputBuffer.get(i) + mults.get(i) * this.mineMultiplier;
-            // buffer for that type is full, cannot mine
-            if (expected > this.outputBufferSize.get(i)) {
+            ResourceBuffer currentBuffer = this.outputBuffer.get(i);
+            int expected = currentBuffer.getCurrent() + mults.get(i) * this.mineMultiplier;
+            // buffer for that type will overfill, cannot mine
+            if (!currentBuffer.tryAdd(expected)) {
                 return false;
             }
         }
         for (int i = 0; i < mults.size; i++) {
-            this.outputBuffer.set(i,
-                this.outputBuffer.get(i) + mults.get(i) * this.mineMultiplier);
+            ResourceBuffer currentBuffer = this.outputBuffer.get(i);
+            currentBuffer.add(mults.get(i) * this.mineMultiplier);
         }
         return true;
     }

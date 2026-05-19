@@ -7,6 +7,12 @@ import com.main.CoreWorks.Resources.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+Starter Recipes
+Mine IronOre
+IronOre -> IronIngot
+IronIngot -> CannonBall
+ */
 public class RecipeDatabase {
     private static final Map<String, Recipe> RecipeDB = new HashMap<>();
 

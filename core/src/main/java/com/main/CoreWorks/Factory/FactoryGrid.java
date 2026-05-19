@@ -28,12 +28,31 @@ public class FactoryGrid {
         if (x < 0 || y < 0 || y + shp.length > maxHeight || x + shp[0].length > maxWidth) {
             return false;
         }
-        for (int shpY = 0; shpY < shp.length; shpY++) {
-            for (int shpX = 0; shpX < shp.length; shpX++) {
-                if (shp[shpY][shpX]) {
-                    if (grid.get(shpY + y).get(shpX + x) != null) {
-                        return false;
-                    }
+        int w = shp[0].length;
+        int h = shp.length;
+        for (int i = 0; i < w * h; i++) {
+            int locX = 0, locY = 0;
+            switch (rot) {
+                case 0 -> {
+                    locX = i % w;
+                    locY = i / w;
+                }
+                case 1 -> {
+                    locX = i / h;
+                    locY = h - 1 - (i % h);
+                }
+                case 2 -> {
+                    locX = w - 1 - (i % w);
+                    locY = h - 1 - (i / w);
+                }
+                case 3 -> {
+                    locX = w - 1 - (i / h);
+                    locY = i % h;
+                }
+            }
+            if (shp[locY][locX]) {
+                if (grid.get(locX + y).get(locX + x) != null) {
+                    return false;
                 }
             }
         }
@@ -47,38 +66,98 @@ public class FactoryGrid {
             bldg.setPos(x, y);
             bldg.setRotation(rot);
             boolean[][] shp = bldg.getShape();
+            int w = shp[0].length;
+            int h = shp.length;
+            for (int i = 0; i < w * h; i++) {
+                int locX = 0, locY = 0;
+                switch (rot) {
+                    case 0 -> {
+                        locX = i % w;
+                        locY = i / w;
+                    }
+                    case 1 -> {
+                        locX = i / h;
+                        locY = h - 1 - (i % h);
+                    }
+                    case 2 -> {
+                        locX = w - 1 - (i % w);
+                        locY = h - 1 - (i / w);
+                    }
+                    case 3 -> {
+                        locX = w - 1 - (i / h);
+                        locY = i % h;
+                    }
+                }
+                if (shp[locY][locX]) {
+                    grid.get(locY + y).set(locX + x, bldg);
+                }
+            }
+        }
+
+        bldg.putOnGrid();
+        buildingList.add(bldg);
+        return true;
+    }
+
+
+    public void removeBuilding(int x, int y) {
+        Building bldg = grid.get(y).get(x);
+        if (bldg != null) {
+            int posX = bldg.getX();
+            int posY = bldg.getY();
+            boolean[][] shp = bldg.getShape();
             for (int shpY = 0; shpY < shp.length; shpY++) {
                 for (int shpX = 0; shpX < shp.length; shpX++) {
                     if (shp[shpY][shpX]) {
-                        grid.get(shpY + y).set(shpX + x, bldg);
+                        grid.get(shpY + posY).set(shpX + posX, null);
                     }
                 }
             }
 
-            bldg.putOnGrid();
-            buildingList.add(bldg);
-            return true;
+            bldg.takeOffGrid();
+            buildingList.removeValue(bldg, true);
+            bldg.setPos(-1, -1);
         }
     }
 
-    public void removeBuilding(int x, int y) {
-        Building bldg = grid.get(y).get(x);
-
-        int posX = bldg.getX();
-        int posY = bldg.getY();
-        boolean[][] shp = bldg.getShape();
-        for (int shpY = 0; shpY < shp.length; shpY++) {
-            for (int shpX = 0; shpX < shp.length; shpX++) {
-                if (shp[shpY][shpX]) {
-                    grid.get(shpY + posY).set(shpX + posX, null);
+    public void removeBuilding(Building bldg) {
+        if (bldg.onGrid) {
+            int posX = bldg.getX();
+            int posY = bldg.getY();
+            boolean[][] shp = bldg.getShape();
+            int rot = bldg.getRotation();
+            int w = shp[0].length;
+            int h = shp.length;
+            for (int i = 0; i < w * h; i++) {
+                int locX = 0, locY = 0;
+                switch (rot) {
+                    case 0 -> {
+                        locX = i % w;
+                        locY = i / w;
+                    }
+                    case 1 -> {
+                        locX = i / h;
+                        locY = h - 1 - (i % h);
+                    }
+                    case 2 -> {
+                        locX = w - 1 - (i % w);
+                        locY = h - 1 - (i / w);
+                    }
+                    case 3 -> {
+                        locX = w - 1 - (i / h);
+                        locY = i % h;
+                    }
+                }
+                if (shp[locY][locX]) {
+                    grid.get(locY + posY).set(locX + posX, null);
                 }
             }
+            bldg.takeOffGrid();
+            buildingList.removeValue(bldg, true);
+            bldg.setPos(-1, -1);
         }
-
-        bldg.takeOffGrid();
-        buildingList.removeValue(bldg, true);
-        bldg.setPos(-1, -1);
     }
+
 
     public Building getBuildingAt(int x, int y) {
         return grid.get(y).get(x);
@@ -86,6 +165,25 @@ public class FactoryGrid {
 
     public Array<Building> getBuildings() {
         return buildingList;
+    }
+
+    public void changeSize(int newHeight, int newWidth) {
+        if (maxHeight > newHeight) {
+            for (int i  = maxHeight; i > newHeight; i--) {
+                for (int j = 0; i < grid.get(i).size; j++) {
+                    removeBuilding(j ,i);
+                }
+            }
+        }
+        this.maxHeight = newHeight;
+        if (maxWidth > newWidth) {
+            for (int i  = maxWidth; i > newWidth; i--) {
+                for (int j = 0; i < grid.size; j++) {
+                    removeBuilding(j ,i);
+                }
+            }
+        }
+        this.maxWidth = newWidth;
     }
 
 }

@@ -1,0 +1,29 @@
+[
+  {
+    "id" : "MineIron",
+    "Name" : "Mine Iron",
+    "InputId"    : [],
+    "InputMult"  : [],
+    "OutputId"   : ["IronOre"],
+    "OutputMult" : [1],
+    "duration" : 4
+  },
+  {
+    "id" : "SmeltIron",
+    "Name" : "Smelt Iron",
+    "InputId"    : ["IronOre"],
+    "InputMult"  : [1],
+    "OutputId"   : ["IronIngot"],
+    "OutputMult" : [1],
+    "duration" : 4
+  },
+  {
+    "id" : "IronCannonBall",
+    "Name" : "Make Cannonball",
+    "InputId"    : ["IronIngot"],
+    "InputMult"  : [1],
+    "OutputId"   : ["CannonBall"],
+    "OutputMult" : [1],
+    "duration" : 4
+  }
+]

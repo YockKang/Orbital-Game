@@ -9,7 +9,7 @@ public class Miner extends Building {
 
     protected int mineMultiplier;
 
-    public Miner(int coolDown, boolean[][] shape, int mineMult) {
+    public Miner(int coolDown, boolean[][] shape, int mineMult, String name) {
         super(coolDown,
             new Array<ResourceBuffer>(0),
             new Array<ResourceBuffer>(0),
@@ -18,7 +18,7 @@ public class Miner extends Building {
         this.mineMultiplier = mineMult;
     }
 
-    public Miner(int coolDown, boolean[][] shape, int mineMult, Recipe rec) {
+    public Miner(int coolDown, boolean[][] shape, int mineMult, String name, Recipe rec) {
         super(coolDown,
             new Array<ResourceBuffer>(0),
             new Array<ResourceBuffer>(0),

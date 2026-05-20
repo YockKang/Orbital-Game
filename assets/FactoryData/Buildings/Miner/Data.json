@@ -1,0 +1,6 @@
+{
+  "Name" : "Miner",
+  "Cooldown" : 1,
+  "Shape" : [[true]],
+  "MineMult" : 1
+}

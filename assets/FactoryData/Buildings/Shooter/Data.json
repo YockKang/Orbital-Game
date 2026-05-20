@@ -1,0 +1,7 @@
+{
+  "Name" : "Shooter",
+  "Cooldown" : 2,
+  "Shape" : [[true]],
+  "MagSize" : 5
+
+}

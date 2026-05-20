@@ -6,7 +6,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.main.CoreWorks.database.BuildingDatabase;
+import com.main.CoreWorks.database.RecipeDatabase;
+import com.main.CoreWorks.database.ResourceDatabase;
 import com.main.CoreWorks.screens.MenuScreen;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Coreworks extends Game {
@@ -18,6 +24,12 @@ public class Coreworks extends Game {
     // The below represents a 800 x 480 coordinate system, regardless of the screen resolution
     public static final float WORLD_WIDTH = 800;
     public static final float WORLD_HEIGHT = 480;
+
+
+    public static ResourceDatabase RESOURCE_DB;
+    public static RecipeDatabase RECIPE_DB;
+    public static BuildingDatabase BUILDING_DB;
+
 
     @Override
     public void create() {
@@ -34,6 +46,10 @@ public class Coreworks extends Game {
         // font has 15pt, but we need to scale it to our viewport by ratio of viewport height to screen height
         font.setUseIntegerPositions(false);
         font.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
+
+        // load game assets and databases
+
+
 
         // For now, starting the game leads to a placeholder menu screen
         this.setScreen(new MenuScreen(this)); // eventually will replace with the Main Menu screen

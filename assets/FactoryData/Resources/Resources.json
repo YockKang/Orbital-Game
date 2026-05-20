@@ -1,0 +1,17 @@
+[
+  {
+    "id" : "IronOre",
+    "Name" : "Iron Ore",
+    "DmgMult" : 0.5
+  },
+  {
+    "id" : "IronIngot",
+    "Name" : "Iron Ingot",
+    "DmgMult" : 1
+  },
+  {
+    "id" : "CannonBall",
+    "Name" : "Cannonball",
+    "DmgMult" : 2
+  }
+]

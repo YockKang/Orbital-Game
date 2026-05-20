@@ -1,10 +1,12 @@
 package com.main.CoreWorks.Factory;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Queue;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.main.CoreWorks.Recipe.Recipe;
 import com.main.CoreWorks.Resources.Resource;
 import com.main.CoreWorks.moveset.Move;
+
 
 public abstract class Building {
 
@@ -22,7 +24,10 @@ public abstract class Building {
     protected int rotation = 0; // 0 is "up", +1 for clockwise rotation
     protected String name;
     protected Recipe recipe = null;
-    protected Queue<IOPort> ports;
+    protected Array<IOPort> ports;
+
+    protected ObjectMap<Building, Array<Resource>> inputBuildings = new ObjectMap<>();
+    protected ObjectMap<Building, Array<Resource>> outputBuildings = new ObjectMap<>();
 
     protected boolean[][] shape;
     /*
@@ -67,7 +72,7 @@ public abstract class Building {
                 globalY = y;
             }
             case 1 -> {
-                globalX = y + yCoord;
+                globalX = y;
                 globalY = shapeW - 1 - x;
             }
             case 2 -> {
@@ -85,14 +90,56 @@ public abstract class Building {
         return new int[] {globalX, globalY};
     }
 
-    /*
-    public boolean resourceTransfer(Array<Array<Building>> grid) {
-        // resource transfer is "pushy", suppliers will push to consumers
+    public void clearNeighbours() {
+        inputBuildings.keys().forEach(building -> building.removeOutput(this));
+        outputBuildings.keys().forEach(building -> building.removeInput(this));
+        inputBuildings.clear();
+        outputBuildings.clear();
+    }
 
-        Array<Resource> outputs = recipe.getOutputs();
+    public void updateInputs(Array<Array<Building>> grid) {
 
+        ObjectSet<Building> neighbours = new ObjectSet<>();
+
+        for (int lr = 0; lr < shape.length; lr++) {
+            for (int lc = 0; lc < shape[lr].length; lc++) {
+                int[] gc = getGlobalCoord(lr, lc);
+                for (int r = 0; r < 4; r++) {
+                    switch (r) {
+                        case 0 -> {
+                            gc[0]++;
+                        }
+                        case 1 -> {
+                            gc[1]++;
+                        }
+                        case 2 -> {
+                            gc[0]--;
+                        }
+                        case 3 -> {
+                            gc[1]--;
+                        }
+                    }
+                    Building maybeNeighbour = null;
+                    try {
+                        maybeNeighbour = grid.get(gc[0]).get(gc[1]);
+                    } catch (Exception e) {
+                        continue;
+                    }
+                    if ((maybeNeighbour != null) &&
+                        (maybeNeighbour != this)) {
+                        neighbours.add(maybeNeighbour);
+                    }
+                }
+            }
+        }
+
+        neighbours.iterator().forEachRemaining(b -> b.updateOutputs(grid));
+
+
+    }
+
+    public void updateOutputs(Array<Array<Building>> grid) {
         for (IOPort p : ports) {
-            p.disableOutputFull();
             int[] targetCoord = getGlobalCoord(p.getX(), p.getY());
             int portGlobalDir = (p.getDir() + rotation) % 4;
 
@@ -110,16 +157,80 @@ public abstract class Building {
                     targetCoord[1]--;
                 }
             }
-            Building target = grid.get(targetCoord[1]).get(targetCoord[0]);
+            Building target;
+            try {
+                target = grid.get(targetCoord[1]).get(targetCoord[0]);
+            } catch (Exception e) {
+                target = null;
+            }
             p.setTarget(target);
         }
 
-        for (int i = 0; i < outputBuffer.size; i++) {
-
+        for (IOPort p : ports) {
+            if (p.target != null) {
+                addOutput(p.target);
+            }
         }
-        return false;
+
     }
-     */
+
+    public void addInput(Building b) {
+        Array<Resource> matches = matchResource(b, false);
+        if (!matches.isEmpty()) {
+            inputBuildings.put(b, matches);
+        }
+    }
+
+    public void addOutput(Building b) {
+        Array<Resource> matches = matchResource(b, true);
+        if (!matches.isEmpty()) {
+            inputBuildings.put(b, matches);
+        }
+    }
+
+    public void removeInput(Building b) {
+        inputBuildings.remove(b);
+    }
+
+    public void removeOutput(Building b) {
+        outputBuildings.remove(b);
+    }
+
+    public Array<Resource> matchResource(Building b, boolean thisSupplier) {
+        Array<Resource> sup;
+        Array<Resource> cons;
+        if (thisSupplier) {
+            sup = this.recipe.getOutputs();
+            cons = b.recipe.getInputs();
+        } else {
+            cons = this.recipe.getInputs();
+            sup = b.recipe.getOutputs();
+        }
+
+        ObjectSet<Resource> consAsSet = new ObjectSet<Resource>();
+        consAsSet.addAll(cons);
+        Array<Resource> matches = new Array<>(0);
+
+        for (Resource rsc : sup) {
+            if (consAsSet.contains(rsc)) {
+                matches.add(rsc);
+            }
+        }
+
+        return matches;
+    }
+
+
+    public Array<ResourceRequest> generateDemandRequests() {
+        Array<ResourceRequest> requests = new Array<>();
+        for (int i = 0; i < inputBuffer.size; i++) {
+            ResourceRequest thisRequest = inputBuffer.get(i).generateDemandRequest(this);
+            if (thisRequest != null) {
+                requests.add(thisRequest);
+            }
+        }
+        return requests;
+    }
 
 
     public void setRecipe(Recipe rec) {
@@ -210,11 +321,11 @@ public abstract class Building {
 
     public void addPort(int x, int y, int dir, int speed) {
         IOPort port = new IOPort(x, y, dir, speed);
-        ports.addLast(port);
+        ports.add(port);
     }
 
     public void addPort(IOPort port) {
-        ports.addLast(port);
+        ports.add(port);
     }
 
 

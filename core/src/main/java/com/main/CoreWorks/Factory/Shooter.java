@@ -50,4 +50,14 @@ public class Shooter extends Building {
     public DamageMove shoot() {
         return new DamageMove((int) (magazine.removeFirst().getDmgMult() * baseDmg), 0);
     }
+
+    @Override
+    public Array<ResourceRequest> generateDemandRequests() {
+        Array<ResourceRequest> requests = new Array<>();
+            int magMissing = magSize - magazine.size;
+            if (magMissing > 0) {
+                requests.add(new AnythingRequest(this, magMissing));
+            }
+        return requests;
+    }
 }

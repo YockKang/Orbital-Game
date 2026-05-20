@@ -22,7 +22,7 @@ public class FactorySim {
         // Deterministic sort of buildings to determine which order to process the moves implemented here
 
         for (Building building : buildings) {
-            pendingMoves.addLast(building.updateTick());
+
         }
 
         // Grid will handle the resource transfer via method call here

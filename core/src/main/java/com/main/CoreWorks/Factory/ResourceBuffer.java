@@ -2,7 +2,6 @@ package com.main.CoreWorks.Factory;
 
 import com.main.CoreWorks.Resources.Resource;
 
-import java.security.DrbgParameters;
 
 public class ResourceBuffer {
     protected Resource resource;
@@ -39,6 +38,10 @@ public class ResourceBuffer {
         return current;
     }
 
+    public boolean isFull() {
+        return current == capacity;
+    }
+
     public boolean tryAdd(int val) {
         return current + val <= capacity;
     }
@@ -69,4 +72,12 @@ public class ResourceBuffer {
             current = n;
         }
     }
+    public ResourceRequest generateDemandRequest(Building b) {
+        if (!isFull()) {
+            return new ResourceRequest(resource, b, capacity - current);
+        } else {
+            return null;
+        }
+    }
+
 }

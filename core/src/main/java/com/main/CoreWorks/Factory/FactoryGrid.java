@@ -9,6 +9,7 @@ public class FactoryGrid {
     int maxHeight;
     int maxWidth;
 
+
     public FactoryGrid(int h, int w) {
         this.maxHeight = h;
         this.maxWidth = w;
@@ -96,6 +97,8 @@ public class FactoryGrid {
 
         bldg.putOnGrid();
         buildingList.add(bldg);
+        bldg.updateInputs(grid);
+        bldg.updateOutputs(grid);
         return true;
     }
 
@@ -109,7 +112,8 @@ public class FactoryGrid {
             for (int shpY = 0; shpY < shp.length; shpY++) {
                 for (int shpX = 0; shpX < shp.length; shpX++) {
                     if (shp[shpY][shpX]) {
-                        grid.get(shpY + posY).set(shpX + posX, null);
+                        int[] gc = bldg.getGlobalCoord(shpX, shpY);
+                        grid.get(gc[1]).set(gc[0], null);
                     }
                 }
             }
@@ -117,6 +121,7 @@ public class FactoryGrid {
             bldg.takeOffGrid();
             buildingList.removeValue(bldg, true);
             bldg.setPos(-1, -1);
+            bldg.clearNeighbours();
         }
     }
 
@@ -128,33 +133,18 @@ public class FactoryGrid {
             int rot = bldg.getRotation();
             int w = shp[0].length;
             int h = shp.length;
-            for (int i = 0; i < w * h; i++) {
-                int locX = 0, locY = 0;
-                switch (rot) {
-                    case 0 -> {
-                        locX = i % w;
-                        locY = i / w;
+            for (int shpY = 0; shpY < shp.length; shpY++) {
+                for (int shpX = 0; shpX < shp.length; shpX++) {
+                    if (shp[shpY][shpX]) {
+                        int[] gc = bldg.getGlobalCoord(shpX, shpY);
+                        grid.get(gc[1]).set(gc[0], null);
                     }
-                    case 1 -> {
-                        locX = i / h;
-                        locY = h - 1 - (i % h);
-                    }
-                    case 2 -> {
-                        locX = w - 1 - (i % w);
-                        locY = h - 1 - (i / w);
-                    }
-                    case 3 -> {
-                        locX = w - 1 - (i / h);
-                        locY = i % h;
-                    }
-                }
-                if (shp[locY][locX]) {
-                    grid.get(locY + posY).set(locX + posX, null);
                 }
             }
             bldg.takeOffGrid();
             buildingList.removeValue(bldg, true);
             bldg.setPos(-1, -1);
+            bldg.clearNeighbours();
         }
     }
 

@@ -30,20 +30,20 @@ public class CombatScreen implements Screen {
 
     // Temp Layout since we have not decided how we want the final UI to look like yet
     // Rmb that everything is drawn in a coordinate system (check Coreworks class for the public static final screen size)
-    private final int gridStartX = 80;
-    private final int gridEndY = 320;
-    private final int tileSize = 56;
+    private final int gridStartX = 400;
+    private final int gridEndY = 560;
+    private final int tileSize = 96;
 
     // Hardcoded grid size for milestone 1 testing purposes
     // Should be deleted eventually since it should be handled by the global runState which carries over the factory
     private final int gridWidth = 4;
     private final int gridHeight = 4;
 
-    private final int inventoryStartX = 80;
-    private final int inventoryStartY = 60;
+    private final int inventoryStartX = 312;
+    private final int inventoryStartY = 80;
     // Each inventory slot is a square for now
-    private final int inventorySlotSize = 64;
-    private final int inventorySlotGap = 12;
+    private final int inventorySlotSize = 96;
+    private final int inventorySlotGap = 16;
 
     private Building selectedBuilding;
 
@@ -128,8 +128,8 @@ public class CombatScreen implements Screen {
                     continue;
                 }
                 // Code here handles the building drawing, everything is a fixed letter for now until we can differentiate the buildings
-                int buildingX = gridStartX + x * tileSize + 18;
-                int buildingY = gridEndY - y * tileSize - 18;
+                int buildingX = gridStartX + x * tileSize + 34;
+                int buildingY = gridEndY - y * tileSize - 36;
                 game.font.draw(game.batch, building.toString(), buildingX, buildingY);
             }
         }
@@ -141,21 +141,24 @@ public class CombatScreen implements Screen {
         game.batch.begin();
 
         // Below draws the Entities HUD
-        game.font.draw(game.batch, "Coreworks - Milestone 1", 40, 460);
-        game.font.draw(game.batch, "Ticks: " + tickCount, 40, 430);
-        game.font.draw(game.batch, controller.getCombatSim().getPlayer().toString(), 180, 430);
-        game.font.draw(game.batch, controller.getCombatSim().getEnemies().toString(), 340, 430);
+        game.font.draw(game.batch, "Coreworks - Milestone 1", 40, 710);
+        game.font.draw(game.batch, "Ticks: " + tickCount, 40, 680);
+        game.font.draw(game.batch, controller.getCombatSim().getPlayer().toString(), 210, 675);
+        game.font.draw(game.batch, controller.getCombatSim().getEnemies().toString(), 380, 675);
 
         // Below draws the selected building HUD
-        game.font.draw(game.batch, selectedBuilding == null ? "Selected: None" : "Selected: " + selectedBuilding.toString(), 40, 405);
+        game.font.draw(game.batch, selectedBuilding == null ? "Selected: None" : "Selected: " + selectedBuilding.toString(), 600, 675);
 
         // Below draws the rotation
-        game.font.draw(game.batch, "Current rotation: " + selectedBuilding.getRotation(), 40, 380);
+        if (selectedBuilding != null) {
+            game.font.draw(game.batch, "Current rotation: " + selectedBuilding.getRotation(), 600, 650);
+            game.font.draw(game.batch, "Press R to rotate", 760, 650);
+        }
 
         // Below draws the hints
-        game.font.draw(game.batch, "Left click Inventory - Select", 40, 25);
-        game.font.draw(game.batch, "Left click Grid - Place", 250, 25);
-        game.font.draw(game.batch, "Right click - Deselect or Remove building", 420, 25);
+        game.font.draw(game.batch, "Left click Inventory - Select", 40, 225);
+        game.font.draw(game.batch, "Left click Grid - Place", 250, 225);
+        game.font.draw(game.batch, "Right click - Deselect or Remove building", 420, 225);
 
         // Below draws the screen transitions
         // Since we do not have a win / loss screen yet, it will be a hardcoded placeholder victory or defeat screen
@@ -191,12 +194,12 @@ public class CombatScreen implements Screen {
         shapeRenderer.end();
 
         game.batch.begin();
-        game.font.draw(game.batch, "Inventory", inventoryStartX, inventoryStartY + 95);
+        game.font.draw(game.batch, "Inventory", inventoryStartX, inventoryStartY + 195);
 
         for (int i = 0; i < controller.getCombatSim().getPlayer().getInventory().size; i++) {
             Building building = controller.getCombatSim().getPlayer().getBuildingAt(i);
             int leftBoundInventoryBorder = inventoryStartX + i * (inventorySlotSize + inventorySlotGap);
-            game.font.draw(game.batch, building.toString(), leftBoundInventoryBorder + 12, inventoryStartY + 36);
+            game.font.draw(game.batch, building.toString(), leftBoundInventoryBorder + 38, inventoryStartY + 56);
         }
 
         game.batch.end();

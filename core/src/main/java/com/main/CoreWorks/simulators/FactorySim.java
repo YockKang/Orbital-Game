@@ -35,4 +35,8 @@ public class FactorySim {
         }
         return result;
     }
+
+    public FactoryGrid getGrid() {
+        return grid;
+    }
 }

@@ -4,6 +4,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.main.CoreWorks.entities.Enemy;
 import com.main.CoreWorks.entities.Player;
+import com.main.CoreWorks.moveset.DamageMove;
+import com.main.CoreWorks.moveset.HealMove;
 import com.main.CoreWorks.moveset.Move;
 
 public class CombatSim {
@@ -64,7 +66,20 @@ public class CombatSim {
 
     public void updateEnemies() {
         for (Enemy enemy : enemies) {
-            enemy.tick(player);
+            // Hardcoding the move target for now, eventually should make wrapper classes for different moves that target different things
+            Move currMove = enemy.getMove();
+            switch (currMove) {
+                case HealMove healMove:
+                    enemy.tick(enemy);
+                    break;
+
+                case DamageMove damageMove:
+                    enemy.tick(player);
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 

@@ -38,4 +38,8 @@ public class Enemy extends Character {
     public String toString() {
         return String.format("%s \n %s", super.toString(), this.displayIntent());
     }
+
+    public Move getMove() {
+        return moveset.get(currMoveIndex);
+    }
 }

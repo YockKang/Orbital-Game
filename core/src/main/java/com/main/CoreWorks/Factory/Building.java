@@ -25,6 +25,7 @@ public abstract class Building {
     protected String name;
     protected Recipe recipe = null;
     protected Array<IOPort> ports;
+    protected int priority = 0;
 
     protected ObjectMap<Building, Array<Resource>> inputBuildings = new ObjectMap<>();
     protected ObjectMap<Building, Array<Resource>> outputBuildings = new ObjectMap<>();
@@ -178,13 +179,15 @@ public abstract class Building {
         Array<Resource> matches = matchResource(b, false);
         if (!matches.isEmpty()) {
             inputBuildings.put(b, matches);
+            b.outputBuildings.put(this, matches);
         }
     }
 
     public void addOutput(Building b) {
         Array<Resource> matches = matchResource(b, true);
         if (!matches.isEmpty()) {
-            inputBuildings.put(b, matches);
+            outputBuildings.put(b, matches);
+            b.inputBuildings.put(this, matches);
         }
     }
 
@@ -232,6 +235,31 @@ public abstract class Building {
         return requests;
     }
 
+    public ResourceBuffer getOutputResourceBuffer(Resource r) {
+        for (ResourceBuffer buffer : outputBuffer) {
+            if (buffer.resource == r) {
+                return buffer;
+            }
+        }
+        return null;
+    }
+
+    public ResourceBuffer getInputResourceBuffer(Resource r) {
+        for (ResourceBuffer buffer : inputBuffer) {
+            if (buffer.resource == r) {
+                return buffer;
+            }
+        }
+        return null;
+    }
+
+    public ObjectMap<Building, Array<Resource>> getInputBuildings() {
+        return inputBuildings;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
 
     public void setRecipe(Recipe rec) {
         // write new recipe

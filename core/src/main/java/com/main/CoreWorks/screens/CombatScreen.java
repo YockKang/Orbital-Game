@@ -17,7 +17,6 @@ import com.main.CoreWorks.entities.Enemy;
 import com.main.CoreWorks.simulators.CombatController;
 import com.main.CoreWorks.simulators.CombatSim;
 import com.main.CoreWorks.simulators.FactorySim;
-import org.checkerframework.checker.units.qual.C;
 
 public class CombatScreen implements Screen {
 
@@ -25,25 +24,26 @@ public class CombatScreen implements Screen {
     CombatController controller;
     private float accumulator = 0f;
     private static final float TIME_STEP = 1/4f; // 4 Ticks per second
+    private int tickCount = 0;
     private Vector2 mouse2DCoords = new Vector2();
     private ShapeRenderer shapeRenderer;
 
     // Temp Layout since we have not decided how we want the final UI to look like yet
     // Rmb that everything is drawn in a coordinate system (check Coreworks class for the public static final screen size)
-    private final int gridStartX = 80;
-    private final int gridEndY = 320;
-    private final int tileSize = 56;
+    private final int gridStartX = 400;
+    private final int gridEndY = 560;
+    private final int tileSize = 96;
 
     // Hardcoded grid size for milestone 1 testing purposes
     // Should be deleted eventually since it should be handled by the global runState which carries over the factory
     private final int gridWidth = 4;
     private final int gridHeight = 4;
 
-    private final int inventoryStartX = 80;
-    private final int inventoryStartY = 60;
+    private final int inventoryStartX = 312;
+    private final int inventoryStartY = 80;
     // Each inventory slot is a square for now
-    private final int inventorySlotSize = 64;
-    private final int inventorySlotGap = 12;
+    private final int inventorySlotSize = 96;
+    private final int inventorySlotGap = 16;
 
     private Building selectedBuilding;
 
@@ -80,6 +80,7 @@ public class CombatScreen implements Screen {
             accumulator += delta;
             while (accumulator >= TIME_STEP) {
                 controller.advanceTick();
+                tickCount += 1;
                 accumulator -= TIME_STEP;
             }
         }
@@ -103,15 +104,105 @@ public class CombatScreen implements Screen {
      */
 
     public void drawGrid() {
-        // TBD
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.WHITE);
+
+        // Draws the Outline of the grid
+        for (int x = 0; x < gridWidth; x++) {
+            for (int y = 0; y < gridHeight; y++) {
+                int bottomLeftCorner = gridStartX + x * tileSize;
+                int topLeftCorner = gridEndY - (y + 1) * tileSize; // offset by one since libGDX stores its object origins in the bottom left
+                shapeRenderer.rect(bottomLeftCorner, topLeftCorner, tileSize, tileSize);
+            }
+        }
+
+        shapeRenderer.end();
+
+        game.batch.begin();
+
+        // Draws the actual building itself
+        for (int x = 0; x < gridWidth; x++) {
+            for (int y = 0; y < gridHeight; y++) {
+                Building building = controller.getFactorySim().getGrid().getBuildingAt(x, y);
+                if (building == null) {
+                    continue;
+                }
+                // Code here handles the building drawing, everything is a fixed letter for now until we can differentiate the buildings
+                int buildingX = gridStartX + x * tileSize + 34;
+                int buildingY = gridEndY - y * tileSize - 36;
+                game.font.draw(game.batch, building.displayName(), buildingX, buildingY);
+            }
+        }
+
+        game.batch.end();
     }
 
     public void drawCombatHUD() {
-        // TBD
+        game.batch.begin();
+
+        // Below draws the Entities HUD
+        game.font.draw(game.batch, "Coreworks - Milestone 1", 40, 710);
+        game.font.draw(game.batch, "Ticks: " + tickCount, 40, 680);
+        game.font.draw(game.batch, controller.getCombatSim().getPlayer().toString(), 210, 675);
+        game.font.draw(game.batch, controller.getCombatSim().getEnemies().toString(), 380, 675);
+
+        // Below draws the selected building HUD
+        game.font.draw(game.batch, selectedBuilding == null ? "Selected: None" : "Selected: " + selectedBuilding, 600, 675);
+
+        // Below draws the rotation
+        if (selectedBuilding != null) {
+            game.font.draw(game.batch, "Current rotation: " + selectedBuilding.getRotation(), 600, 650);
+            game.font.draw(game.batch, "Press R to rotate", 760, 650);
+        }
+
+        // Below draws the hints
+        game.font.draw(game.batch, "Left click Inventory - Select", 40, 225);
+        game.font.draw(game.batch, "Left click Grid - Place", 250, 225);
+        game.font.draw(game.batch, "Right click - Deselect or Remove building", 420, 225);
+
+        // Below draws the screen transitions
+        // Since we do not have a win / loss screen yet, it will be a hardcoded placeholder victory or defeat screen
+        // Eventually when we finish the screens, uncomment the setScreen Lines
+        if (controller.isWin()) {
+            // game.setScreen(new WinScreen(game));
+            game.font.draw(game.batch, "YOU WIN!", 620, 360);
+        } else if (controller.isLost()) {
+            // game.setScreen(new LoseScreen(game));
+            game.font.draw(game.batch, "YOU LOSE!", 620, 360);
+        }
+
+        game.batch.end();
     }
 
     public void drawInventory() {
-        // TBD
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
+        // Draws the Outline of the grid
+        for (int i = 0; i < controller.getCombatSim().getPlayer().getInventory().size; i++) {
+            int leftBoundInventoryBorder = inventoryStartX + i * (inventorySlotSize + inventorySlotGap);
+
+            // Highlight the building if it is currently selected
+            if (selectedBuilding == controller.getCombatSim().getPlayer().getBuildingAt(i)) {
+                shapeRenderer.setColor(Color.GREEN);
+            } else {
+                shapeRenderer.setColor(Color.WHITE);
+            }
+
+            shapeRenderer.rect(leftBoundInventoryBorder, inventoryStartY, inventorySlotSize, inventorySlotSize);
+        }
+
+        shapeRenderer.end();
+
+        game.batch.begin();
+        game.font.draw(game.batch, "Inventory", inventoryStartX, inventoryStartY + 195);
+
+        for (int i = 0; i < controller.getCombatSim().getPlayer().getInventory().size; i++) {
+            Building building = controller.getCombatSim().getPlayer().getBuildingAt(i);
+            int leftBoundInventoryBorder = inventoryStartX + i * (inventorySlotSize + inventorySlotGap);
+            game.font.draw(game.batch, building.displayName(), leftBoundInventoryBorder + 38, inventoryStartY + 56);
+        }
+
+        game.batch.end();
     }
 
 
@@ -173,12 +264,13 @@ public class CombatScreen implements Screen {
                 selectedBuilding = null;
             }
         }
+        // Need to add what to do when a non-inventory building (ie on the grid) is clicked. Display name card? highlight it? etc etc
     }
 
     /*
     Right clicks will handle (c.a.a Milestone 1)
         1. Deselecting a building
-        2. Removing building from the grid if grid is clicked
+        2. Removing building from the grid if grid is clicked back into inventory
      */
 
     private void rightClick(float mouseTranslatedX, float mouseTranslatedY) {

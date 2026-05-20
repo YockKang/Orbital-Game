@@ -369,4 +369,30 @@ public abstract class Building {
         ports.clear();
     }
 
+    public String displayName() {
+        return this.name;
+    }
+
+    /*
+	    Bool isEnabled
+	    int cooldownTimer
+	    int currCooldown
+	    Arr inputBuffer [as a queue]
+	    Arr outputBuffer [as a queue]
+	    int inputLimit
+	    int outputLimit
+	    int HP?????
+	    [x, y] coords
+	    String Name
+	    int id
+	    Something upgrade?
+	    [[hw]] shape
+	    I/O limitations [TBA]
+	    updateTick()
+	    enable()
+	    disable()
+	    toggleEnable()
+	    getters()
+	    clear()
+     */
 }

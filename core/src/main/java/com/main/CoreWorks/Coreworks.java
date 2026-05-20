@@ -22,8 +22,8 @@ public class Coreworks extends Game {
     public FitViewport viewport;
     public OrthographicCamera camera;
     // The below represents a 800 x 480 coordinate system, regardless of the screen resolution
-    public static final float WORLD_WIDTH = 800;
-    public static final float WORLD_HEIGHT = 480;
+    public static final float WORLD_WIDTH = 1280;
+    public static final float WORLD_HEIGHT = 720;
 
 
     public static ResourceDatabase RESOURCE_DB;

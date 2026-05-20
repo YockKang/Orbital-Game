@@ -1,10 +1,17 @@
 package com.main.CoreWorks.simulators;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Queue;
 import com.main.CoreWorks.Factory.Building;
 import com.main.CoreWorks.Factory.FactoryGrid;
+import com.main.CoreWorks.Factory.ResourceBuffer;
+import com.main.CoreWorks.Factory.ResourceRequest;
+import com.main.CoreWorks.Resources.Resource;
 import com.main.CoreWorks.moveset.Move;
+import com.sun.net.httpserver.Request;
+
+import static java.lang.Math.min;
 
 public class FactorySim {
 
@@ -21,9 +28,35 @@ public class FactorySim {
 
         // Deterministic sort of buildings to determine which order to process the moves implemented here
 
-        for (Building building : buildings) {
+        Array<ResourceRequest> requests = new Array<>();
 
+        for (Building building : buildings) {
+            requests.addAll(building.generateDemandRequests());
         }
+
+        requests.sort((a,b) -> a.getPriority() - b.getPriority());
+
+        for (ResourceRequest req : requests) {
+             ObjectMap<Building, Array<Resource>> suppliers = req.getRequester().getInputBuildings();
+             Array<Building> suppliersSorted = suppliers.keys().toArray();
+             suppliersSorted.sort((a, b)  -> a.getPriority() - b.getPriority());
+            for (Building supplier : suppliersSorted) {
+                if (req.getValue() >= 0) {
+                    break;
+                }
+                if (suppliers.get(supplier).contains(req.getResource(), true)) {
+                    ResourceBuffer drawBuffer = supplier.getOutputResourceBuffer(req.getResource());
+                    if (drawBuffer != null) {
+                        int drawAmt = min(drawBuffer.getCurrent(), req.getValue());
+                        drawBuffer.draw(drawAmt);
+                        req.reduceValue(drawAmt);
+                        req.getRequester().getInputResourceBuffer(req.getResource()).add(drawAmt);
+                    }
+                }
+            }
+        }
+
+
 
         // Grid will handle the resource transfer via method call here
     }

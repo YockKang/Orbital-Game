@@ -74,7 +74,7 @@ public class ResourceBuffer {
     }
     public ResourceRequest generateDemandRequest(Building b) {
         if (!isFull()) {
-            return new ResourceRequest(resource, b, capacity - current);
+            return new ResourceRequest(resource, b, capacity - current, 1);
         } else {
             return null;
         }

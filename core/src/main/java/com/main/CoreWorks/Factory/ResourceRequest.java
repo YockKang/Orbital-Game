@@ -6,17 +6,32 @@ public class ResourceRequest {
     protected Resource resource;
     protected Building requester;
     protected int value;
+    protected int priority;
 
-    public ResourceRequest(Resource r, Building building, int v) {
+    public ResourceRequest(Resource r, Building building, int v, int p) {
         resource = r;
+        requester = building;
         value = v;
+        priority = p;
     }
 
     public Resource getResource() {
         return resource;
     }
 
+    public Building getRequester() {
+        return requester;
+    }
+
     public int getValue() {
         return value;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void reduceValue(int v) {
+        value -= v;
     }
 }

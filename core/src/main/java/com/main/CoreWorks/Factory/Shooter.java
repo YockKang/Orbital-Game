@@ -26,6 +26,7 @@ public class Shooter extends Building {
     public Shooter(JsonValue data) {
         super(data);
         this.magSize = data.getInt("MagSize");
+        this.magazine = new Queue<>(magSize);
     }
 
     @Override

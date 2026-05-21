@@ -187,36 +187,38 @@ public abstract class Building {
     }
 
     public void updateOutputs(Array<Array<Building>> grid) {
-        for (IOPort p : ports) {
-            int[] targetCoord = getGlobalCoord(p.getX(), p.getY());
-            int portGlobalDir = (p.getDir() + rotation) % 4;
+        if (this.ports != null) {
+            for (IOPort p : ports) {
+                int[] targetCoord = getGlobalCoord(p.getX(), p.getY());
+                int portGlobalDir = (p.getDir() + rotation) % 4;
 
-            switch (portGlobalDir) {
-                case 0 -> {
-                    targetCoord[0]++;
+                switch (portGlobalDir) {
+                    case 0 -> {
+                        targetCoord[0]++;
+                    }
+                    case 1 -> {
+                        targetCoord[1]++;
+                    }
+                    case 2 -> {
+                        targetCoord[0]--;
+                    }
+                    case 3 -> {
+                        targetCoord[1]--;
+                    }
                 }
-                case 1 -> {
-                    targetCoord[1]++;
+                Building target;
+                try {
+                    target = grid.get(targetCoord[1]).get(targetCoord[0]);
+                } catch (Exception e) {
+                    target = null;
                 }
-                case 2 -> {
-                    targetCoord[0]--;
-                }
-                case 3 -> {
-                    targetCoord[1]--;
-                }
+                p.setTarget(target);
             }
-            Building target;
-            try {
-                target = grid.get(targetCoord[1]).get(targetCoord[0]);
-            } catch (Exception e) {
-                target = null;
-            }
-            p.setTarget(target);
-        }
 
-        for (IOPort p : ports) {
-            if (p.target != null) {
-                addOutput(p.target);
+            for (IOPort p : ports) {
+                if (p.target != null) {
+                    addOutput(p.target);
+                }
             }
         }
 

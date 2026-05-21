@@ -60,20 +60,24 @@ public class Miner extends Building {
     }
 
     public boolean mine() {
-        Array<Integer> mults = this.recipe.getOutputMultipliers();
-        // attempt to extract all into buffers
-        for (int i = 0; i < mults.size; i++) {
-            ResourceBuffer currentBuffer = this.outputBuffer.get(i);
-            int expected = currentBuffer.getCurrent() + mults.get(i) * this.mineMultiplier;
-            // buffer for that type will overfill, cannot mine
-            if (!currentBuffer.tryAdd(expected)) {
-                return false;
+        if (this.recipe == null) {
+            return false;
+        } else {
+            Array<Integer> mults = this.recipe.getOutputMultipliers();
+            // attempt to extract all into buffers
+            for (int i = 0; i < mults.size; i++) {
+                ResourceBuffer currentBuffer = this.outputBuffer.get(i);
+                int expected = currentBuffer.getCurrent() + mults.get(i) * this.mineMultiplier;
+                // buffer for that type will overfill, cannot mine
+                if (!currentBuffer.tryAdd(expected)) {
+                    return false;
+                }
             }
+            for (int i = 0; i < mults.size; i++) {
+                ResourceBuffer currentBuffer = this.outputBuffer.get(i);
+                currentBuffer.add(mults.get(i) * this.mineMultiplier);
+            }
+            return true;
         }
-        for (int i = 0; i < mults.size; i++) {
-            ResourceBuffer currentBuffer = this.outputBuffer.get(i);
-            currentBuffer.add(mults.get(i) * this.mineMultiplier);
-        }
-        return true;
     }
 }

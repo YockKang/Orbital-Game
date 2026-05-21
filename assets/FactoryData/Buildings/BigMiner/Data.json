@@ -1,0 +1,17 @@
+{
+  "id" : "miner2",
+  "Type" : "Miner",
+  "Name" : "BigMiner",
+  "Cooldown" : 2,
+  "Shape" : [[true, true]],
+  "MineMult" : 2,
+  "Ports" : [
+    {
+      "x" : 0,
+      "y" : 0,
+      "dir" : 0,
+      "rate" : 1
+    }
+  ],
+  "DefaultRecipe" : "MineIron"
+}

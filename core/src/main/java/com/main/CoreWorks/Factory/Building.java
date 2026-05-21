@@ -116,22 +116,23 @@ public abstract class Building {
                 globalY = y;
                 break;
             case 1:
-                globalX = (shapeW - 1 - y);
+                globalX = shapeH - 1 - y;
                 globalY = x;
                 break;
             case 2:
-                globalX = (shapeW - 1 - x);
-                globalY = (shapeH - 1 - y);
+                globalX = shapeW - 1 - x;
+                globalY = shapeH - 1 - y;
                 break;
             case 3:
                 globalX = y;
-                globalY = (shapeH - 1 - x);
+                globalY = shapeW - 1 - x;
                 break;
         }
 
         globalX += tryPosX;
         globalY += tryPosY;
-        return new int[] {globalX, globalY};
+
+        return new int[]{globalX, globalY};
     }
 
     protected int[] getLocalCoord(int x , int y) {
@@ -149,14 +150,14 @@ public abstract class Building {
                 break;
             case 1:
                 localX = offsetY;
-                localY = shapeW - 1 - offsetX;
+                localY = shapeH - 1 - offsetX;
                 break;
             case 2:
                 localX = shapeW - 1 - offsetX;
                 localY = shapeH - 1 - offsetY;
                 break;
             case 3:
-                localX = shapeH - 1 - offsetY;
+                localX = shapeW - 1 - offsetY;
                 localY = offsetX;
                 break;
         }
@@ -182,13 +183,13 @@ public abstract class Building {
                 for (int r = 0; r < 4; r++) {
                     switch (r) {
                         case 0 -> {
-                            gc[1]++;
+                            gc[1]--;
                         }
                         case 1 -> {
                             gc[0]++;
                         }
                         case 2 -> {
-                            gc[1]--;
+                            gc[1]++;
                         }
                         case 3 -> {
                             gc[0]--;
@@ -224,13 +225,13 @@ public abstract class Building {
 
                 switch (portGlobalDir) {
                     case 0 -> {
-                        targetCoord[1]++;
+                        targetCoord[1]--;
                     }
                     case 1 -> {
                         targetCoord[0]++;
                     }
                     case 2 -> {
-                        targetCoord[1]--;
+                        targetCoord[1]++;
                     }
                     case 3 -> {
                         targetCoord[0]--;

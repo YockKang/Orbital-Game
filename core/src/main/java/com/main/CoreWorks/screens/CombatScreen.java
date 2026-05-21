@@ -12,6 +12,7 @@ import com.main.CoreWorks.Coreworks;
 import com.main.CoreWorks.Factory.Building;
 import com.main.CoreWorks.Factory.FactoryGrid;
 import com.main.CoreWorks.Factory.IOPort;
+import com.main.CoreWorks.database.BuildingDatabase;
 import com.main.CoreWorks.database.EnemyDatabase;
 import com.main.CoreWorks.database.PlayerDatabase;
 import com.main.CoreWorks.entities.Enemy;
@@ -96,6 +97,7 @@ public class CombatScreen implements Screen {
 
         // Drawing functions below
         drawGrid();
+        drawBuildings();
         drawIOPorts();
         drawInventory();
         drawCombatHUD();
@@ -106,25 +108,19 @@ public class CombatScreen implements Screen {
      */
 
     public void drawIOPorts() {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.CYAN);
 
-        for (int x = 0; x < gridWidth; x++) {
-            for (int y = 0; y < gridHeight; y++) {
-                Building building = controller.getFactorySim().getGrid().getBuildingAt(x, y);
-                if (building == null) {
-                    continue;
-                }
-                // Code here handles the IOPort drawing, Line for now until we get proper sprites
-                for (IOPort port : building.getPorts()) {
-                    int[] globalPortCoords = building.getPortGlobalCoords(port);
-                    int portDir = building.getPortGlobalDirection(port);
+        for (Building building : controller.getFactorySim().getGrid().getBuildings()) {
+            // Code here handles the IOPort drawing, Line for now until we get proper sprites
+            for (IOPort port : building.getPorts()) {
+                int[] globalPortCoords = building.getPortGlobalCoords(port);
+                int portDir = building.getPortGlobalDirection(port);
 
-                    float drawX = gridStartX + globalPortCoords[0] * tileSize + tileSize / 2f;
-                    float drawY = gridEndY - globalPortCoords[1] * tileSize - tileSize / 2f;
+                float drawX = gridStartX + globalPortCoords[0] * tileSize + tileSize / 2f;
+                float drawY = gridEndY - globalPortCoords[1] * tileSize - tileSize / 2f;
 
-                    drawCardinalArrow(drawX, drawY, portDir, 20, 4);
-                }
+                drawCardinalArrow(drawX, drawY, portDir, 20, 4);
             }
         }
 
@@ -156,29 +152,44 @@ public class CombatScreen implements Screen {
         // Draw the arrowhead
         switch (direction) {
             case 0:
-                shapeRenderer.triangle(endX, endY, endX - arrowSize, endY, endX, endY + arrowSize);
-                shapeRenderer.triangle(endX, endY, endX + arrowSize, endY, endX, endY + arrowSize);
+                shapeRenderer.triangle(endX, endY, endX - arrowSize, endY - arrowSize, endX + arrowSize, endY - arrowSize);
                 break;
             case 1:
-                shapeRenderer.triangle(endX, endY, endX, endY - arrowSize, endX + arrowSize, endY);
-                shapeRenderer.triangle(endX, endY, endX, endY + arrowSize, endX + arrowSize, endY);
+                shapeRenderer.triangle(endX, endY, endX - arrowSize, endY - arrowSize, endX - arrowSize, endY + arrowSize);
                 break;
             case 2:
-                shapeRenderer.triangle(endX, endY, endX - arrowSize, endY, endX, endY - arrowSize);
-                shapeRenderer.triangle(endX, endY, endX + arrowSize, endY, endX, endY - arrowSize);
+                shapeRenderer.triangle(endX, endY, endX - arrowSize, endY + arrowSize, endX + arrowSize, endY + arrowSize);
                 break;
             case 3:
-                shapeRenderer.triangle(endX, endY, endX - arrowSize, endY, endX - arrowSize, endY - arrowSize);
-                shapeRenderer.triangle(endX, endY, endX - arrowSize, endY, endX - arrowSize, endY + arrowSize);
+                shapeRenderer.triangle(endX, endY, endX + arrowSize, endY - arrowSize, endX + arrowSize, endY + arrowSize);
                 break;
         }
     }
 
     public void drawGrid() {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        shapeRenderer.setColor(Color.BLUE);
+
+        // Draws the Outline of occupied grids
+        for (int x = 0; x < gridWidth; x++) {
+            for (int y = 0; y < gridHeight; y++) {
+                int bottomLeftCorner = gridStartX + x * tileSize;
+                int topLeftCorner = gridEndY - (y + 1) * tileSize; // offset by one since libGDX stores its object origins in the bottom left
+                Building occupied = controller.getFactorySim().getGrid().getBuildingAt(x, y);
+                if (occupied != null) {
+                    shapeRenderer.rect(bottomLeftCorner, topLeftCorner, tileSize, tileSize);
+                }
+            }
+        }
+
+        shapeRenderer.end();
+
+        // Draws the outline of unoccupied grids
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
         shapeRenderer.setColor(Color.WHITE);
 
-        // Draws the Outline of the grid
         for (int x = 0; x < gridWidth; x++) {
             for (int y = 0; y < gridHeight; y++) {
                 int bottomLeftCorner = gridStartX + x * tileSize;
@@ -188,22 +199,15 @@ public class CombatScreen implements Screen {
         }
 
         shapeRenderer.end();
+    }
 
+    public void drawBuildings() {
         game.batch.begin();
 
-        // Draws the actual building itself
-        // Need to update with drawing via grid.getBuildings() instead of looping thru the whole grid
-        for (int x = 0; x < gridWidth; x++) {
-            for (int y = 0; y < gridHeight; y++) {
-                Building building = controller.getFactorySim().getGrid().getBuildingAt(x, y);
-                if (building == null) {
-                    continue;
-                }
-                // Code here handles the building drawing, everything is a String for now until we get proper sprites
-                int buildingX = gridStartX + x * tileSize + 10;
-                int buildingY = gridEndY - y * tileSize - 36;
-                game.font.draw(game.batch, building.displayName(), buildingX, buildingY);
-            }
+        for (Building building : controller.getFactorySim().getGrid().getBuildings()) {
+            float nameX = gridStartX + building.getX() * tileSize + 15;
+            float nameY = gridEndY - building.getY() * tileSize - 35;
+            game.font.draw(game.batch, building.displayName(), nameX, nameY);
         }
 
         game.batch.end();
@@ -232,9 +236,9 @@ public class CombatScreen implements Screen {
         game.font.draw(game.batch, "Left click Grid - Place", 40, 225);
         game.font.draw(game.batch, "Right click - Deselect or Remove building", 40, 125);
 
+        game.batch.end();
+
         // Below draws the screen transitions
-        // Since we do not have a win / loss screen yet, it will be a hardcoded placeholder victory or defeat screen
-        // Eventually when we finish the screens, uncomment the setScreen Lines
         if (controller.isWin()) {
             game.setScreen(new WinScreen(game));
             return;
@@ -242,8 +246,6 @@ public class CombatScreen implements Screen {
             game.setScreen(new LoseScreen(game));
             return;
         }
-
-        game.batch.end();
     }
 
     public void drawInventory() {
@@ -330,6 +332,7 @@ public class CombatScreen implements Screen {
         }
         Coords coords = getGridAt(mouseTranslatedX, mouseTranslatedY);
         if (coords != null && selectedBuilding != null) {
+            System.out.println(coords);
             boolean successfulPlacement = controller.getFactorySim().getGrid().placeBuilding(selectedBuilding, coords.x, coords.y, selectedBuilding.getRotation());
             if (successfulPlacement) {
                 controller.getCombatSim().getPlayer().removeBuilding(selectedBuilding);

@@ -75,8 +75,6 @@ public class FactorySim {
                 pendingMoves.addLast(result);
             }
         }
-
-        // Grid will handle the resource transfer via method call here
     }
 
     public Queue<Move> returnMoves() {

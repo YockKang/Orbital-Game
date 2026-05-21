@@ -100,11 +100,11 @@ public abstract class Building {
         return name;
     }
 
-    protected int[] getGlobalCoord(int x , int y) {
+    public int[] getGlobalCoord(int x , int y) {
         return tryGlobalCoord(x, y, xCoord, yCoord);
     }
 
-    protected int[] tryGlobalCoord(int x , int y, int tryPosX, int tryPosY) {
+    public int[] tryGlobalCoord(int x , int y, int tryPosX, int tryPosY) {
         return getGlobalCoord(x, y, this.xCoord, this.yCoord, this.rotation, this.shape);
     }
 

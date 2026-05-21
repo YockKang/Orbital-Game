@@ -14,7 +14,7 @@ public class BuildingTemplate {
 
     public BuildingTemplate(FileHandle file) {
         JsonValue parse = JsonProcessor.read(file);
-        String name = "com.main.CoreWorks.Factory." + parse.getString("Name");
+        String name = "com.main.CoreWorks.Factory." + parse.getString("Type");
 
         try {
             Class<?> raw = ClassReflection.forName(name);

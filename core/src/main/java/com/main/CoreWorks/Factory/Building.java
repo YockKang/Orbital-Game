@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.main.CoreWorks.Recipe.Recipe;
 import com.main.CoreWorks.Resources.Resource;
+import com.main.CoreWorks.database.RecipeDatabase;
 import com.main.CoreWorks.moveset.Move;
 
 
@@ -25,7 +26,7 @@ public abstract class Building {
     protected int rotation = 0; // 0 is "up", +1 for clockwise rotation
     protected String name;
     protected Recipe recipe = null;
-    protected Array<IOPort> ports;
+    protected Array<IOPort> ports = new Array<>(0);
     protected int priority = 0;
 
     protected ObjectMap<Building, Array<Resource>> inputBuildings = new ObjectMap<>();
@@ -60,6 +61,8 @@ public abstract class Building {
     public Building(JsonValue data) {
         this.name = data.getString("Name");
         this.cooldownTimer = data.getInt("Cooldown");
+        this.recipe = null;
+        System.out.println("creating: " + name);
 
         inputBuffer = new Array<>(0);
         outputBuffer = new Array<>(0);
@@ -71,6 +74,30 @@ public abstract class Building {
         for (int y = 0; y < rows; y++) {
             this.shape[y] = shapeData.get(y).asBooleanArray();
         }
+        System.out.println("shape inputted");
+
+        if (data.get("Ports") != null) {
+            JsonValue rawPorts = data.get("Ports");
+            for (int p = 0; p < rawPorts.size; p++) {
+                JsonValue thisPortData = rawPorts.get(p);
+                int portX = thisPortData.getInt("x");
+                int portY = thisPortData.getInt("y");
+                if (portX >= 0 && portX < this.shape[0].length &&
+                    portY >= 0 && portY < this.shape[0].length) {
+                    IOPort thisPort = new IOPort(portX, portY, thisPortData.getInt("dir"), thisPortData.getInt("rate"));
+                    addPort(thisPort);
+                }
+            }
+        }
+
+        System.out.println("ports inputted");
+
+        if (data.get("DefaultRecipe") != null) {
+            setRecipe(RecipeDatabase.get(data.getString("DefaultRecipe")));
+        }
+
+        System.out.println("recipe inputted");
+
     }
 
     @Override
@@ -249,27 +276,31 @@ public abstract class Building {
     }
 
     public Array<Resource> matchResource(Building b, boolean thisSupplier) {
-        Array<Resource> sup;
-        Array<Resource> cons;
-        if (thisSupplier) {
-            sup = this.recipe.getOutputs();
-            cons = b.recipe.getInputs();
-        } else {
-            cons = this.recipe.getInputs();
-            sup = b.recipe.getOutputs();
-        }
-
-        ObjectSet<Resource> consAsSet = new ObjectSet<Resource>();
-        consAsSet.addAll(cons);
-        Array<Resource> matches = new Array<>(0);
-
-        for (Resource rsc : sup) {
-            if (consAsSet.contains(rsc)) {
-                matches.add(rsc);
+        if (this.recipe != null && b.recipe!= null) {
+            Array<Resource> sup;
+            Array<Resource> cons;
+            if (thisSupplier) {
+                sup = this.recipe.getOutputs();
+                cons = b.recipe.getInputs();
+            } else {
+                cons = this.recipe.getInputs();
+                sup = b.recipe.getOutputs();
             }
-        }
 
-        return matches;
+            ObjectSet<Resource> consAsSet = new ObjectSet<Resource>();
+            consAsSet.addAll(cons);
+            Array<Resource> matches = new Array<>(0);
+
+            for (Resource rsc : sup) {
+                if (consAsSet.contains(rsc)) {
+                    matches.add(rsc);
+                }
+            }
+
+            return matches;
+        } else {
+            return null;
+        }
     }
 
 
@@ -330,7 +361,6 @@ public abstract class Building {
         for (int i  = 0; i < inputs.size; i++) {
             this.inputBuffer.add(new ResourceBuffer(inputs.get(i), capacityMult * inputMults.get(i)));
         }
-        this.inputBuffer.shrink();
 
         // grab new outputs
         Array<Resource> outputs = this.recipe.getOutputs();
@@ -340,7 +370,6 @@ public abstract class Building {
         for (int i  = 0; i < outputs.size; i++) {
             this.outputBuffer.add(new ResourceBuffer(outputs.get(i), capacityMult * outputMults.get(i)));
         }
-        this.outputBuffer.shrink();
     }
 
     public abstract Move updateTick();

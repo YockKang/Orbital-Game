@@ -1,5 +1,6 @@
 {
   "id" : "shooter1",
+  "Type" : "Shooter",
   "Name" : "Shooter",
   "Cooldown" : 2,
   "Shape" : [[true]],

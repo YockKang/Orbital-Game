@@ -4,15 +4,14 @@ public class IOPort {
     protected int xCoord;
     protected int yCoord;
     protected int dir;
-    protected int speedMult;
+    protected int transferPerTick;
     protected Building target;
-    protected boolean outputFull = false;
 
     public IOPort(int x, int y, int d, int speed) {
         this.xCoord = x;
         this.yCoord = y;
         this.dir = d;
-        this.speedMult = speed;
+        this.transferPerTick = speed;
     }
 
     public int getX() {
@@ -28,22 +27,11 @@ public class IOPort {
     }
 
     public int getSpeed() {
-        return speedMult;
+        return transferPerTick;
     }
 
     public void setTarget(Building b) {
         this.target = b;
     }
 
-    public void setOutputFull() {
-        this.outputFull = true;
-    }
-
-    public void disableOutputFull() {
-        this.outputFull = false;
-    }
-
-    public boolean checkOutputFull() {
-        return this.outputFull;
-    }
 }

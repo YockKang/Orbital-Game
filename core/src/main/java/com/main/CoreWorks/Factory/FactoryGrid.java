@@ -105,39 +105,19 @@ public class FactoryGrid {
 
     public void removeBuilding(int x, int y) {
         Building bldg = grid.get(y).get(x);
-        if (bldg != null) {
-            int posX = bldg.getX();
-            int posY = bldg.getY();
-            boolean[][] shp = bldg.getShape();
-            for (int shpY = 0; shpY < shp.length; shpY++) {
-                for (int shpX = 0; shpX < shp.length; shpX++) {
-                    if (shp[shpY][shpX]) {
-                        int[] gc = bldg.getGlobalCoord(shpX, shpY);
-                        grid.get(gc[1]).set(gc[0], null);
-                    }
-                }
-            }
-
-            bldg.takeOffGrid();
-            buildingList.removeValue(bldg, true);
-            bldg.setPos(-1, -1);
-            bldg.clearNeighbours();
-        }
+        removeBuilding(bldg);
     }
 
     public void removeBuilding(Building bldg) {
         if (bldg.onGrid) {
-            int posX = bldg.getX();
-            int posY = bldg.getY();
             boolean[][] shp = bldg.getShape();
-            int rot = bldg.getRotation();
-            int w = shp[0].length;
-            int h = shp.length;
             for (int shpY = 0; shpY < shp.length; shpY++) {
-                for (int shpX = 0; shpX < shp.length; shpX++) {
+                for (int shpX = 0; shpX < shp[shpY].length; shpX++) {
                     if (shp[shpY][shpX]) {
                         int[] gc = bldg.getGlobalCoord(shpX, shpY);
-                        grid.get(gc[1]).set(gc[0], null);
+                        if (grid.get(gc[1]).get(gc[0]) == bldg) {
+                            grid.get(gc[1]).set(gc[0], null);
+                        }
                     }
                 }
             }
@@ -175,5 +155,7 @@ public class FactoryGrid {
         }
         this.maxWidth = newWidth;
     }
+
+    public void changeSize() {}
 
 }

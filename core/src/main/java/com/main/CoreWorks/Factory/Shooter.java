@@ -35,7 +35,7 @@ public class Shooter extends Building {
             .append(name)
             .append('\n')
             .append("Magazine\n")
-            .append("<-First   Last->")
+            .append("<-First   Last->\n")
             .append(magazine)
             .toString();
     }

@@ -15,6 +15,12 @@ public class ResourceRequest {
         priority = p;
     }
 
+    @Override
+    public String toString() {
+        return requester.name + " requests " + value + " " + resource + " @P: " + priority;
+    }
+
+
     public Resource getResource() {
         return resource;
     }

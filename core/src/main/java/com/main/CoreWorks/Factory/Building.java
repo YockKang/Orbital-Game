@@ -62,7 +62,6 @@ public abstract class Building {
         this.name = data.getString("Name");
         this.cooldownTimer = data.getInt("Cooldown");
         this.recipe = null;
-        System.out.println("creating: " + name);
 
         inputBuffer = new Array<>(0);
         outputBuffer = new Array<>(0);
@@ -74,7 +73,6 @@ public abstract class Building {
         for (int y = 0; y < rows; y++) {
             this.shape[y] = shapeData.get(y).asBooleanArray();
         }
-        System.out.println("shape inputted");
 
         if (data.get("Ports") != null) {
             JsonValue rawPorts = data.get("Ports");
@@ -90,13 +88,10 @@ public abstract class Building {
             }
         }
 
-        System.out.println("ports inputted");
-
         if (data.get("DefaultRecipe") != null) {
             setRecipe(RecipeDatabase.get(data.getString("DefaultRecipe")));
         }
 
-        System.out.println("recipe inputted");
 
     }
 
@@ -177,6 +172,7 @@ public abstract class Building {
     }
 
     public void updateInputs(Array<Array<Building>> grid) {
+        System.out.println("updating "+name+" inputs");
 
         ObjectSet<Building> neighbours = new ObjectSet<>();
 
@@ -186,16 +182,16 @@ public abstract class Building {
                 for (int r = 0; r < 4; r++) {
                     switch (r) {
                         case 0 -> {
-                            gc[0]++;
-                        }
-                        case 1 -> {
                             gc[1]++;
                         }
+                        case 1 -> {
+                            gc[0]++;
+                        }
                         case 2 -> {
-                            gc[0]--;
+                            gc[1]--;
                         }
                         case 3 -> {
-                            gc[1]--;
+                            gc[0]--;
                         }
                     }
                     Building maybeNeighbour = null;
@@ -218,25 +214,31 @@ public abstract class Building {
     }
 
     public void updateOutputs(Array<Array<Building>> grid) {
+        System.out.println("updating "+name+" outputs");
         if (this.ports != null) {
             for (IOPort p : ports) {
+                System.out.println("procesing " + p);
                 int[] targetCoord = getGlobalCoord(p.getX(), p.getY());
+                System.out.println("port at " + targetCoord[0] + " " + targetCoord[1]);
                 int portGlobalDir = (p.getDir() + rotation) % 4;
 
                 switch (portGlobalDir) {
                     case 0 -> {
-                        targetCoord[0]++;
-                    }
-                    case 1 -> {
                         targetCoord[1]++;
                     }
-                    case 2 -> {
-                        targetCoord[0]--;
+                    case 1 -> {
+                        targetCoord[0]++;
                     }
-                    case 3 -> {
+                    case 2 -> {
                         targetCoord[1]--;
                     }
+                    case 3 -> {
+                        targetCoord[0]--;
+                    }
                 }
+                System.out.println("pointing at " + targetCoord[0] + " " + targetCoord[1]);
+                System.out.println("grid");
+                System.out.println(grid);
                 Building target;
                 try {
                     target = grid.get(targetCoord[1]).get(targetCoord[0]);
@@ -264,11 +266,11 @@ public abstract class Building {
     }
 
     public void addOutput(Building b) {
+        System.out.println("adding Output");
         Array<Resource> matches = matchResource(b, true);
-        if (!matches.isEmpty()) {
-            outputBuildings.put(b, matches);
-            b.inputBuildings.put(this, matches);
-        }
+        System.out.println("matching Resources: "+ matches);
+        outputBuildings.put(b, matches);
+        b.inputBuildings.put(this, matches);
     }
 
     public void removeInput(Building b) {

@@ -16,7 +16,6 @@ public class Player extends Character{
         this.inventory.add(BuildingDatabase.getBuilding("miner1"));
         this.inventory.add(BuildingDatabase.getBuilding("shooter1"));
         this.inventory.add(BuildingDatabase.getBuilding("miner2"));
-        System.out.println(this.inventory);
     }
 
     public void addBuilding(Building building) {

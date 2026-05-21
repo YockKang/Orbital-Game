@@ -6,7 +6,7 @@
     "InputMult"  : [],
     "OutputId"   : ["IronOre"],
     "OutputMult" : [1],
-    "duration" : 4
+    "duration" : 1
   },
   {
     "id" : "SmeltIron",
@@ -15,7 +15,7 @@
     "InputMult"  : [1],
     "OutputId"   : ["IronIngot"],
     "OutputMult" : [1],
-    "duration" : 4
+    "duration" : 1
   },
   {
     "id" : "IronCannonBall",
@@ -24,6 +24,6 @@
     "InputMult"  : [1],
     "OutputId"   : ["CannonBall"],
     "OutputMult" : [1],
-    "duration" : 4
+    "duration" : 1
   }
 ]

@@ -20,6 +20,7 @@ public class FactorySim {
     }
 
     public void advanceTick() {
+        System.out.println("Advancing Tick");
         pendingMoves.clear();
         Array<Building> buildings = grid.getBuildings();
 
@@ -33,40 +34,47 @@ public class FactorySim {
 
         requests.sort((a,b) -> a.getPriority() - b.getPriority());
 
+        System.out.println("Requests:");
+        System.out.println(requests);
+
         for (ResourceRequest req : requests) {
-             ObjectMap<Building, Array<Resource>> suppliers = req.getRequester().getInputBuildings();
-             Array<Building> suppliersSorted = suppliers.keys().toArray();
-             suppliersSorted.sort((a, b)  -> a.getPriority() - b.getPriority());
-             if (!(req instanceof AnythingRequest)) {
-                 for (Building supplier : suppliersSorted) {
-                     if (req.getValue() >= 0) {
-                         break;
-                     }
-                     if (suppliers.get(supplier).contains(req.getResource(), true)) {
-                         ResourceBuffer drawBuffer = supplier.getOutputResourceBuffer(req.getResource());
-                         if (drawBuffer != null) {
-                             int drawAmt = min(drawBuffer.getCurrent(), req.getValue());
-                             drawBuffer.draw(drawAmt);
-                             req.reduceValue(drawAmt);
-                             req.getRequester().getInputResourceBuffer(req.getResource()).add(drawAmt);
-                         }
-                     }
-                 }
-             } else {
-                 for (Building supplier : suppliersSorted) {
-                     if (req.getValue() >= 0) {
-                         break;
-                     }
-                     for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
-                         int drawAmt = min(drawBuffer.getCurrent(), req.getValue());
-                         drawBuffer.draw(drawAmt);
-                         req.reduceValue(drawAmt);
-                         for (int i = 0; i < drawAmt; i++) {
-                             req.getRequester().addToAnythingQueue(drawBuffer.getResource());
-                         }
-                     }
-                 }
-             }
+            System.out.println("Processing: "+ req);
+            ObjectMap<Building, Array<Resource>> suppliers = req.getRequester().getInputBuildings();
+
+            System.out.println("Suppliers: "+ suppliers);
+
+            Array<Building> suppliersSorted = suppliers.keys().toArray();
+            suppliersSorted.sort((a, b)  -> a.getPriority() - b.getPriority());
+            if (!(req instanceof AnythingRequest)) {
+                for (Building supplier : suppliersSorted) {
+                    if (req.getValue() >= 0) {
+                       break;
+                    }
+                    if (suppliers.get(supplier).contains(req.getResource(), true)) {
+                        ResourceBuffer drawBuffer = supplier.getOutputResourceBuffer(req.getResource());
+                        if (drawBuffer != null) {
+                            int drawAmt = min(drawBuffer.getCurrent(), req.getValue());
+                            drawBuffer.draw(drawAmt);
+                            req.reduceValue(drawAmt);
+                            req.getRequester().getInputResourceBuffer(req.getResource()).add(drawAmt);
+                        }
+                    }
+                }
+            } else {
+                for (Building supplier : suppliersSorted) {
+                    if (req.getValue() >= 0) {
+                        break;
+                    }
+                    for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
+                        int drawAmt = min(drawBuffer.getCurrent(), req.getValue());
+                        drawBuffer.draw(drawAmt);
+                        req.reduceValue(drawAmt);
+                        for (int i = 0; i < drawAmt; i++) {
+                            req.getRequester().addToAnythingQueue(drawBuffer.getResource());
+                        }
+                    }
+                }
+            }
         }
 
         for (Building building : buildings) {

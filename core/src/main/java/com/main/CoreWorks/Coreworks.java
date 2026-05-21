@@ -42,25 +42,20 @@ public class Coreworks extends Game {
         font.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
 
         // load game assets and databases
-        System.out.println("Starting file loading");
         Array<FileHandle> resourceFiles = new Array<>();
         fileScanner(resourceFiles, Gdx.files.internal("assets/FactoryData/Resources"));
         resourceFiles.iterator().forEach(
             fh -> ResourceDatabase.register(JsonProcessor.read(fh)));
-        System.out.println("Resources Complete");
 
         Array<FileHandle> recipeFiles = new Array<>();
         fileScanner(recipeFiles, Gdx.files.internal("assets/FactoryData/Recipes"));
         recipeFiles.iterator().forEach(
             fh -> RecipeDatabase.register(JsonProcessor.read(fh)));
-        System.out.println("Recipes Complete");
 
         Array<FileHandle> buildingFiles = new Array<>();
         fileScanner(buildingFiles, Gdx.files.internal("assets/FactoryData/Buildings"));
         buildingFiles.iterator().forEach(
             BuildingDatabase::register);
-        System.out.println("Buildings Complete");
-        System.out.println("All Complete");
 
 
         // For now, starting the game leads to a placeholder menu screen

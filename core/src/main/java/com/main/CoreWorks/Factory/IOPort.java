@@ -14,6 +14,11 @@ public class IOPort {
         this.transferPerTick = speed;
     }
 
+    @Override
+    public String toString() {
+        return "IOPort("+xCoord+" "+yCoord+"); facing "+dir+"; rate "+transferPerTick;
+    }
+
     public int getX() {
         return xCoord;
     }

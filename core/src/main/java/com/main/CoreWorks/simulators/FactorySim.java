@@ -73,6 +73,9 @@ public class FactorySim {
                     }
 
                     for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
+                        if (req.getValue() <= 0) {
+                            break;
+                        }
                         System.out.println(drawBuffer);
                         int drawAmt = min(drawBuffer.getCurrent(), req.getValue());
                         System.out.println("taking "+drawAmt + " " + drawBuffer.getResource());

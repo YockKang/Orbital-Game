@@ -2,16 +2,16 @@
   {
     "id" : "IronOre",
     "Name" : "Iron Ore",
-    "DmgMult" : 0.5
+    "DmgMult" : 1
   },
   {
     "id" : "IronIngot",
     "Name" : "Iron Ingot",
-    "DmgMult" : 1
+    "DmgMult" : 2
   },
   {
     "id" : "CannonBall",
     "Name" : "Cannonball",
-    "DmgMult" : 2
+    "DmgMult" : 4
   }
 ]

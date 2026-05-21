@@ -63,6 +63,7 @@ public class Shooter extends Building {
     }
 
     public DamageMove shoot() {
+        System.out.println("can shoot");
         return new DamageMove((int) (magazine.removeFirst().getDmgMult() * baseDmg), 0);
     }
 

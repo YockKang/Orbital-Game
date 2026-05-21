@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.main.CoreWorks.Coreworks;
 import com.main.CoreWorks.Factory.Building;
 import com.main.CoreWorks.Factory.FactoryGrid;
+import com.main.CoreWorks.Factory.IOPort;
 import com.main.CoreWorks.database.EnemyDatabase;
 import com.main.CoreWorks.database.PlayerDatabase;
 import com.main.CoreWorks.entities.Enemy;
@@ -95,6 +96,7 @@ public class CombatScreen implements Screen {
 
         // Drawing functions below
         drawGrid();
+        drawIOPorts();
         drawInventory();
         drawCombatHUD();
     }
@@ -102,6 +104,77 @@ public class CombatScreen implements Screen {
     /*
     All drawing related functions should be handled from here on
      */
+
+    public void drawIOPorts() {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.CYAN);
+
+        for (int x = 0; x < gridWidth; x++) {
+            for (int y = 0; y < gridHeight; y++) {
+                Building building = controller.getFactorySim().getGrid().getBuildingAt(x, y);
+                if (building == null) {
+                    continue;
+                }
+                // Code here handles the IOPort drawing, Line for now until we get proper sprites
+                for (IOPort port : building.getPorts()) {
+                    int[] globalPortCoords = building.getPortGlobalCoords(port);
+                    int portDir = building.getPortGlobalDirection(port);
+
+                    float drawX = gridStartX + globalPortCoords[0] * tileSize + tileSize / 2f;
+                    float drawY = gridEndY - globalPortCoords[1] * tileSize - tileSize / 2f;
+
+                    drawCardinalArrow(drawX, drawY, portDir, 20, 4);
+                }
+            }
+        }
+
+        shapeRenderer.end();
+    }
+
+    public void drawCardinalArrow(float x, float y, int direction, float length, float arrowSize) {
+        float endX = x;
+        float endY = y;
+
+        // Draw the arrow line
+        switch (direction) {
+            case 0:
+                endY += length;
+                break;
+            case 1:
+                endX += length;
+                break;
+            case 2:
+                endY -= length;
+                break;
+            case 3:
+                endX -= length;
+                break;
+        }
+
+        shapeRenderer.rectLine(x, y, endX, endY, 1);
+
+        // Draw the arrowhead
+        switch (direction) {
+            case 0:
+                shapeRenderer.triangle(endX, endY, endX - arrowSize, endY, endX, endY + arrowSize);
+                shapeRenderer.triangle(endX, endY, endX + arrowSize, endY, endX, endY + arrowSize);
+                break;
+            case 1:
+                shapeRenderer.triangle(endX, endY, endX, endY - arrowSize, endX + arrowSize, endY);
+                shapeRenderer.triangle(endX, endY, endX, endY + arrowSize, endX + arrowSize, endY);
+                break;
+            case 2:
+                shapeRenderer.triangle(endX, endY, endX - arrowSize, endY, endX, endY - arrowSize);
+                shapeRenderer.triangle(endX, endY, endX + arrowSize, endY, endX, endY - arrowSize);
+                break;
+            case 3:
+                shapeRenderer.triangle(endX, endY, endX - arrowSize, endY, endX - arrowSize, endY - arrowSize);
+                shapeRenderer.triangle(endX, endY, endX - arrowSize, endY, endX - arrowSize, endY + arrowSize);
+                break;
+        }
+
+        shapeRenderer.end();
+    }
 
     public void drawGrid() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -127,7 +200,7 @@ public class CombatScreen implements Screen {
                 if (building == null) {
                     continue;
                 }
-                // Code here handles the building drawing, everything is a fixed letter for now until we can differentiate the buildings
+                // Code here handles the building drawing, everything is a String for now until we get proper sprites
                 int buildingX = gridStartX + x * tileSize + 10;
                 int buildingY = gridEndY - y * tileSize - 36;
                 game.font.draw(game.batch, building.displayName(), buildingX, buildingY);

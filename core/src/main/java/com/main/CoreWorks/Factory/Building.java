@@ -112,7 +112,7 @@ public abstract class Building {
         int shapeW = shape[0].length;
         int shapeH = shape.length;
         int offsetX = x - xCoord;
-        int offsetY = x - yCoord;
+        int offsetY = y - yCoord;
         int localX = 0;
         int localY = 0;
 
@@ -422,4 +422,15 @@ public abstract class Building {
         return this.name;
     }
 
+    public Array<IOPort> getPorts() {
+        return ports;
+    }
+
+    public int[] getPortGlobalCoords(IOPort port) {
+        return getGlobalCoord(port.getX(), port.getY());
+    }
+
+    public int getPortGlobalDirection(IOPort port) {
+        return (port.getDir() + rotation) % 4;
+    }
 }

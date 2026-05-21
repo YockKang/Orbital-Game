@@ -172,8 +172,6 @@ public class CombatScreen implements Screen {
                 shapeRenderer.triangle(endX, endY, endX - arrowSize, endY, endX - arrowSize, endY + arrowSize);
                 break;
         }
-
-        shapeRenderer.end();
     }
 
     public void drawGrid() {

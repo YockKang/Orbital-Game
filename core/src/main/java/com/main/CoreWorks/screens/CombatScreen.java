@@ -205,8 +205,9 @@ public class CombatScreen implements Screen {
         game.batch.begin();
 
         for (Building building : controller.getFactorySim().getGrid().getBuildings()) {
-            float nameX = gridStartX + building.getX() * tileSize + 15;
-            float nameY = gridEndY - building.getY() * tileSize - 35;
+            int[] coords = building.getGlobalCoord(0, 0);
+            float nameX = gridStartX + coords[0] * tileSize + 15;
+            float nameY = gridEndY - coords[1] * tileSize - 35;
             game.font.draw(game.batch, building.displayName(), nameX, nameY);
         }
 

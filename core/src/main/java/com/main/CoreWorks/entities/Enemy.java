@@ -36,7 +36,7 @@ public class Enemy extends Character {
 
     @Override
     public String toString() {
-        return String.format("%s \n %s", super.toString(), this.displayIntent());
+        return String.format("%s \n %s \n", super.toString(), this.displayIntent());
     }
 
     public Move getMove() {

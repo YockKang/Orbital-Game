@@ -39,8 +39,8 @@ public class CombatScreen implements Screen {
     private final int gridWidth = 4;
     private final int gridHeight = 4;
 
-    private final int inventoryStartX = 312;
-    private final int inventoryStartY = 80;
+    private final int inventoryStartX = 512;
+    private final int inventoryStartY = 40;
     // Each inventory slot is a square for now
     private final int inventorySlotSize = 96;
     private final int inventorySlotGap = 16;
@@ -144,7 +144,7 @@ public class CombatScreen implements Screen {
         game.font.draw(game.batch, "Coreworks - Milestone 1", 40, 710);
         game.font.draw(game.batch, "Ticks: " + tickCount, 40, 680);
         game.font.draw(game.batch, controller.getCombatSim().getPlayer().toString(), 210, 675);
-        game.font.draw(game.batch, controller.getCombatSim().getEnemies().toString(), 380, 675);
+        game.font.draw(game.batch, controller.getCombatSim().getEnemies().toString(), 940, 675);
 
         // Below draws the selected building HUD
         game.font.draw(game.batch, selectedBuilding == null ? "Selected: None" : "Selected: " + selectedBuilding, 600, 675);
@@ -156,9 +156,9 @@ public class CombatScreen implements Screen {
         }
 
         // Below draws the hints
-        game.font.draw(game.batch, "Left click Inventory - Select", 40, 225);
-        game.font.draw(game.batch, "Left click Grid - Place", 250, 225);
-        game.font.draw(game.batch, "Right click - Deselect or Remove building", 420, 225);
+        game.font.draw(game.batch, "Left click Inventory - Select", 40, 525);
+        game.font.draw(game.batch, "Left click Grid - Place", 40, 325);
+        game.font.draw(game.batch, "Right click - Deselect or Remove building", 40, 125);
 
         // Below draws the screen transitions
         // Since we do not have a win / loss screen yet, it will be a hardcoded placeholder victory or defeat screen
@@ -194,7 +194,7 @@ public class CombatScreen implements Screen {
         shapeRenderer.end();
 
         game.batch.begin();
-        game.font.draw(game.batch, "Inventory", inventoryStartX, inventoryStartY + 195);
+        game.font.draw(game.batch, "Inventory", inventoryStartX, inventoryStartY + 125);
 
         for (int i = 0; i < controller.getCombatSim().getPlayer().getInventory().size; i++) {
             Building building = controller.getCombatSim().getPlayer().getBuildingAt(i);

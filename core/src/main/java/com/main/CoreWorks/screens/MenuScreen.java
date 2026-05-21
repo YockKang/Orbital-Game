@@ -28,8 +28,8 @@ public class MenuScreen implements Screen {
 
         game.batch.begin();
         //draw text. Remember that x and y are in meters
-        game.font.draw(game.batch, "Welcome to Coreworks!!! ", 400, 300);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 400, 240);
+        game.font.draw(game.batch, "Welcome to Coreworks!!! ", Coreworks.WORLD_WIDTH/2f - 120, Coreworks.WORLD_HEIGHT/2f + 50);
+        game.font.draw(game.batch, "Tap anywhere to begin!", Coreworks.WORLD_WIDTH/2f - 120, Coreworks.WORLD_HEIGHT/2f - 50);
         game.batch.end();
 
         if (Gdx.input.isTouched()) {

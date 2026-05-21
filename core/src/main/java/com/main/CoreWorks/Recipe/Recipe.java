@@ -1,7 +1,11 @@
 package com.main.CoreWorks.Recipe;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.main.CoreWorks.Resources.Resource;
+import com.main.CoreWorks.database.ResourceDatabase;
+
+import java.util.Arrays;
 
 public class Recipe {
     protected final Array<Resource> input;
@@ -56,6 +60,37 @@ public class Recipe {
         }
     }
 
+    public Recipe(JsonValue data) {
+        this.input = new Array<Resource>(
+            (Resource[]) Arrays.stream(data.get("InputId").asStringArray())
+                .map(ResourceDatabase::get)
+                .toArray());
+        this.output = new Array<Resource>(
+            (Resource[]) Arrays.stream(data.get("OutputId").asStringArray())
+                .map(ResourceDatabase::get)
+                .toArray());
+        this.inputMult = new Array<Integer>(
+            Arrays.stream(
+                data.get("InputMult")
+                    .asIntArray())
+                .boxed()
+                .toArray(Integer[]::new));
+        this.outputMult = new Array<Integer>(
+            Arrays.stream(
+                data.get("OutputMult")
+                    .asIntArray())
+                .boxed()
+                .toArray(Integer[]::new));
+        this.duration = data.getInt("duration");
+        this.name = data.getString("Name");
+        this.id = data.getString("id");
+        while (this.inputMult.size < this.input.size) {
+            this.inputMult.add(0);
+        }
+        while (this.outputMult.size < this.output.size) {
+            this.inputMult.add(0);
+        }
+    }
 
     @Override
     public String toString() {

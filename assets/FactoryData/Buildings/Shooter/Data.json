@@ -1,7 +1,7 @@
 {
+  "id" : "shooter1",
   "Name" : "Shooter",
   "Cooldown" : 2,
   "Shape" : [[true]],
-  "MagSize" : 5
-
+  "MagSize": 5
 }

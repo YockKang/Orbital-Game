@@ -1,6 +1,7 @@
 package com.main.CoreWorks.Factory;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.main.CoreWorks.Recipe.Recipe;
 import com.main.CoreWorks.Resources.Resource;
 import com.main.CoreWorks.moveset.Move;
@@ -27,6 +28,11 @@ public class Miner extends Building {
         this.mineMultiplier = mineMult;
         this.recipe = rec;
         setRecipe(rec);
+    }
+
+    public Miner(JsonValue data) {
+        super(data);
+        this.mineMultiplier = data.getInt("MineMult");
     }
 
     @Override

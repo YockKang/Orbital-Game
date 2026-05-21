@@ -1,6 +1,7 @@
 package com.main.CoreWorks.Factory;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Queue;
 import com.main.CoreWorks.Resources.Resource;
 import com.main.CoreWorks.moveset.DamageMove;
@@ -20,6 +21,11 @@ public class Shooter extends Building {
             "shooter");
         this.magazine = new Queue<>(magSize);
         this.magSize = magSize;
+    }
+
+    public Shooter(JsonValue data) {
+        super(data);
+        this.magSize = data.getInt("MagSize");
     }
 
     @Override

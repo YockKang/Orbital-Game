@@ -1,6 +1,7 @@
 {
+  "id" : "miner1",
   "Name" : "Miner",
-  "Cooldown" : 1,
+  "Cooldown" : 2,
   "Shape" : [[true]],
   "MineMult" : 1
 }

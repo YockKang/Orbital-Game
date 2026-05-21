@@ -2,14 +2,17 @@ package com.main.CoreWorks;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.main.CoreWorks.database.BuildingDatabase;
 import com.main.CoreWorks.database.RecipeDatabase;
 import com.main.CoreWorks.database.ResourceDatabase;
 import com.main.CoreWorks.screens.MenuScreen;
+import org.checkerframework.checker.units.qual.A;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -24,12 +27,6 @@ public class Coreworks extends Game {
     // The below represents a 800 x 480 coordinate system, regardless of the screen resolution
     public static final float WORLD_WIDTH = 1280;
     public static final float WORLD_HEIGHT = 720;
-
-
-    public static ResourceDatabase RESOURCE_DB;
-    public static RecipeDatabase RECIPE_DB;
-    public static BuildingDatabase BUILDING_DB;
-
 
     @Override
     public void create() {
@@ -48,6 +45,20 @@ public class Coreworks extends Game {
         font.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
 
         // load game assets and databases
+        Array<FileHandle> resourceFiles = new Array<>();
+        fileScanner(resourceFiles, Gdx.files.internal("assets/Resources"));
+        resourceFiles.iterator().forEach(
+            fh -> ResourceDatabase.register(JsonProcessor.read(fh)));
+
+        Array<FileHandle> recipeFiles = new Array<>();
+        fileScanner(recipeFiles, Gdx.files.internal("assets/Resources"));
+        recipeFiles.iterator().forEach(
+            fh -> RecipeDatabase.register(JsonProcessor.read(fh)));
+
+        Array<FileHandle> buildingFiles = new Array<>();
+        fileScanner(buildingFiles, Gdx.files.internal("assets/Resources"));
+        buildingFiles.iterator().forEach(
+            BuildingDatabase::register);
 
 
 
@@ -75,5 +86,16 @@ public class Coreworks extends Game {
     public void resize(int width, int height) {
         viewport.update(width, height,true);
         super.resize(width, height);
+    }
+
+    private void fileScanner(Array<FileHandle> out, FileHandle folder) {
+        for (FileHandle child : folder.list()) {
+            if (child.isDirectory()) {
+                fileScanner(out, child);
+            }
+            else if (child.extension().equals("json")) {
+                out.add(child);
+            }
+        }
     }
 }

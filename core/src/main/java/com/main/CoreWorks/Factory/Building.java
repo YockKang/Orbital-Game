@@ -1,6 +1,7 @@
 package com.main.CoreWorks.Factory;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.main.CoreWorks.Recipe.Recipe;
@@ -56,6 +57,22 @@ public abstract class Building {
         this.shape = shape;
     }
 
+    public Building(JsonValue data) {
+        this.name = data.getString("Name");
+        this.cooldownTimer = data.getInt("Cooldown");
+
+        inputBuffer = new Array<>(0);
+        outputBuffer = new Array<>(0);
+
+        JsonValue shapeData = data.get("Shape");
+        int rows = shapeData.size;
+        int cols = shapeData.get(0).size;
+        this.shape = new boolean[rows][cols];
+        for (int y = 0; y < rows; y++) {
+            this.shape[y] = shapeData.get(y).asBooleanArray();
+        }
+    }
+
     @Override
     public String toString() {
         return name;
@@ -67,28 +84,58 @@ public abstract class Building {
         int globalX = 0;
         int globalY = 0;
 
-        switch (rotation) {
-            case 0 -> {
+        switch (rotation & 3) {
+            case 0:
                 globalX = x;
                 globalY = y;
-            }
-            case 1 -> {
-                globalX = y;
-                globalY = shapeW - 1 - x;
-            }
-            case 2 -> {
-                globalX = shapeW - 1 - x;
-                globalY = shapeH - 1 - y;
-            }
-            case 3 -> {
-                globalX = shapeH - 1 - y;
+                break;
+            case 1:
+                globalX = (shapeW - 1 - y);
                 globalY = x;
-            }
+                break;
+            case 2:
+                globalX = (shapeW - 1 - x);
+                globalY = (shapeH - 1 - y);
+                break;
+            case 3:
+                globalX = y;
+                globalY = (shapeH - 1 - x);
+                break;
         }
 
         globalX += xCoord;
         globalY += yCoord;
         return new int[] {globalX, globalY};
+    }
+
+    protected int[] getLocalCoord(int x , int y) {
+        int shapeW = shape[0].length;
+        int shapeH = shape.length;
+        int offsetX = x - xCoord;
+        int offsetY = x - yCoord;
+        int localX = 0;
+        int localY = 0;
+
+        switch (rotation & 3) {
+            case 0:
+                localX = offsetX;
+                localY = offsetY;
+                break;
+            case 1:
+                localX = offsetY;
+                localY = shapeW - 1 - offsetX;
+                break;
+            case 2:
+                localX = shapeW - 1 - offsetX;
+                localY = shapeH - 1 - offsetY;
+                break;
+            case 3:
+                localX = shapeH - 1 - offsetY;
+                localY = offsetX;
+                break;
+        }
+
+        return new int[]{localX, localY};
     }
 
     public void clearNeighbours() {
@@ -373,26 +420,4 @@ public abstract class Building {
         return this.name;
     }
 
-    /*
-	    Bool isEnabled
-	    int cooldownTimer
-	    int currCooldown
-	    Arr inputBuffer [as a queue]
-	    Arr outputBuffer [as a queue]
-	    int inputLimit
-	    int outputLimit
-	    int HP?????
-	    [x, y] coords
-	    String Name
-	    int id
-	    Something upgrade?
-	    [[hw]] shape
-	    I/O limitations [TBA]
-	    updateTick()
-	    enable()
-	    disable()
-	    toggleEnable()
-	    getters()
-	    clear()
-     */
 }

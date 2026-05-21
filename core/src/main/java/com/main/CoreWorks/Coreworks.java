@@ -62,11 +62,6 @@ public class Coreworks extends Game {
         System.out.println("Buildings Complete");
         System.out.println("All Complete");
 
-        System.out.println(ResourceDatabase.showDB());
-        System.out.println(RecipeDatabase.showDB());
-        System.out.println(BuildingDatabase.showDB());
-
-
 
         // For now, starting the game leads to a placeholder menu screen
         this.setScreen(new MenuScreen(this)); // eventually will replace with the Main Menu screen

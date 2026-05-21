@@ -12,7 +12,7 @@ public class BuildingDatabase {
 
     public static Building register(FileHandle file) {
         BuildingTemplate tp = new BuildingTemplate(file);
-        String id = JsonProcessor.read(file).getString("Name");
+        String id = JsonProcessor.read(file).getString("id");
         BuildingDB.put(id, tp);
         return tp.of();
     }

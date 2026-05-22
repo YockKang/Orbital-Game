@@ -2,10 +2,12 @@
   "id" : "refiner2",
   "Type" : "Refiner",
   "Name" : "CannonBaller",
-  "Shape" : [[true]],
+  "Shape" : [
+    [true]
+  ],
   "Ports" : [
     {
-      "x" : 0,
+      "x" : 2,
       "y" : 0,
       "dir" : 0,
       "rate" : 1

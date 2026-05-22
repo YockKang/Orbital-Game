@@ -368,8 +368,15 @@ public class CombatScreen implements Screen {
 
         // Handles Placement preview via mouse hovering
         hoveredGridCoords = getGridAt(mouseTranslatedX, mouseTranslatedY);
-        if (hoveredGridCoords != null && selectedBuilding != null) {
-            hoveredCanPlace = controller.getFactorySim().getGrid().checkValidPosition(selectedBuilding, hoveredGridCoords.x, hoveredGridCoords.y, selectedBuilding.getRotation());
+        if (selectedBuilding != null && hoveredGridCoords != null) {
+            hoveredGridCoords = getGridAt(
+                mouseTranslatedX - (float) (selectedBuilding.getProjectedShape()[0].length * tileSize) / 2 + tileSize/2,
+                mouseTranslatedY + (float) (selectedBuilding.getProjectedShape().length * tileSize) / 2 - tileSize/2);
+            if (hoveredGridCoords != null) {
+                hoveredCanPlace = controller.getFactorySim().getGrid().checkValidPosition(selectedBuilding, hoveredGridCoords.x, hoveredGridCoords.y, selectedBuilding.getRotation());
+            } else {
+                hoveredCanPlace = false;
+            }
         } else {
             hoveredCanPlace = false;
         }
@@ -405,9 +412,8 @@ public class CombatScreen implements Screen {
             selectedBuilding = clickedBuilding;
             return;
         }
-        Coords coords = getGridAt(mouseTranslatedX, mouseTranslatedY);
-        if (coords != null && selectedBuilding != null) {
-            boolean successfulPlacement = controller.getFactorySim().getGrid().placeBuilding(selectedBuilding, coords.x, coords.y, selectedBuilding.getRotation());
+        if (hoveredGridCoords != null && selectedBuilding != null) {
+            boolean successfulPlacement = controller.getFactorySim().getGrid().placeBuilding(selectedBuilding, hoveredGridCoords.x, hoveredGridCoords.y, selectedBuilding.getRotation());
             if (successfulPlacement) {
                 controller.getCombatSim().getPlayer().removeBuilding(selectedBuilding);
                 selectedBuilding = null;

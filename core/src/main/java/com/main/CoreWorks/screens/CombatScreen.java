@@ -289,7 +289,7 @@ public class CombatScreen implements Screen {
 
         // Below draws the rotation
         if (selectedBuilding != null) {
-            game.font.draw(game.batch, "Current rotation: " + selectedBuilding.getRotation(), 940, 150);
+            game.font.draw(game.batch, "Current rotation: " + selectedBuilding.getRotation(), 940, 175);
             game.font.draw(game.batch, "Press R to rotate", 940, 200);
         }
 

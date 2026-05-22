@@ -27,11 +27,11 @@ public class CombatSim {
         }
     }
 
-    private void addLog(String log) {
-        if (combatLog.size >= 2) {
+    private void addLog(int tick, String log) {
+        if (combatLog.size >= 4) {
             combatLog.removeIndex(0);
         }
-        combatLog.add(log);
+        combatLog.add("Tick " + tick + ": " + log);
     }
 
     /*
@@ -44,22 +44,22 @@ public class CombatSim {
         6. Checks if player has won / lost once more
      */
 
-    public void advanceTick() {
+    public void advanceTick(int tick) {
         if (win || lost) {
             return;
         }
-        resolveFactoryMoves();
+        resolveFactoryMoves(tick);
         removeDead();
         winLoss();
         if (win || lost) {
             return;
         }
-        updateEnemies();
+        updateEnemies(tick);
         removeDead();
         winLoss();
     }
 
-    public void resolveFactoryMoves() {
+    public void resolveFactoryMoves(int tick) {
         while (queuedFactoryMoves.size > 0) {
             Move move = queuedFactoryMoves.removeFirst();
             if (move == null) {
@@ -69,18 +69,18 @@ public class CombatSim {
                 // TBD if we want to enable target selection
                 if (move instanceof DamageMove) {
                     move.execute(enemies.first());
-                    addLog(String.format("%s dealt %s damage to %s", player.displayName(), move.getValue(), enemies.first().displayName()));
+                    addLog(tick, String.format("%s dealt %s damage to %s", player.displayName(), move.getValue(), enemies.first().displayName()));
                 }
                 // Can add more via if statements in the future
                 if (move instanceof HealMove) {
                     move.execute(player);
-                    addLog(String.format("%s healed for %s", player.displayName(), move.getValue()));
+                    addLog(tick, String.format("%s healed for %s", player.displayName(), move.getValue()));
                 }
             }
         }
     }
 
-    public void updateEnemies() {
+    public void updateEnemies(int tick) {
         for (Enemy enemy : enemies) {
             // Hardcoding the move target for now, eventually should make wrapper classes for different moves that target different things
             Move currMove = enemy.getMove();
@@ -96,7 +96,7 @@ public class CombatSim {
                     enemy.tick(enemy);
                     int newEnemyHP = enemy.displayCurrentHp();
                     if (enemyHP != newEnemyHP) {
-                        addLog(String.format("%s healed itself for %s", enemy.displayName(), currMove.getValue()));
+                        addLog(tick, String.format("%s healed itself for %s", enemy.displayName(), currMove.getValue()));
                     }
                     break;
 
@@ -104,7 +104,7 @@ public class CombatSim {
                     enemy.tick(player);
                     int newPlayerHP = player.displayCurrentHp();
                     if (newPlayerHP != playerHP) {
-                        addLog(String.format("%s dealt %s damage to %s", enemy.displayName(), currMove.getValue(), player.displayName()));
+                        addLog(tick, String.format("%s dealt %s damage to %s", enemy.displayName(), currMove.getValue(), player.displayName()));
                     }
                     break;
 

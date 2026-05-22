@@ -78,4 +78,9 @@ public class Defender extends Building{
         }
         return requests;
     }
+
+    @Override
+    public void clear() {
+        this.magazine.clear();
+    }
 }

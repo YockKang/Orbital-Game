@@ -18,7 +18,6 @@ import com.main.CoreWorks.entities.Enemy;
 import com.main.CoreWorks.simulators.CombatController;
 import com.main.CoreWorks.simulators.CombatSim;
 import com.main.CoreWorks.simulators.FactorySim;
-import org.checkerframework.checker.units.qual.C;
 
 public class CombatScreen implements Screen {
 
@@ -94,7 +93,7 @@ public class CombatScreen implements Screen {
             while (accumulator >= TIME_STEP) {
                 System.out.println();
                 System.out.println("Tick " + tickCount);
-                controller.advanceTick();
+                controller.advanceTick(tickCount);
                 tickCount += 1;
                 accumulator -= TIME_STEP;
             }

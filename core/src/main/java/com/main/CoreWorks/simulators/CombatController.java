@@ -9,7 +9,7 @@ public class CombatController {
         this.combatSim = combatSim;
     }
 
-    public void advanceTick() {
+    public void advanceTick(int tick) {
         if (combatSim.isWin() || combatSim.isLost()) {
             return;
         }
@@ -20,7 +20,7 @@ public class CombatController {
         combatSim.enqueueMoves(factorySim.returnMoves());
 
         // Lastly, resolve combat
-        combatSim.advanceTick();
+        combatSim.advanceTick(tick);
     }
 
     public boolean isWin() {

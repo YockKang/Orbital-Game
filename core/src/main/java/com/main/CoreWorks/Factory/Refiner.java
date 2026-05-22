@@ -41,6 +41,8 @@ public class Refiner extends Building{
             .append(inputBuffer)
             .append("\nCrafting\n")
             .append(recipe)
+            .append("\nCrafting?: ")
+            .append(isCrafting).append(", ").append(currCooldown).append("/").append(cooldownTimer)
             .append("\nOutput Buffer ")
             .append(outputBuffer)
             .toString();
@@ -61,7 +63,7 @@ public class Refiner extends Building{
                 if (craftSuccess) {
                     endCraft();
                     currCooldown = 0;
-                    if(!tryStartCraft()) {
+                    if (!tryStartCraft()) {
                         isCrafting = false;
                     } else {
                         startCraft();

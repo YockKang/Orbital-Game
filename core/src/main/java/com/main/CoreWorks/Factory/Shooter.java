@@ -77,4 +77,9 @@ public class Shooter extends Building {
             }
         return requests;
     }
+
+    @Override
+    public void clear() {
+        this.magazine.clear();
+    }
 }

@@ -510,6 +510,7 @@ public abstract class Building {
 
     public void takeOffGrid() {
         onGrid = false;
+        clear();
     }
 
     public void addPort(int x, int y, int dir, int speed) {

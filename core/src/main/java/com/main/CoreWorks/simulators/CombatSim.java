@@ -67,11 +67,15 @@ public class CombatSim {
             } else {
                 // Always kills enemies from left to right + add to combat log for display
                 // TBD if we want to enable target selection
-                move.execute(enemies.first());
                 if (move instanceof DamageMove) {
+                    move.execute(enemies.first());
                     addLog(String.format("%s dealt %s damage to %s", player.displayName(), move.getValue(), enemies.first().displayName()));
                 }
                 // Can add more via if statements in the future
+                if (move instanceof HealMove) {
+                    move.execute(player);
+                    addLog(String.format("%s healed for %s", player.displayName(), move.getValue()));
+                }
             }
         }
     }

@@ -1,0 +1,9 @@
+{
+  "id" : "defender1",
+  "Type" : "Defender",
+  "Name" : "Healer",
+  "Cooldown" : 1,
+  "Shape" : [[true]],
+  "MagSize": 5,
+  "BaseDef": 1
+}

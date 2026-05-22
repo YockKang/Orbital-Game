@@ -5,29 +5,30 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Queue;
 import com.main.CoreWorks.Resources.Resource;
 import com.main.CoreWorks.moveset.DamageMove;
+import com.main.CoreWorks.moveset.HealMove;
 import com.main.CoreWorks.moveset.Move;
 
-public class Shooter extends Building {
+public class Defender extends Building{
 
     protected Queue<Resource> magazine;
     protected int magSize;
-    protected float baseDmg = 1;
+    protected float baseDef = 1;
 
-    public Shooter(int coolDown, int magSize, boolean[][] shape) {
+    public Defender(int coolDown, int magSize, boolean[][] shape) {
         super(coolDown,
             new Array<ResourceBuffer>(0),
             new Array<ResourceBuffer>(0),
             shape,
-            "shooter");
+            "defender");
         this.magazine = new Queue<>(magSize);
         this.magSize = magSize;
     }
 
-    public Shooter(JsonValue data) {
+    public Defender(JsonValue data) {
         super(data);
         this.magSize = data.getInt("MagSize");
         this.magazine = new Queue<>(magSize);
-        this.baseDmg = data.getFloat("BaseDmg");
+        this.baseDef = data.getFloat("BaseDef");
     }
 
     @Override
@@ -50,7 +51,7 @@ public class Shooter extends Building {
             currCooldown = cooldownTimer - speedMultiplier;
             if (magazine.notEmpty()) {
                 currCooldown = 0;
-                return shoot();
+                return defend();
             }
         }
         return null;
@@ -64,17 +65,17 @@ public class Shooter extends Building {
         magazine.addLast(x);
     }
 
-    public DamageMove shoot() {
-        return new DamageMove((int) (magazine.removeFirst().getDmgMult() * baseDmg), 0);
+    public HealMove defend() {
+        return new HealMove((int) (magazine.removeFirst().getDmgMult() * baseDef), 0);
     }
 
     @Override
     public Array<ResourceRequest> generateDemandRequests() {
         Array<ResourceRequest> requests = new Array<>();
-            int magMissing = magSize - magazine.size;
-            if (magMissing > 0) {
-                requests.add(new AnythingRequest(this, magMissing));
-            }
+        int magMissing = magSize - magazine.size;
+        if (magMissing > 0) {
+            requests.add(new AnythingRequest(this, magMissing));
+        }
         return requests;
     }
 }

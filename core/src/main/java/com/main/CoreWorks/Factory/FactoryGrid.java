@@ -26,14 +26,28 @@ public class FactoryGrid {
     public Boolean checkValidPosition(Building bldg, int x, int y, int rot) {
         bldg.setRotation(rot);
         boolean[][] shp = bldg.getShape();
-        if (x < 0 || y < 0 || y + shp.length > maxHeight || x + shp[0].length > maxWidth) {
-            return false;
+        switch (rot & 1) {
+            case 0:
+                if (x < 0 || y < 0 || y + shp.length > maxHeight || x + shp[0].length > maxWidth) {
+                    return false;
+                }
+                break;
+            case 1 :
+                if (x < 0 || y < 0 || y + shp[0].length > maxHeight || x + shp.length > maxWidth) {
+                    return false;
+                }
+                break;
         }
+
         for (int shpY = 0; shpY < shp.length; shpY++) {
             for (int shpX = 0; shpX < shp[shpY].length; shpX++) {
                 if (shp[shpY][shpX]) {
                     int[] gc = bldg.tryGlobalCoord(shpX, shpY, x, y);
-                    if (grid.get(gc[1]).get(gc[0]) != null) {
+                    try {
+                        if (grid.get(gc[1]).get(gc[0]) != null) {
+                            return false;
+                        }
+                    } catch (IndexOutOfBoundsException e) {
                         return false;
                     }
                 }

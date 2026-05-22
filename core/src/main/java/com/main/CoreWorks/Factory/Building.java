@@ -340,9 +340,7 @@ public abstract class Building {
     }
 
     public void addOutput(Building b) {
-        System.out.println("adding Output");
         Array<Resource> matches = matchResource(b, true);
-        System.out.println("matching Resources: "+ matches);
         outputBuildings.put(b, matches);
         b.inputBuildings.put(this, matches);
     }

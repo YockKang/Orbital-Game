@@ -25,7 +25,7 @@ public class CombatScreen implements Screen {
     Coreworks game;
     CombatController controller;
     private float accumulator = 0f;
-    private static final float TIME_STEP = 4/1f; // 4 Ticks per second
+    private static final float TIME_STEP = 1/1f; // 4 Ticks per second
     private int tickCount = 0;
     private Vector2 mouse2DCoords = new Vector2();
     private ShapeRenderer shapeRenderer;

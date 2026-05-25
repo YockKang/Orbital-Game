@@ -39,7 +39,7 @@ public class Coreworks extends Game {
 
         // font has 15pt, but we need to scale it to our viewport by ratio of viewport height to screen height
         font.setUseIntegerPositions(false);
-        font.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
+        font.getData().setScale(720f / 480f);
 
         // load game assets and databases
         Array<FileHandle> resourceFiles = new Array<>();

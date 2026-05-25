@@ -32,7 +32,7 @@ public class MenuScreen implements Screen {
         game.font.draw(game.batch, "Tap anywhere to begin!", Coreworks.WORLD_WIDTH/2f - 120, Coreworks.WORLD_HEIGHT/2f - 50);
         game.batch.end();
 
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.justTouched()) {
             game.setScreen(new CombatScreen(game));
             dispose();
 

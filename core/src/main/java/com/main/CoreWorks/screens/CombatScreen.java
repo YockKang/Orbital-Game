@@ -24,7 +24,7 @@ public class CombatScreen implements Screen {
     Coreworks game;
     CombatController controller;
     private float accumulator = 0f;
-    private static final float TIME_STEP = 1/1f; // 4 Ticks per second
+    private static final float TIME_STEP = 1/4f; // 4 Ticks per second
     private int tickCount = 0;
     private Vector2 mouse2DCoords = new Vector2();
     private ShapeRenderer shapeRenderer;
@@ -35,8 +35,8 @@ public class CombatScreen implements Screen {
 
     // Hardcoded grid size for milestone 1 testing purposes
     // Should be deleted eventually since it should be handled by the global runState which carries over the factory
-    private final int gridWidth = 8;
-    private final int gridHeight = 8;
+    private final int gridWidth = 4;
+    private final int gridHeight = 4;
 
     // Temp Layout since we have not decided how we want the final UI to look like yet
     // Rmb that everything is drawn in a coordinate system (check Coreworks class for the public static final screen size)

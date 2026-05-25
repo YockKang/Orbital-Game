@@ -30,6 +30,7 @@ public class CombatScreen implements Screen {
     private ShapeRenderer shapeRenderer;
     private Coords hoveredGridCoords = null;
     private boolean hoveredCanPlace = false;
+    private boolean isPaused = true;
 
 
     // Hardcoded grid size for milestone 1 testing purposes
@@ -88,7 +89,7 @@ public class CombatScreen implements Screen {
         externalInput();
 
         // Tick Advancement code below
-        if (!controller.isWin() && !controller.isLost()) {
+        if (!isPaused && !controller.isWin() && !controller.isLost()) {
             accumulator += delta;
             while (accumulator >= TIME_STEP) {
                 System.out.println();
@@ -292,6 +293,12 @@ public class CombatScreen implements Screen {
             game.font.draw(game.batch, "Press R to rotate", 940, 200);
         }
 
+        // Below draws the pause Screen
+        if (isPaused) {
+            game.font.draw(game.batch, "PAUSED", 600, 420);
+            game.font.draw(game.batch, "Press Space to Resume", 540, 380);
+        }
+
         // Below draws the hints
         game.font.draw(game.batch, "Left click Inventory - Select", 40, 225);
         game.font.draw(game.batch, "Left click Grid - Place", 40, 175);
@@ -357,6 +364,11 @@ public class CombatScreen implements Screen {
             }
             int nextRotation = (selectedBuilding.getRotation() + 1) % 4;
             selectedBuilding.setRotation(nextRotation);
+        }
+
+        // Pause will be tied to Spacebar
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            isPaused = !isPaused;
         }
 
         // Mouse inputs handled below

@@ -1,5 +1,6 @@
 package com.main.CoreWorks.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -40,6 +41,12 @@ public class WinScreen implements Screen {
         game.font.draw(game.batch, layout, x, y);
 
         game.batch.end();
+
+        if (Gdx.input.isTouched()) {
+            game.setScreen(new MenuScreen(game));
+            dispose();
+
+        }
     }
 
     @Override

@@ -9,6 +9,12 @@ public class PlayerDatabase {
         // Add starting inventory buildings here
         // Add starting relics
         // Add any passives here
+        player.addBuilding(BuildingDatabase.getBuilding("miner1"));
+        player.addBuilding(BuildingDatabase.getBuilding("miner2"));
+        player.addBuilding(BuildingDatabase.getBuilding("defender1"));
+        player.addBuilding(BuildingDatabase.getBuilding("shooter1"));
+        player.addBuilding(BuildingDatabase.getBuilding("refiner1"));
+        player.addBuilding(BuildingDatabase.getBuilding("refiner2"));
         return player;
     }
 

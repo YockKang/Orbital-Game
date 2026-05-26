@@ -13,12 +13,6 @@ public class Player extends Character{
     public Player(int hp, int shield, String name) {
         super(hp, shield, name);
         this.inventory = new Array<>();
-        this.inventory.add(BuildingDatabase.getBuilding("miner1"));
-        this.inventory.add(BuildingDatabase.getBuilding("miner2"));
-        this.inventory.add(BuildingDatabase.getBuilding("defender1"));
-        this.inventory.add(BuildingDatabase.getBuilding("shooter1"));
-        this.inventory.add(BuildingDatabase.getBuilding("refiner1"));
-        this.inventory.add(BuildingDatabase.getBuilding("refiner2"));
     }
 
     public void addBuilding(Building building) {

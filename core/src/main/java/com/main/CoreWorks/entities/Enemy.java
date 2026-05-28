@@ -1,6 +1,7 @@
 package com.main.CoreWorks.entities;
 
 import com.badlogic.gdx.utils.Array;
+import com.main.CoreWorks.Factory.Building;
 import com.main.CoreWorks.moveset.Move;
 
 public class Enemy extends Character {
@@ -34,6 +35,18 @@ public class Enemy extends Character {
         moveTimer = moveset.get(currMoveIndex).getChargeTime();
     }
 
+    public void tick(Building target) {
+        if (moveTimer > 0) {
+            moveTimer--;
+            return;
+        }
+        Move move = moveset.get(currMoveIndex);
+        move.execute(target);
+
+        currMoveIndex = (currMoveIndex + 1) % moveset.size;
+        moveTimer = moveset.get(currMoveIndex).getChargeTime();
+    }
+
     @Override
     public String toString() {
         return String.format("%s \n %s \n", super.toString(), this.displayIntent());
@@ -41,5 +54,9 @@ public class Enemy extends Character {
 
     public Move getMove() {
         return moveset.get(currMoveIndex);
+    }
+
+    public int getMoveTimer() {
+        return moveTimer;
     }
 }

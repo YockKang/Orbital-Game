@@ -1,5 +1,6 @@
 package com.main.CoreWorks.moveset;
 
+import com.main.CoreWorks.Factory.Building;
 import com.main.CoreWorks.entities.Character;
 
 public abstract class Move {
@@ -23,6 +24,8 @@ public abstract class Move {
     }
 
     public abstract void execute(Character target);
+
+    public abstract void execute(Building target);
 
     public abstract int getValue();
 }

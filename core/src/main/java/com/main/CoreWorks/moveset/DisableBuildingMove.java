@@ -3,23 +3,25 @@ package com.main.CoreWorks.moveset;
 import com.main.CoreWorks.Factory.Building;
 import com.main.CoreWorks.entities.Character;
 
-public class DamageMove extends Move {
+public class DisableBuildingMove extends Move {
 
-    private int damage;
+    private int duration;
 
-    public DamageMove(int damage, int chargeTime) {
-        super("Attack", "Deals " + damage + " damage", chargeTime);
-        this.damage = damage;
+    public DisableBuildingMove(int dur, int chargeTime) {
+        super("Disable Building", "May disable a random building for " + dur + " ticks", chargeTime);
+        this.duration = dur;
     }
 
     @Override
     public void execute(Character target) {
-        target.takeDamage(damage);
+        // Do nothing
     }
 
     @Override
     public void execute(Building target) {
-        // Do nothing
+        if (target != null) {
+            target.disableFor(duration);
+        }
     }
 
     @Override
@@ -29,6 +31,6 @@ public class DamageMove extends Move {
 
     @Override
     public int getValue() {
-        return this.damage;
+        return this.duration;
     }
 }

@@ -40,71 +40,78 @@ public class FactorySim {
 
             Array<Building> suppliersSorted = suppliers.keys().toArray();
             suppliersSorted.sort((a, b)  -> a.getPriority() - b.getPriority());
-            if (req instanceof AnythingRequest) {
-                for (Building supplier : suppliersSorted) {
-                    if (req.getValue() <= 0) {
-                        break;
-                    }
-
-                    for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
+            switch (req) {
+                case AnythingRequest anythingRequest -> {
+                    for (Building supplier : suppliersSorted) {
                         if (req.getValue() <= 0) {
                             break;
                         }
-                        int throughput = 0;
-                        Array<IOPort> portArr = supplier.getOutputBuildings().get(req.getRequester());
-                        for (IOPort p : portArr) {
-                            throughput += p.getSpeed();
-                        }
-                        int drawAmt = min(throughput, min(drawBuffer.getCurrent(), req.getValue()));
-                        drawBuffer.draw(drawAmt);
-                        req.reduceValue(drawAmt);
-                        for (int i = 0; i < drawAmt; i++) {
-                            req.getRequester().addToAnythingQueue(drawBuffer.getResource());
-                        }
-                    }
-                }
-            } else if (req instanceof WhitelistRequest) {
 
-                for (Building supplier : suppliersSorted) {
-                    if (req.getValue() <= 0) {
-                        break;
-                    }
-
-                    for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
-                        if (req.getValue() <= 0) {
-                            break;
-                        }
-                        int throughput = 0;
-                        Array<IOPort> portArr = supplier.getOutputBuildings().get(req.getRequester());
-                        for (IOPort p : portArr) {
-                            throughput += p.getSpeed();
-                        }
-                        int drawAmt = min(throughput, min(drawBuffer.getCurrent(), req.getValue()));
-                        drawBuffer.draw(drawAmt);
-                        req.reduceValue(drawAmt);
-                        for (int i = 0; i < drawAmt; i++) {
-                            req.getRequester().addToAnythingQueue(drawBuffer.getResource());
-                        }
-                    }
-                }
-            } else {
-                for (Building supplier : suppliersSorted) {
-                    if (req.getValue() <= 0) {
-                        break;
-                    }
-                    suppliers.get(supplier);
-                    if (suppliers.get(supplier).contains(req.getResource(), true)) {
-                        int throughput = 0;
-                        Array<IOPort> portArr = supplier.getOutputBuildings().get(req.getRequester());
-                        for (IOPort p : portArr) {
-                            throughput += p.getSpeed();
-                        }
-                        ResourceBuffer drawBuffer = supplier.getOutputResourceBuffer(req.getResource());
-                        if (drawBuffer != null) {
+                        for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
+                            if (req.getValue() <= 0) {
+                                break;
+                            }
+                            int throughput = 0;
+                            Array<IOPort> portArr = supplier.getOutputBuildings().get(req.getRequester());
+                            for (IOPort p : portArr) {
+                                throughput += p.getSpeed();
+                            }
                             int drawAmt = min(throughput, min(drawBuffer.getCurrent(), req.getValue()));
                             drawBuffer.draw(drawAmt);
                             req.reduceValue(drawAmt);
-                            req.getRequester().getInputResourceBuffer(req.getResource()).add(drawAmt);
+                            for (int i = 0; i < drawAmt; i++) {
+                                req.getRequester().addToAnythingQueue(drawBuffer.getResource());
+                            }
+                        }
+                    }
+                }
+                case WhitelistRequest whitelistRequest -> {
+                    for (Building supplier : suppliersSorted) {
+                        if (req.getValue() <= 0) {
+                            break;
+                        }
+
+                        suppliers.get(supplier);
+                        for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
+                            if (!whitelistRequest.getResources().contains(drawBuffer.getResource(), true)) {
+                                continue;
+                            }
+                            if (req.getValue() <= 0) {
+                                break;
+                            }
+                            int throughput = 0;
+                            Array<IOPort> portArr = supplier.getOutputBuildings().get(req.getRequester());
+                            for (IOPort p : portArr) {
+                                throughput += p.getSpeed();
+                            }
+                            int drawAmt = min(throughput, min(drawBuffer.getCurrent(), req.getValue()));
+                            drawBuffer.draw(drawAmt);
+                            req.reduceValue(drawAmt);
+                            for (int i = 0; i < drawAmt; i++) {
+                                req.getRequester().addToAnythingQueue(drawBuffer.getResource());
+                            }
+                        }
+                    }
+                }
+                default -> {
+                    for (Building supplier : suppliersSorted) {
+                        if (req.getValue() <= 0) {
+                            break;
+                        }
+                        suppliers.get(supplier);
+                        if (suppliers.get(supplier).contains(req.getResource(), true)) {
+                            int throughput = 0;
+                            Array<IOPort> portArr = supplier.getOutputBuildings().get(req.getRequester());
+                            for (IOPort p : portArr) {
+                                throughput += p.getSpeed();
+                            }
+                            ResourceBuffer drawBuffer = supplier.getOutputResourceBuffer(req.getResource());
+                            if (drawBuffer != null) {
+                                int drawAmt = min(throughput, min(drawBuffer.getCurrent(), req.getValue()));
+                                drawBuffer.draw(drawAmt);
+                                req.reduceValue(drawAmt);
+                                req.getRequester().getInputResourceBuffer(req.getResource()).add(drawAmt);
+                            }
                         }
                     }
                 }

@@ -3,11 +3,11 @@ package com.main.CoreWorks.Factory;
 import com.badlogic.gdx.utils.Array;
 
 public class FactoryGrid {
-    Array<Array<Building>> grid;
-    Array<Building> buildingList = new Array<>();
+    protected Array<Array<Building>> grid;
+    protected Array<Building> buildingList = new Array<>();
 
-    int maxHeight;
-    int maxWidth;
+    protected int maxHeight;
+    protected int maxWidth;
 
 
     public FactoryGrid(int h, int w) {

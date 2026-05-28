@@ -8,7 +8,10 @@ import com.main.CoreWorks.Factory.ResourceRequest.ResourceRequest;
 import com.main.CoreWorks.Recipe.Recipe;
 import com.main.CoreWorks.Resources.Resource;
 import com.main.CoreWorks.database.RecipeDatabase;
+import com.main.CoreWorks.database.ResourceDatabase;
 import com.main.CoreWorks.moveset.Move;
+
+import java.util.Arrays;
 
 
 public abstract class Building {
@@ -34,6 +37,9 @@ public abstract class Building {
 
     protected ObjectMap<Building, Array<Resource>> inputBuildings = new ObjectMap<>();
     protected ObjectMap<Building, Array<IOPort>> outputBuildings = new ObjectMap<>();
+
+    protected Array<Resource> whitelist = null;
+
 
     protected boolean[][] shape;
     /*
@@ -101,6 +107,16 @@ public abstract class Building {
 
         if (data.get("SpeedMult") != null) {
             speedMultiplier = data.getFloat("SpeedMult");
+        }
+
+        if (data.get("Whitelist") != null) {
+            String[] whitelistArr = data.get("Whitelist").asStringArray();
+            this.whitelist =
+                new Array<>(Arrays.stream(whitelistArr)
+                    .map(ResourceDatabase::get)
+                    .toList()
+                    .toArray(new Resource[]{})
+                );
         }
 
     }

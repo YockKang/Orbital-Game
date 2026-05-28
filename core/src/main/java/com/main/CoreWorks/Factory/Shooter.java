@@ -72,10 +72,14 @@ public class Shooter extends Building {
     @Override
     public Array<ResourceRequest> generateDemandRequests() {
         Array<ResourceRequest> requests = new Array<>();
-            int magMissing = magSize - magazine.size;
-            if (magMissing > 0) {
+        int magMissing = magSize - magazine.size;
+        if (magMissing > 0) {
+            if (whitelist != null) {
+                requests.add(new WhitelistRequest(this, magMissing, whitelist));
+            } else {
                 requests.add(new AnythingRequest(this, magMissing));
             }
+        }
         return requests;
     }
 

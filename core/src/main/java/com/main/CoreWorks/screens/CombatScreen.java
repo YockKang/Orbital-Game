@@ -69,7 +69,7 @@ public class CombatScreen implements Screen {
         FactorySim factorySim = new FactorySim(new FactoryGrid(gridHeight,gridWidth));
         Array<Enemy> enemies = new Array<>();
         enemies.add(EnemyDatabase.createMissileDrone());
-        enemies.add(EnemyDatabase.createShieldDrone());
+        enemies.add(EnemyDatabase.createDisablingDrone());
         CombatSim combatSim = new CombatSim(PlayerDatabase.createEngineer(), enemies);
         this.controller = new CombatController(factorySim, combatSim);
     }
@@ -225,15 +225,22 @@ public class CombatScreen implements Screen {
     public void drawGrid() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        shapeRenderer.setColor(Color.BLUE);
-
         // Draws the Outline of occupied grids
         for (int x = 0; x < gridWidth; x++) {
             for (int y = 0; y < gridHeight; y++) {
                 int bottomLeftCorner = gridStartX + x * tileSize;
                 int topLeftCorner = gridEndY - (y + 1) * tileSize; // offset by one since libGDX stores its object origins in the bottom left
                 Building occupied = controller.getFactorySim().getGrid().getBuildingAt(x, y);
-                if (occupied != null) {
+
+                // If there is a non-disabled building, draw it as blue
+                if (occupied != null && occupied.isEnabled()) {
+                    shapeRenderer.setColor(Color.BLUE);
+                    shapeRenderer.rect(bottomLeftCorner, topLeftCorner, tileSize, tileSize);
+                }
+
+                // If there is a disabled building, draw it as yellow
+                if (occupied != null && !occupied.isEnabled()) {
+                    shapeRenderer.setColor(Color.YELLOW);
                     shapeRenderer.rect(bottomLeftCorner, topLeftCorner, tileSize, tileSize);
                 }
             }

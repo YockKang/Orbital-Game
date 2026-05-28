@@ -2,11 +2,16 @@ package com.main.CoreWorks.simulators;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
+import com.main.CoreWorks.Factory.Building;
+import com.main.CoreWorks.Factory.FactoryGrid;
 import com.main.CoreWorks.entities.Enemy;
 import com.main.CoreWorks.entities.Player;
 import com.main.CoreWorks.moveset.DamageMove;
+import com.main.CoreWorks.moveset.DisableBuildingMove;
 import com.main.CoreWorks.moveset.HealMove;
 import com.main.CoreWorks.moveset.Move;
+
+import java.util.Random;
 
 public class CombatSim {
     private Player player;
@@ -15,16 +20,25 @@ public class CombatSim {
     private boolean win = false;
     private boolean lost = false;
     private Array<String> combatLog = new Array<>(2);
+    private FactoryGrid grid;
+
+    // Random number generator for all building moves
+    private Random random;
 
     public CombatSim(Player player, Array<Enemy> enemies) {
         this.player = player;
         this.enemies = enemies;
+        this.random = new Random();
     }
 
     public void enqueueMoves(Queue<Move> queue) {
         while (queue.size > 0) {
             queuedFactoryMoves.addLast(queue.removeFirst());
         }
+    }
+
+    public void setGrid(FactoryGrid grid) {
+        this.grid = grid;
     }
 
     private void addLog(int tick, String log) {
@@ -105,6 +119,28 @@ public class CombatSim {
                     int newPlayerHP = player.displayCurrentHp();
                     if (newPlayerHP != playerHP) {
                         addLog(tick, String.format("%s dealt %s damage to %s", enemy.displayName(), currMove.getValue(), player.displayName()));
+                    }
+                    break;
+
+                case DisableBuildingMove disableBuildingMove:
+
+                    Building building = null;
+
+                    // Generates a random grid coordinate and checks if any building based moves can be cast (i.e there exists a building in the randomly chosen grid)
+                    // Eventually we will outsource this to the RunState class so that each RUN has a fixed random seed, not each COMBAT.
+                    if (enemy.getMoveTimer() == 0) {
+                        int randomX = random.nextInt(grid.getMaxWidth());
+                        int randomY = random.nextInt(grid.getMaxHeight());
+                        building = this.grid.getBuildingAt(randomX, randomY);
+
+                        // Debugging line
+                        System.out.println(String.format("Tried selecting grid coords for building: %s, %s", randomX, randomY));
+                    }
+
+                    // Executes the move that disables building
+                    enemy.tick(building);
+                    if (building != null && !building.isEnabled()) {
+                        addLog(tick, String.format("%s disabled %s for %s ticks", enemy.displayName(), building.displayName(), currMove.getValue()));
                     }
                     break;
 

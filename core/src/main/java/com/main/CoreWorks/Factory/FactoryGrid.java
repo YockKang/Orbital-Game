@@ -150,4 +150,11 @@ public class FactoryGrid {
         this.maxWidth = newWidth;
     }
 
+    public int getMaxHeight() {
+        return maxHeight;
+    }
+
+    public int getMaxWidth() {
+        return maxWidth;
+    }
 }

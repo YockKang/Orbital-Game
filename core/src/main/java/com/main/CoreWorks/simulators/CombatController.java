@@ -1,5 +1,7 @@
 package com.main.CoreWorks.simulators;
 
+import com.main.CoreWorks.Factory.Building;
+
 public class CombatController {
     private FactorySim factorySim;
     private CombatSim combatSim;
@@ -7,12 +9,14 @@ public class CombatController {
     public CombatController(FactorySim factorySim, CombatSim combatSim) {
         this.factorySim = factorySim;
         this.combatSim = combatSim;
+        combatSim.setGrid(factorySim.getGrid());
     }
 
     public void advanceTick(int tick) {
         if (combatSim.isWin() || combatSim.isLost()) {
             return;
         }
+
         // Firstly, tick the factory
         factorySim.advanceTick();
 

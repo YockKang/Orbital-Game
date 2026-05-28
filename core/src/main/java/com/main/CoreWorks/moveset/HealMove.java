@@ -1,5 +1,6 @@
 package com.main.CoreWorks.moveset;
 
+import com.main.CoreWorks.Factory.Building;
 import com.main.CoreWorks.entities.Character;
 
 public class HealMove extends Move {
@@ -14,6 +15,11 @@ public class HealMove extends Move {
     @Override
     public void execute(Character target) {
         target.heal(heal);
+    }
+
+    @Override
+    public void execute(Building target) {
+        // Do nothing
     }
 
     @Override

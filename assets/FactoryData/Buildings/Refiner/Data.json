@@ -11,5 +11,6 @@
       "rate" : 1
     }
   ],
+  "Group" : "Refiner T1",
   "DefaultRecipe" : "SmeltIron"
 }

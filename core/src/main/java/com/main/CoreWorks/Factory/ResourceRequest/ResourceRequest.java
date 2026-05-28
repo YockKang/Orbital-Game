@@ -1,5 +1,6 @@
-package com.main.CoreWorks.Factory;
+package com.main.CoreWorks.Factory.ResourceRequest;
 
+import com.main.CoreWorks.Factory.Building;
 import com.main.CoreWorks.Resources.Resource;
 
 public class ResourceRequest {
@@ -17,9 +18,8 @@ public class ResourceRequest {
 
     @Override
     public String toString() {
-        return requester.name + " requests " + value + " " + resource + " @P: " + priority;
+        return requester.displayName() + " requests " + value + " " + resource + " @P: " + priority;
     }
-
 
     public Resource getResource() {
         return resource;

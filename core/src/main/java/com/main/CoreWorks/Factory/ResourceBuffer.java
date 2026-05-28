@@ -1,5 +1,6 @@
 package com.main.CoreWorks.Factory;
 
+import com.main.CoreWorks.Factory.ResourceRequest.ResourceRequest;
 import com.main.CoreWorks.Resources.Resource;
 
 
@@ -74,7 +75,7 @@ public class ResourceBuffer {
     }
     public ResourceRequest generateDemandRequest(Building b) {
         if (!isFull()) {
-            return new ResourceRequest(resource, b, capacity - current, 1);
+            return new ResourceRequest(resource, b, capacity - current, 0);
         } else {
             return null;
         }

@@ -107,6 +107,9 @@ public class FactoryGrid {
 
 
     public Building getBuildingAt(int x, int y) {
+        if (x < 0 || y < 0 || y >= maxHeight || x >= maxWidth) {
+            return null;
+        }
         return grid.get(y).get(x);
     }
 
@@ -121,12 +124,26 @@ public class FactoryGrid {
                     removeBuilding(j ,i);
                 }
             }
+        } else {
+            for (int i  = maxHeight; i < newHeight; i++) {
+                Array<Building> row = new Array<>();
+                for (int x = 0; x < maxWidth; x++) {
+                    row.add(null);
+                }
+                grid.add(row);
+            }
         }
         this.maxHeight = newHeight;
         if (maxWidth > newWidth) {
             for (int i  = maxWidth; i > newWidth; i--) {
                 for (int j = 0; i < grid.size; j++) {
                     removeBuilding(j ,i);
+                }
+            }
+        } else {
+            for (int i  = 0; i < maxHeight; i++) {
+                for (int x = maxWidth - 1; x < newWidth; x++) {
+                    grid.get(i).add(null);
                 }
             }
         }

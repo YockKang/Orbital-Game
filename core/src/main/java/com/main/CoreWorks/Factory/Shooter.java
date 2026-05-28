@@ -3,6 +3,7 @@ package com.main.CoreWorks.Factory;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Queue;
+import com.main.CoreWorks.Factory.ResourceRequest.*;
 import com.main.CoreWorks.Resources.Resource;
 import com.main.CoreWorks.moveset.DamageMove;
 import com.main.CoreWorks.moveset.Move;

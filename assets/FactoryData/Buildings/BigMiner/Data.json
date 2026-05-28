@@ -12,5 +12,6 @@
       "rate" : 1
     }
   ],
+  "Group" : "Miner",
   "DefaultRecipe" : "MineIron"
 }

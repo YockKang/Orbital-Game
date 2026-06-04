@@ -6,7 +6,7 @@ import com.main.CoreWorks.entities.*;
 import java.util.Random;
 
 public class EnemyGroupDatabase {
-    private static final Array<Array<Array<EnemyFactory>>> EnemyGroupDB = new Array<>(3);
+    private static final ObjectMap<Integer, Array<Array<EnemyFactory>>> EnemyGroupDB = new ObjectMap<>(3);
 
     public static Array<Enemy> register(JsonValue data) {
         if (data.isArray()) {
@@ -20,7 +20,7 @@ public class EnemyGroupDatabase {
                 arr.add(EnemyDatabase.getEnemyConstructor(e));
             }
             if (EnemyGroupDB.get(tier) == null) {
-                EnemyGroupDB.insert(tier, new Array<>());
+                EnemyGroupDB.put(tier, new Array<>());
             }
             EnemyGroupDB.get(tier).add(arr);
             Array<Enemy> enemiesArr = new Array<>();

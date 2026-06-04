@@ -16,31 +16,34 @@ public class Enemy extends Character {
         this.moveTimer = gracePeriod;
     }
 
-    public Enemy(JsonValue data, float multiplier) {
-        super(data, multiplier);
-        this.multiplier = multiplier;
+    public Enemy(JsonValue data, float multiplierIn) {
+        super(data, multiplierIn);
+        if (multiplierIn == 0) {
+            multiplierIn = 1;
+        }
+        this.multiplier = multiplierIn;
         JsonValue moves = data.get("Moveset");
         moves.forEach(mv -> {
-            try {
-                String type = mv.getString("Type");
-                int value = (int) (mv.getInt("Value") * multiplier);
-                int charge = (int) Math.ceilDiv((long) mv.getInt("Charge"), (long) multiplier);
-                switch (type) {
-                    case "Damage":
-                        addMove(new DamageMove(value, charge));
-                        break;
-                    case "Heal":
-                        addMove(new HealMove(value, charge));
-                        break;
-                    case "Shield":
-                        addMove(new HealMove(value, charge));
-                        break;
-                    case "Disable":
-                        addMove(new DisableBuildingMove(value, charge));
-                        break;
+                try {
+                    String type = mv.getString("Type");
+                    int value = (int) (mv.getInt("Value") * multiplier);
+                    int charge = (int) Math.ceil(mv.getFloat("Charge") / multiplier);
+                    switch (type) {
+                        case "Damage":
+                            addMove(new DamageMove(value, charge));
+                            break;
+                        case "Heal":
+                            addMove(new HealMove(value, charge));
+                            break;
+                        case "Shield":
+                            addMove(new HealMove(value, charge));
+                            break;
+                        case "Disable":
+                            addMove(new DisableBuildingMove(value, charge));
+                            break;
+                    }
+                } catch (Exception ignored) {
                 }
-            } catch (Exception ignored) {
-            }
             }
         );
 

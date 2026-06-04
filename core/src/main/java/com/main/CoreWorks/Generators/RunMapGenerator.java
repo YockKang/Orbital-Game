@@ -12,10 +12,10 @@ public class RunMapGenerator {
         RunMap runMap = new RunMap();
 
         // Generate all the nodes of the current floor + map position
-        CombatNode combat1 = new CombatNode(CombatGenerator.createCombat(1, 0.9F, random), 1, 150, 500);
-        CombatNode combat2 = new CombatNode(CombatGenerator.createCombat(1, 1F, random), 1, 450, 500);
-        CombatNode combat3 = new CombatNode(CombatGenerator.createCombat(1, 1.1F, random), 1, 750, 500);
-        CombatNode combat4 = new CombatNode(CombatGenerator.createCombat(1, 1.5F, random), 1, 1050, 500);
+        CombatNode combat1 = new CombatNode(CombatGenerator.createCombat(1, 0.9f, random), 1, 150, 500);
+        CombatNode combat2 = new CombatNode(CombatGenerator.createCombat(1, 1f, random), 1, 450, 500);
+        CombatNode combat3 = new CombatNode(CombatGenerator.createCombat(1, 1.1f, random), 1, 750, 500);
+        CombatNode combat4 = new CombatNode(CombatGenerator.createCombat(1, 1.5f, random), 1, 1050, 500);
 
         // Determine how the nodes link to other nodes
         combat1.addNextNode(combat2);

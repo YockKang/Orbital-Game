@@ -61,6 +61,11 @@ public class Coreworks extends Game {
         enemyFiles.iterator().forEach(
             fh -> EnemyDatabase.register(JsonProcessor.read(fh)));
 
+        Array<FileHandle> enemyGroupFiles = new Array<>();
+        fileScanner(enemyGroupFiles, Gdx.files.internal("assets/EnemieyGroups"));
+        enemyGroupFiles.iterator().forEach(
+            fh -> EnemyGroupDatabase.register(JsonProcessor.read(fh)));
+
 
 
         // For now, starting the game leads to a placeholder menu screen

@@ -50,12 +50,17 @@ public class WinScreen implements Screen {
         game.font.getData().setScale(720f / 480f);
 
         if (Gdx.input.justTouched()) {
+            // If there are no more next nodes, return back to main menu
+            // Will definitely be changed in the future when we have proper run end screen for winning / losing the whole game
+            if (runState.getCurrNode().getNextNodes().size == 0) {
+                game.setScreen(new MenuScreen(game));
+                return;
+            }
             for (MapNode next : runState.getCurrNode().getNextNodes()) {
                 next.setUnlocked(true);
             }
             game.setScreen(new MapScreen(game, runState));
             dispose();
-
         }
     }
 

@@ -305,6 +305,7 @@ public class CombatScreen implements Screen {
 
         // Below draws the screen transitions
         if (controller.isWin()) {
+            runState.getCurrNode().setCompleted(true);
             game.setScreen(new WinScreen(game, runState));
             return;
         } else if (controller.isLost()) {

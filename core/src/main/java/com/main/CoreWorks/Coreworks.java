@@ -62,7 +62,7 @@ public class Coreworks extends Game {
             fh -> EnemyDatabase.register(JsonProcessor.read(fh)));
 
         Array<FileHandle> enemyGroupFiles = new Array<>();
-        fileScanner(enemyGroupFiles, Gdx.files.internal("assets/EnemieyGroups"));
+        fileScanner(enemyGroupFiles, Gdx.files.internal("assets/EnemyGroups"));
         enemyGroupFiles.iterator().forEach(
             fh -> EnemyGroupDatabase.register(JsonProcessor.read(fh)));
 

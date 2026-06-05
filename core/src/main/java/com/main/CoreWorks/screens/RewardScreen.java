@@ -55,7 +55,7 @@ public class RewardScreen implements Screen {
         // Create a new table to standardize the size of each reward card in a row
         // Current size: 320 by 180
         Table rewardCards = new Table();
-        rewardCards.defaults().pad(15).width(320).height(180);
+        rewardCards.defaults().pad(15).width(350).height(250);
 
         // Within the table, use another table to standardize the name, description and a choose button within each cell in the middle layered table
         for (int i = 0; i < rewards.size; i++) {
@@ -66,8 +66,8 @@ public class RewardScreen implements Screen {
             rewardCard.setBackground("default-round");
 
             // Adds the name and description into 2 separate rows
-            rewardCard.add(new Label(reward.getName(),skin)).pad(10).row();
-            rewardCard.add(new Label(reward.getDescription(),skin)).pad(10).row();
+            rewardCard.add(new Label(reward.getName(),skin)).pad(15).row();
+            rewardCard.add(new Label(reward.getDescription(),skin)).pad(15).row();
 
             // Adds the select button
             TextButton select = new TextButton("Select", skin);
@@ -79,7 +79,7 @@ public class RewardScreen implements Screen {
                 }
             });
 
-            rewardCard.add(select).pad(10);
+            rewardCard.add(select).pad(15);
 
             // Add the reward card into the row of cards
             rewardCards.add(rewardCard);

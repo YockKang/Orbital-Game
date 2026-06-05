@@ -55,5 +55,17 @@
       }
     ],
     "DefaultRecipe": "SteelCannonBall"
+  },
+  {
+    "id" : "OPshooter",
+    "Tier" : 3,
+    "Type" : "Shooter",
+    "Name" : "OPShooter",
+    "Cooldown" : 1,
+    "Shape" : [[true]],
+    "MagSize": 5,
+    "BaseDmg": 2,
+    "AttackCount" : 3
   }
+
 ]

@@ -54,6 +54,8 @@ public class Coreworks extends Game {
         fileScanner(buildingFiles, Gdx.files.internal("assets/FactoryData/Buildings"));
         buildingFiles.iterator().forEach(
             fh -> BuildingDatabase.register(JsonProcessor.read(fh)));
+        buildingFiles.iterator().forEach(
+            fh -> BuildingTierDatabase.register(JsonProcessor.read(fh)));
 
 
         Array<FileHandle> enemyFiles = new Array<>();

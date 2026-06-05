@@ -53,7 +53,7 @@ public class RewardScreen implements Screen {
         table.row();
 
         // Create a new table to standardize the size of each reward card in a row
-        // Current size: 320 by 180
+        // Current size: 350 by 250
         Table rewardCards = new Table();
         rewardCards.defaults().pad(15).width(350).height(250);
 
@@ -78,14 +78,13 @@ public class RewardScreen implements Screen {
                     game.setScreen(new MapScreen(game, runState));
                 }
             });
-
             rewardCard.add(select).pad(15);
 
             // Add the reward card into the row of cards
             rewardCards.add(rewardCard);
         }
 
-        // Adds the entire row of reward cards into the row
+        // Adds the entire row of reward cards into the original table
         table.add(rewardCards).row();
     }
 

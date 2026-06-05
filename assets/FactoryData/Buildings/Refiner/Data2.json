@@ -1,5 +1,6 @@
 {
   "id" : "refiner2",
+  "Tier" : 1,
   "Type" : "Refiner",
   "Name" : "CannonBaller",
   "Shape" : [

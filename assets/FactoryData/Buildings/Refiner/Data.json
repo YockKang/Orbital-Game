@@ -1,5 +1,6 @@
 {
   "id" : "refiner1",
+  "Tier" : 0,
   "Type" : "Refiner",
   "Name" : "Smelter",
   "Shape" : [[true]],

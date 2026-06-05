@@ -1,5 +1,6 @@
 {
   "id" : "miner2",
+  "Tier" : 2,
   "Type" : "Miner",
   "Name" : "BigMiner",
   "Shape" : [[true, true]],

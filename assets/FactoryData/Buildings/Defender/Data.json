@@ -1,5 +1,6 @@
 {
   "id" : "defender1",
+  "Tier" : 0,
   "Type" : "Defender",
   "Name" : "Healer",
   "Cooldown" : 1,

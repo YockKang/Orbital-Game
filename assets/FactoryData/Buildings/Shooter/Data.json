@@ -1,5 +1,6 @@
 {
   "id" : "shooter1",
+  "Tier" : 0,
   "Type" : "Shooter",
   "Name" : "Shooter",
   "Cooldown" : 2,

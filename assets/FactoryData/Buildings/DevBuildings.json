@@ -1,6 +1,7 @@
 [
   {
     "id" : "coalMiner",
+    "Tier" : 0,
     "Type" : "Miner",
     "Name" : "Coal Miner",
     "Shape" : [[true]],
@@ -17,6 +18,7 @@
   },
   {
     "id": "steelSmelter",
+    "Tier" : 0,
     "Type": "Refiner",
     "Name": "Steel Smelter",
     "Shape": [
@@ -36,6 +38,7 @@
   },
   {
     "id": "steelCannonball",
+    "Tier" : 1,
     "Type": "Refiner",
     "Name": "Steel Cannonball-er",
     "Shape": [

@@ -18,10 +18,8 @@ public class FactorySim {
     }
 
     public void advanceTick() {
-        System.out.println("Advancing Tick");
         pendingMoves.clear();
         Array<Building> buildings = grid.getBuildings();
-        System.out.println(buildings);
 
         // Deterministic sort of buildings to determine which order to process the moves implemented here
 

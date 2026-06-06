@@ -119,4 +119,10 @@ public class Refiner extends Building{
             this.outputBuffer.get(i).add(mults.get(i));
         }
     }
+
+    @Override
+    public void clear() {
+        super.clear();
+        isCrafting = false;
+    }
 }

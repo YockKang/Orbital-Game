@@ -3,8 +3,8 @@ package com.main.CoreWorks.Factory.Upgrade;
 import com.main.CoreWorks.Factory.Building;
 
 public class FlatSpeedUpgrade  extends UpgradeAspect{
-    public FlatSpeedUpgrade(int value) {
-        super((float) value);
+    public FlatSpeedUpgrade(float value) {
+        super(value);
     }
 
     @Override

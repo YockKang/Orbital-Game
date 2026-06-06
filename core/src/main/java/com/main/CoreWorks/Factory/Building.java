@@ -39,6 +39,8 @@ public abstract class Building {
     protected Array<Resource> whitelist = null;
     protected Array<Recipe> validRecipes = null;
 
+    private static final Array<String> upgradeTags = new Array<>(new String[]{"Speed", "Buffer"});
+
 
     protected boolean[][] shape;
     /*
@@ -518,6 +520,8 @@ public abstract class Building {
             b.setCurrent(0);
         }
         currCooldown = 0;
+        disabledDur = 0;
+        isEnabled = true;
     }
 
     public void setPos(int x, int y) {
@@ -583,6 +587,10 @@ public abstract class Building {
         return isEnabled;
     }
 
+    public static Array<String> getUpgradeTags() {
+        return upgradeTags;
+    }
+
     public void clearPorts() {
         ports.clear();
     }
@@ -643,5 +651,6 @@ public abstract class Building {
             b.changeCapacity(delta);
         }
     }
+
 
 }

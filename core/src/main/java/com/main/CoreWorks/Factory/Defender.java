@@ -95,6 +95,7 @@ public class Defender extends Building{
 
     @Override
     public void clear() {
+        super.clear();
         this.magazine.clear();
     }
 

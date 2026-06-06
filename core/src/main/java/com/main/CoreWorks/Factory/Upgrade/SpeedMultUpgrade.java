@@ -3,8 +3,8 @@ package com.main.CoreWorks.Factory.Upgrade;
 import com.main.CoreWorks.Factory.Building;
 
 public class SpeedMultUpgrade  extends UpgradeAspect {
-    public SpeedMultUpgrade(int value) {
-        super((float) value);
+    public SpeedMultUpgrade(float value) {
+        super(value);
     }
 
     @Override

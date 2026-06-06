@@ -4,15 +4,15 @@ import com.badlogic.gdx.utils.*;
 import com.main.CoreWorks.Factory.*;
 
 public class Upgrade {
-    private Array<UpgradeAspect> upgrades;
+    private final Array<UpgradeAspect> upgrades;
 
-    public Upgrade() {
-
+    public Upgrade(Array<UpgradeAspect> upgradesIn) {
+        upgrades = upgradesIn;
     }
 
     public boolean anyFail(Building b) {
         for (UpgradeAspect ua : upgrades) {
-            if (!ua.tryExecute(b)) {
+            if (ua != null && !ua.tryExecute(b)) {
                 return true;
             }
         }
@@ -21,7 +21,7 @@ public class Upgrade {
 
     public boolean allFail(Building b) {
         for (UpgradeAspect ua : upgrades) {
-            if (ua.tryExecute(b)) {
+            if (ua != null && ua.tryExecute(b)) {
                 return false;
             }
         }
@@ -29,6 +29,6 @@ public class Upgrade {
     }
 
     public void execute(Building b) {
-        upgrades.forEach(ua -> ua.execute(b));
+        upgrades.forEach(ua -> { if (ua != null) ua.execute(b); });
     }
 }

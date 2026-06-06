@@ -12,9 +12,7 @@ public class PlayerDatabase {
         player.addBuilding(BuildingDatabase.getBuilding("miner1"));
         player.addBuilding(BuildingDatabase.getBuilding("miner2"));
         player.addBuilding(BuildingDatabase.getBuilding("defender1"));
-        player.addBuilding(BuildingDatabase.getBuilding("shooter1"));
-        player.addBuilding(BuildingDatabase.getBuilding("refiner1"));
-        player.addBuilding(BuildingDatabase.getBuilding("refiner2"));
+        player.addBuilding(BuildingDatabase.getBuilding("OPshooter"));
         return player;
     }
 

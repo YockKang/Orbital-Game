@@ -11,7 +11,7 @@ public class Shooter extends Building {
     protected int magSize;
     protected float baseDmg = 1f;
     protected int flatDmg = 0;
-    protected int attackCount = 2;
+    protected int attackCount = 1;
 
     public Shooter(int coolDown, int magSize, boolean[][] shape) {
         super(coolDown,
@@ -99,6 +99,7 @@ public class Shooter extends Building {
 
     @Override
     public void clear() {
+        super.clear();
         this.magazine.clear();
     }
 

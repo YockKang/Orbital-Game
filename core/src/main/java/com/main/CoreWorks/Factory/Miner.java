@@ -6,7 +6,9 @@ import com.main.CoreWorks.moveset.*;
 
 public class Miner extends Building {
 
-    protected int mineMultiplier;
+    protected float mineMultiplier;
+
+    private static final Array<String> upgradeTags = new Array<>(new String[]{"Speed", "Buffer", "MineMult"});
 
     public Miner(int coolDown, boolean[][] shape, int mineMult, String name) {
         super(coolDown,
@@ -68,7 +70,7 @@ public class Miner extends Building {
             for (int i = 0; i < mults.size; i++) {
                 ResourceBuffer currentBuffer = this.outputBuffer.get(i);
                 // buffer for that type will overfill, cannot mine
-                if (!currentBuffer.tryAdd(mults.get(i) * this.mineMultiplier)) {
+                if (!currentBuffer.tryAdd((int) (mults.get(i) * this.mineMultiplier))) {
                     return false;
                 }
             }
@@ -80,7 +82,11 @@ public class Miner extends Building {
         Array<Integer> mults = this.recipe.getOutputMultipliers();
         for (int i = 0; i < mults.size; i++) {
             ResourceBuffer currentBuffer = this.outputBuffer.get(i);
-            currentBuffer.add(mults.get(i) * this.mineMultiplier);
+            currentBuffer.add((int) (mults.get(i) * this.mineMultiplier));
         }
+    }
+
+    public void addMineMult(float delta) {
+        mineMultiplier += delta;
     }
 }

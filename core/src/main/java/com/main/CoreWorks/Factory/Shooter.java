@@ -61,7 +61,7 @@ public class Shooter extends Building {
                 break;
             }
         }
-        return null;
+        return moves;
     }
 
     public void addToAnythingQueue(Resource x) {

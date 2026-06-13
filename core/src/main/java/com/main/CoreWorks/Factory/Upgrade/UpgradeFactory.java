@@ -8,21 +8,21 @@ public class UpgradeFactory {
     public static Upgrade randomUpgrade(Random random, float strength) {
         float buildingType = random.nextFloat();
         String buildingName = "";
-        if (buildingType < 0.15) {
+        if (buildingType < 0.25) {
             buildingName = "Shooter";
-        } else if (buildingType < 0.3) {
-            buildingName = "Miner";
         } else if (buildingType < 0.45) {
-            buildingName = "Refiner";
-        } else if (buildingType < 0.6) {
             buildingName = "Defender";
+        } else if (buildingType < 0.55) {
+            buildingName = "Refiner";
+        } else if (buildingType < 0.75) {
+            buildingName = "Miner";
         } else if (buildingType < 0.95) {
             buildingName = "Generic";
         } else {
             buildingName = "Random";
         }
 
-        Array<String> upgradesGroup = UpgradeTypeRegistry.get(buildingName);
+        Array<String> upgradesGroup = new Array<>(UpgradeTypeRegistry.get(buildingName));
 
         int numUpgrades = 1;
 
@@ -42,7 +42,7 @@ public class UpgradeFactory {
             4: .15%
              */
             numUpgrades = Math.min(Math.max((int) random.nextGaussian(-1.16, 1.4), 0), 3) + 1;
-        } else if (strength <= 1.2) {
+        } else if (strength < 1.2) {
             /*
             est. distribution
             1: 50%
@@ -79,7 +79,14 @@ public class UpgradeFactory {
         while (numUpgrades > 0 && upgradesGroup.size > 0) {
             numUpgrades--;
             UpgradeAspect thisUpgrade = null;
-            String category = upgradesGroup.get(random.nextInt(upgradesGroup.size - 1));
+            String category = "";
+            if (upgradesGroup.size > 1) {
+                category = upgradesGroup.get(random.nextInt(upgradesGroup.size - 1));
+                upgradesGroup.removeValue(category, true);
+            } else {
+                category = upgradesGroup.get(0);
+                upgradesGroup.removeValue(category, true);
+            }
             double m = strength + .3;
             double var = Math.pow(1 / strength, 2) / 2;
             double s2 = Math.log(1 + var / m*m);
@@ -90,38 +97,50 @@ public class UpgradeFactory {
                 case "FlatSpeed":
                     adjPower = (float) (power * 0.2);
                     if (adjPower > 0.05) {
-                        thisUpgrade = new FlatSpeedUpgrade(adjPower);
+                        adjPower = roundDP(adjPower, 2);
+                    } else {
+                        adjPower = 0.05f;
                     }
+                    thisUpgrade = new FlatSpeedUpgrade(adjPower);
                     break;
                 case "SpeedMult":
                     adjPower = (float) (power * 0.1);
                     if (adjPower > 0.05) {
-                        thisUpgrade = new SpeedMultUpgrade(adjPower);
+                        adjPower = roundDP(adjPower, 2);
+                    } else {
+                        adjPower = 0.05f;
                     }
+                    thisUpgrade = new SpeedMultUpgrade(adjPower);
                     break;
                 case "Buffer":
                     adjPower = (float) (power * 2);
-                    if ((int) adjPower > 0) {
-                        thisUpgrade = new BufferSizeUpgrade((int) adjPower);
+                    if (!((int) adjPower > 0)) {
+                        adjPower = 1;
                     }
+                    thisUpgrade = new BufferSizeUpgrade((int) adjPower);
                     break;
                 case "MineMult":
                     adjPower = (float) (power / 2);
-                    if ((int) adjPower > 0) {
-                        thisUpgrade = new MineMultUpgrade((int) adjPower);
+                    if (!((int) adjPower > 0)) {
+                        adjPower = 0;
                     }
+                    thisUpgrade = new MineMultUpgrade((int) adjPower);
                     break;
                 case "BaseDamage":
                     adjPower = (float) power;
-                    if (Math.round(adjPower) > 0) {
-                        thisUpgrade = new FlatDamageUpgrade(Math.round(adjPower));
+                    if (!((int) adjPower > 0)) {
+                        adjPower = 1;
                     }
+                    thisUpgrade = new FlatDamageUpgrade(Math.round(adjPower));
                     break;
                 case "DamageMult":
                     adjPower = (float) (power * 0.1);
                     if (adjPower > 0.05) {
-                        thisUpgrade = new BaseDamageUpgrade(adjPower);
+                        adjPower = roundDP(adjPower, 2);
+                    } else {
+                        adjPower = 0.05f;
                     }
+                    thisUpgrade = new BaseDamageUpgrade(adjPower);
                     break;
             }
             if (thisUpgrade != null) {
@@ -131,5 +150,9 @@ public class UpgradeFactory {
 
         return new Upgrade(upgrades);
 
+    }
+
+    private static float roundDP(float input, int n) {
+        return (float) (Math.round((double) input * Math.pow(10, n)) / Math.pow(10, n));
     }
 }

@@ -31,4 +31,14 @@ public class Upgrade {
     public void execute(Building b) {
         upgrades.forEach(ua -> { if (ua != null) ua.execute(b); });
     }
+
+    public String display() {
+        StringBuilder strB = new StringBuilder();
+        strB.append(upgrades.get(0).display());
+        for (int i = 1; i < upgrades.size; i++) {
+            strB.append(", ");
+            strB.append(upgrades.get(i).display());
+        }
+        return strB.toString();
+    }
 }

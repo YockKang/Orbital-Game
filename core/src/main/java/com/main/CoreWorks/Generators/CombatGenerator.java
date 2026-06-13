@@ -8,7 +8,6 @@ import java.util.Random;
 
 public class CombatGenerator {
     public static Array<Enemy> createCombat(int tier, float multiplier, Random random) {
-        Array<Enemy> enemies = EnemyGroupDatabase.getRandomGroup(tier, multiplier, random);
-        return enemies;
+        return EnemyGroupDatabase.getRandomGroup(tier, multiplier, random);
     }
 }

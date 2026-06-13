@@ -136,4 +136,8 @@ public class FactorySim {
     public FactoryGrid getGrid() {
         return grid;
     }
+
+    public void clear() {
+        grid.getBuildings().forEach(Building::clear);
+    }
 }

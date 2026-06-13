@@ -33,9 +33,9 @@ public class Defender extends Building{
     @Override
     public String toString() {
         return new StringBuilder()
-            .append(name)
-            .append("\nSpeedMult ")
-            .append(speedMultiplier)
+            .append(name).append(" #").append(idNum)
+            .append("\nSpeed ")
+            .append(getSpeed())
             .append('\n')
             .append("Magazine\n")
             .append("<-First   Last->\n")
@@ -108,4 +108,7 @@ public class Defender extends Building{
     public void setCapacityMult(int newCap) {
         magSize = newCap;
     }
+
+    @Override
+    public void changeCapacityMult(int delta) { magSize += delta; }
 }

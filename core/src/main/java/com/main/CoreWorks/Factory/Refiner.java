@@ -33,7 +33,7 @@ public class Refiner extends Building{
     @Override
     public String toString() {
         return new StringBuilder()
-            .append(name)
+            .append(name).append(" #").append(idNum)
             .append("\nOnGrid: ").append(onGrid)
             .append("\nSpeedMult ")
             .append(speedMultiplier)

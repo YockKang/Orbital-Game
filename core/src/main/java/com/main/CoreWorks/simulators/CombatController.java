@@ -13,6 +13,7 @@ public class CombatController {
 
     public void advanceTick(int tick) {
         if (combatSim.isWin() || combatSim.isLost()) {
+            factorySim.clear();
             return;
         }
 

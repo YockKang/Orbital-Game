@@ -1,17 +1,19 @@
 package com.main.CoreWorks.Generators;
 
-import com.badlogic.gdx.utils.Array;
-import com.main.CoreWorks.Rewards.AddBuildingReward;
-import com.main.CoreWorks.Rewards.Reward;
-import com.main.CoreWorks.RunPersistence.RunState;
-import com.main.CoreWorks.database.BuildingTierDatabase;
+import com.badlogic.gdx.utils.*;
+import com.main.CoreWorks.Factory.Upgrade.*;
+import com.main.CoreWorks.Rewards.*;
+import com.main.CoreWorks.RunPersistence.*;
+import com.main.CoreWorks.database.*;
+
+import java.util.Random;
 
 public class RewardGenerator {
     public static Array<Reward> generateReward(RunState runState) {
         Array<Reward> rewards = new Array<>();
 
         // Add the Rewards in the code below
-        rewards.add(randomBuildingReward(runState));
+        rewards.add(randomUpgradeReward(runState));
 
         // Return statement below
         return rewards;
@@ -31,5 +33,14 @@ public class RewardGenerator {
         } else {
             return new AddBuildingReward(BuildingTierDatabase.getRandomBuilding(runState.getRandom(), 3));
         }
+    }
+
+    private static Reward randomUpgradeReward(RunState runState) {
+        Random random = runState.getRandom();
+        MapNode node = runState.getCurrNode();
+        return new AddFixedUpgradeReward(
+            runState.getOwnedBuildings().get(
+                random.nextInt(runState.getOwnedBuildings().size - 1)),
+            UpgradeFactory.randomUpgrade(random, node.getMultiplier()));
     }
 }

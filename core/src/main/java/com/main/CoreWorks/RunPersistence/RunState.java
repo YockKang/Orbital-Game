@@ -1,5 +1,7 @@
 package com.main.CoreWorks.RunPersistence;
 
+import com.badlogic.gdx.utils.*;
+import com.main.CoreWorks.Factory.Building;
 import com.main.CoreWorks.Factory.FactoryGrid;
 import com.main.CoreWorks.entities.Player;
 
@@ -50,6 +52,13 @@ public class RunState {
 
     public void setFactoryGrid(FactoryGrid factoryGrid) {
         this.factoryGrid = factoryGrid;
+    }
+
+    public Array<Building> getOwnedBuildings() {
+        Array<Building> arr = new Array<>();
+        arr.addAll(factoryGrid.getBuildings());
+        arr.addAll(player.getInventory());
+        return arr;
     }
 
     public Random getRandom() {

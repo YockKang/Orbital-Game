@@ -5,7 +5,7 @@ import com.main.CoreWorks.Factory.Shooter;
 
 public class FlatDamageUpgrade extends UpgradeAspect {
     public FlatDamageUpgrade(int value) {
-        super((float) value);
+        super((float) value, "Flat Damage +");
     }
 
     @Override

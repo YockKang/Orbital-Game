@@ -6,6 +6,7 @@ public abstract class MapNode {
     protected boolean completed;
     protected String name;
     protected int tier;
+    protected float rewardMultiplier = 1f;
     protected boolean unlocked;
     // Stores the position of the node for map drawing
     protected float x;
@@ -51,5 +52,9 @@ public abstract class MapNode {
 
     public void addNextNode(MapNode node) {
         this.nextNodes.add(node);
+    }
+
+    public float getMultiplier() {
+        return rewardMultiplier;
     }
 }

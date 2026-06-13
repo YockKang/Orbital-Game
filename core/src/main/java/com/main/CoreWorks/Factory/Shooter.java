@@ -36,8 +36,8 @@ public class Shooter extends Building {
     @Override
     public String toString() {
         return new StringBuilder()
-            .append(name)
-            .append("\nSpeedMult ")
+            .append(name).append(" #").append(idNum)
+            .append("\nSpeed ")
             .append(getSpeed())
             .append("\nDamage:\n")
             .append(attackCount).append(" * (x * ").append(baseDmg).append(" + ").append(flatDmg).append(")")
@@ -51,12 +51,14 @@ public class Shooter extends Building {
     @Override
     public Array<Move> updateEnabled() {
         currCooldown += getSpeed();
-        if (currCooldown >= cooldownTimer) {
+        Array<Move> moves = new Array<>();
+        while (currCooldown >= cooldownTimer) {
             if (magazine.notEmpty()) {
-                currCooldown = 0;
-                return shoot();
+                currCooldown -= cooldownTimer;
+                moves.addAll(shoot());
             } else {
-                currCooldown = cooldownTimer - getSpeed();
+                currCooldown = cooldownTimer;
+                break;
             }
         }
         return null;
@@ -112,6 +114,9 @@ public class Shooter extends Building {
     public void setCapacityMult(int newCap) {
         magSize = newCap;
     }
+
+    @Override
+    public void changeCapacityMult(int delta) { magSize += delta; }
 
     public void changeBaseDamage(float delta) {
         baseDmg += delta;

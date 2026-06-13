@@ -77,7 +77,9 @@ public class ResourceBuffer {
     }
 
     public void setCurrent(int n) {
-        if (capacity <= n) {
+        if (n < 0) {
+            current = 0;
+        } else if (capacity <= n) {
             current = capacity;
         } else {
             current = n;

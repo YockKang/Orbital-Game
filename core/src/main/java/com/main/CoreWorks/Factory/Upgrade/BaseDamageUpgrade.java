@@ -5,7 +5,7 @@ import com.main.CoreWorks.Factory.Shooter;
 
 public class BaseDamageUpgrade extends UpgradeAspect{
     public BaseDamageUpgrade(float value) {
-        super(value);
+        super(value, "Base Damage +");
     }
 
     @Override

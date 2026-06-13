@@ -4,7 +4,7 @@ import com.main.CoreWorks.Factory.*;
 
 public class MineMultUpgrade extends UpgradeAspect{
     public MineMultUpgrade(float value) {
-        super(value);
+        super(value, "Mine Multiplier +");
     }
 
     @Override

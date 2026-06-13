@@ -38,7 +38,7 @@ public class Miner extends Building {
     @Override
     public String toString() {
         return new StringBuilder()
-            .append(name)
+            .append(name).append(" #").append(idNum)
             .append("\nSpeed ")
             .append(getSpeed())
             .append("\nOutput Buffer ")
@@ -49,13 +49,14 @@ public class Miner extends Building {
     @Override
     public Array<Move> updateEnabled() {
         currCooldown += getSpeed();
-        if (currCooldown >= cooldownTimer) {
+        while (currCooldown >= cooldownTimer) {
             boolean mineSuccess = tryMine();
             if (mineSuccess) {
                 mine();
                 currCooldown -= cooldownTimer;
             } else {
-                currCooldown = cooldownTimer - getSpeed();
+                currCooldown = cooldownTimer;
+                break;
             }
         }
         return null;

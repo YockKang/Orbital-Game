@@ -5,7 +5,7 @@ import com.main.CoreWorks.Factory.Shooter;
 
 public class BufferSizeUpgrade extends UpgradeAspect{
     public BufferSizeUpgrade(int value) {
-        super((float) value);
+        super((float) value, "Buffer +");
     }
 
     @Override

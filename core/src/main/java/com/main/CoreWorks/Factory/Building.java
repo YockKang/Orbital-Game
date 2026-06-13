@@ -14,6 +14,8 @@ public abstract class Building {
 
 
     // confirmed fields
+    protected String name;
+    protected int idNum;
     protected boolean isEnabled = true;
     protected int disabledDur = 0;
     protected boolean onGrid = false;
@@ -25,7 +27,6 @@ public abstract class Building {
     protected int xCoord = -1; // bottom is 0
     protected int yCoord = -1; // left is 0
     protected int rotation = 0; // 0 is "up", +1 for clockwise rotation
-    protected String name;
     protected Recipe recipe = null;
     protected Array<IOPort> ports = new Array<>(0);
     protected int priority = 0;
@@ -70,6 +71,7 @@ public abstract class Building {
 
     public Building(JsonValue data) {
         this.name = data.getString("Name");
+        this.idNum = data.getInt("idNum");
         this.recipe = null;
 
         inputBuffer = new Array<>(0);

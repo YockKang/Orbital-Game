@@ -62,7 +62,7 @@
     "Type" : "Shooter",
     "Name" : "OPShooter",
     "Cooldown" : 1,
-    "Shape" : [[true]],
+    "Shape" : ["S", 2],
     "MagSize": 5,
     "BaseDmg": 2,
     "AttackCount" : 3

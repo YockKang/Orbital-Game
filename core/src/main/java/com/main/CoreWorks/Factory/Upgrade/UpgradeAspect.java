@@ -14,7 +14,7 @@ public abstract class UpgradeAspect {
 
     public abstract void execute(Building b);
 
-    public abstract Array<String> changes(Building b);
+    public abstract String changes(Building b);
 
     public String display() {
         return description + value;

@@ -78,11 +78,33 @@ public abstract class Building {
         outputBuffer = new Array<>(0);
 
         JsonValue shapeData = data.get("Shape");
-        int rows = shapeData.size;
-        int cols = shapeData.get(0).size;
-        this.shape = new boolean[rows][cols];
-        for (int y = 0; y < rows; y++) {
-            this.shape[y] = shapeData.get(y).asBooleanArray();
+        if (shapeData.get(0).isArray()) {
+            // custom shape
+            int rows = shapeData.size;
+            int cols = shapeData.get(0).size;
+            this.shape = new boolean[rows][cols];
+            for (int y = 0; y < rows; y++) {
+                this.shape[y] = shapeData.get(y).asBooleanArray();
+            }
+        } else {
+            String stdShape = shapeData.get(0).asString();
+            switch (stdShape) {
+                case "R":
+                    int rows = shapeData.get(1).asInt();
+                    int cols = shapeData.get(2).asInt();
+                    this.shape = new boolean[rows][cols];
+                    for (int y = 0; y < rows; y++) {
+                        Arrays.fill(this.shape[y], true);
+                    }
+                    break;
+                case "S":
+                    int side = shapeData.get(1).asInt();
+                    this.shape = new boolean[side][side];
+                    for (int y = 0; y < side; y++) {
+                        Arrays.fill(this.shape[y], true);
+                    }
+                    break;
+            }
         }
 
 

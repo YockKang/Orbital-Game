@@ -3,11 +3,17 @@
   "Tier" : 2,
   "Type" : "Miner",
   "Name" : "BigMiner",
-  "Shape" : [[true, true]],
+  "Shape" : ["R", 1, 2],
   "MineMult" : 2,
   "Ports" : [
     {
       "x" : 0,
+      "y" : 0,
+      "dir" : 0,
+      "rate" : 1
+    },
+    {
+      "x" : 1,
       "y" : 0,
       "dir" : 0,
       "rate" : 1

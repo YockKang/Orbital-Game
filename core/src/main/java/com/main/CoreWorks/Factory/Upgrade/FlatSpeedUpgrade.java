@@ -19,11 +19,11 @@ public class FlatSpeedUpgrade  extends UpgradeAspect{
     }
 
     @Override
-    public Array<String> changes(Building b) {
-        Array<String> arr = new Array<>();
-        arr.add("Flat Speed");
-        arr.add( String.valueOf( b.getSpeedFlat()) );
-        arr.add( String.valueOf( b.getSpeedFlat() + value) );
-        return arr;
+    public String changes(Building b) {
+        return new StringBuilder()
+            .append("Flat Speed")
+            .append( b.getSpeedFlat() )
+            .append( b.getSpeedFlat() + value )
+            .toString();
     }
 }

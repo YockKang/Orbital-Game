@@ -19,11 +19,11 @@ public class SpeedMultUpgrade  extends UpgradeAspect {
     }
 
     @Override
-    public Array<String> changes(Building b) {
-        Array<String> arr = new Array<>();
-        arr.add("Speed Multiplier");
-        arr.add( String.valueOf( b.getSpeedMult()) );
-        arr.add( String.valueOf( b.getSpeedMult() + value) );
-        return arr;
+    public String changes(Building b) {
+        return new StringBuilder()
+            .append("Speed Multiplier")
+            .append( b.getSpeedMult() )
+            .append( b.getSpeedMult() + value )
+            .toString();
     }
 }

@@ -2,8 +2,6 @@ package com.main.CoreWorks.Factory.Upgrade;
 
 import com.badlogic.gdx.utils.Array;
 import com.main.CoreWorks.Factory.Building;
-import com.main.CoreWorks.Factory.Miner;
-import com.main.CoreWorks.Factory.Shooter;
 
 public class BufferSizeUpgrade extends UpgradeAspect{
     public BufferSizeUpgrade(int value) {
@@ -21,11 +19,11 @@ public class BufferSizeUpgrade extends UpgradeAspect{
     }
 
     @Override
-    public Array<String> changes(Building b) {
-        Array<String> arr = new Array<>();
-        arr.add("Buffer Size");
-        arr.add( String.valueOf( b.getCapacityMult()) );
-        arr.add( String.valueOf( b.getCapacityMult() + (int) value) );
-        return arr;
+    public String changes(Building b) {
+        return new StringBuilder()
+            .append("Buffer Size")
+            .append( b.getCapacityMult() )
+            .append( b.getCapacityMult() + value )
+            .toString();
     }
 }

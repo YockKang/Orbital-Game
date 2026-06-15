@@ -26,15 +26,14 @@ public class FlatDamageUpgrade extends UpgradeAspect {
     }
 
     @Override
-    public Array<String> changes(Building b) {
-        Array<String> arr = new Array<>();
-        arr.add("Flat Damage");
+    public String changes(Building b) {
+        StringBuilder str = new StringBuilder().append("Flat Damage");
         if (b instanceof Shooter) {
-            arr.add( String.valueOf(((Shooter) b).getFlatDmg()) );
-            arr.add( String.valueOf(((Shooter) b).getFlatDmg() + (int) value) );
+            str.append( ((Shooter) b).getFlatDmg() )
+                .append( ((Shooter) b).getFlatDmg() + (int) value );
         } else {
-            arr.add("Not Applicable");
+            str.append("Not Applicable");
         }
-        return arr;
+        return str.toString();
     }
 }

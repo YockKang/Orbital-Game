@@ -33,10 +33,10 @@ public class Upgrade {
         upgrades.forEach(ua -> { if (ua != null) ua.execute(b); });
     }
 
-    public Array<Array<String>> displayChanges(Building b) {
-        Array<Array<String>> arr = new Array<>();
+    public Array<String> displayChanges(Building b) {
+        Array<String> arr = new Array<>();
         upgrades.forEach(ua -> {
-            Array<String> changes = ua.changes(b);
+            String changes = ua.changes(b);
             if (changes != null) {
                 arr.add(changes);
             }

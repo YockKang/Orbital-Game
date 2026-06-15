@@ -25,15 +25,14 @@ public class MineMultUpgrade extends UpgradeAspect{
     }
 
     @Override
-    public Array<String> changes(Building b) {
-        Array<String> arr = new Array<>();
-        arr.add("Mine Multiplier");
+    public String changes(Building b) {
+        StringBuilder str = new StringBuilder().append("Mine Multiplier");
         if (b instanceof Miner) {
-            arr.add( String.valueOf(((Miner) b).getMineMultiplier()) );
-            arr.add( String.valueOf(((Miner) b).getMineMultiplier() + (int) value) );
+            str.append( ((Miner) b).getMineMultiplier() )
+                .append( ((Miner) b).getMineMultiplier() + value );
         } else {
-            arr.add("Not Applicable");
+            str.append("Not Applicable");
         }
-        return arr;
+        return str.toString();
     }
 }

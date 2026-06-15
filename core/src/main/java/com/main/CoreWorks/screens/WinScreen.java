@@ -39,9 +39,9 @@ public class WinScreen implements Screen {
         game.font.getData().setScale(4f);
 
         // Center the text
-        GlyphLayout layout = new GlyphLayout(game.font, "YOU WIN!");
-        float x = (Coreworks.WORLD_WIDTH - layout.width) / 2;
-        float y = (Coreworks.WORLD_HEIGHT - layout.height) / 2;
+        GlyphLayout layout = new GlyphLayout(game.font, "YOU WON! \n Click anywhere to continue...");
+        float x = (Coreworks.VIEWPORT_WIDTH - layout.width) / 2;
+        float y = (Coreworks.VIEWPORT_HEIGHT - layout.height) / 2;
 
         game.font.draw(game.batch, layout, x, y);
 
@@ -58,6 +58,7 @@ public class WinScreen implements Screen {
                 game.setScreen(new MenuScreen(game));
                 return;
             }
+            runState.getCurrNode().setCompleted(true);
             for (MapNode next : runState.getCurrNode().getNextNodes()) {
                 next.setUnlocked(true);
             }

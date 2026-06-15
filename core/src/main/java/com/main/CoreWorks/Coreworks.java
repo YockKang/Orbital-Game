@@ -18,9 +18,9 @@ public class Coreworks extends Game {
     public BitmapFont font;
     public FitViewport viewport;
     public OrthographicCamera camera;
-    // The below represents a 800 x 480 coordinate system, regardless of the screen resolution
-    public static final float WORLD_WIDTH = 1280;
-    public static final float WORLD_HEIGHT = 720;
+    // The below represents how many pixels the camera can see, the actual map can be much bigger if panning camera (via arrow keys or WASD or click and drag) is enabled
+    public static final float VIEWPORT_WIDTH = 1280;
+    public static final float VIEWPORT_HEIGHT = 720;
 
     @Override
     public void create() {
@@ -28,10 +28,10 @@ public class Coreworks extends Game {
         batch = new SpriteBatch();
         // use libGDX's default font
         font = new BitmapFont();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, camera);
 
         // Center the camera in the middle of the screen
-        camera.position.set(WORLD_WIDTH/2f, WORLD_HEIGHT/2f, 0);
+        camera.position.set(VIEWPORT_WIDTH /2f, VIEWPORT_HEIGHT /2f, 0);
         camera.update();
 
         // font has 15pt, but we need to scale it to our viewport by ratio of viewport height to screen height

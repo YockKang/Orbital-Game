@@ -33,13 +33,15 @@ public class MenuScreen implements Screen {
 
         game.batch.begin();
         //draw text. Remember that x and y are in meters
-        game.font.draw(game.batch, "Welcome to Coreworks!!! ", Coreworks.WORLD_WIDTH/2f - 120, Coreworks.WORLD_HEIGHT/2f + 50);
-        game.font.draw(game.batch, "Tap anywhere to begin!", Coreworks.WORLD_WIDTH/2f - 120, Coreworks.WORLD_HEIGHT/2f - 50);
+        game.font.draw(game.batch, "Welcome to Coreworks!!! ", Coreworks.VIEWPORT_WIDTH /2f - 120, Coreworks.VIEWPORT_HEIGHT /2f + 50);
+        game.font.draw(game.batch, "Tap anywhere to begin!", Coreworks.VIEWPORT_WIDTH /2f - 120, Coreworks.VIEWPORT_HEIGHT /2f - 50);
         game.batch.end();
 
         if (Gdx.input.justTouched()) {
             // Creates the initial runState
+            // For now, hardcoded one player type only, eventually might allow selection of different player types with unique abilities for more replayability
             Player player = PlayerDatabase.createEngineer();
+            // Hardcoded factory grid as well, will eventually tie grid size to different player types
             FactoryGrid factoryGrid = new FactoryGrid(4, 4);
             RunState runState = new RunState(player, factoryGrid);
             RunMap runMap = RunMapGenerator.generateRunMap(runState.getRandom());

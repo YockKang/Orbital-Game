@@ -24,7 +24,7 @@ public class BufferSizeUpgrade extends UpgradeAspect{
             .append("Buffer Size: ")
             .append( b.getCapacityMult() )
             .append(" -> ")
-            .append( b.getCapacityMult() + value )
+            .append( (int) (b.getCapacityMult() + value ) )
             .toString();
     }
 }

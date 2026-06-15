@@ -31,7 +31,7 @@ public class FlatDamageUpgrade extends UpgradeAspect {
         if (b instanceof Shooter) {
             str.append( ((Shooter) b).getFlatDmg() )
                 .append(" -> ")
-                .append( ((Shooter) b).getFlatDmg() + (int) value );
+                .append( (int) (((Shooter) b).getFlatDmg() + value) );
         } else {
             str.append("Not Applicable");
         }

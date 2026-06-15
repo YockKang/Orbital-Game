@@ -30,7 +30,7 @@ public class MineMultUpgrade extends UpgradeAspect{
         if (b instanceof Miner) {
             str.append( ((Miner) b).getMineMultiplier() )
                 .append(" -> ")
-                .append( ((Miner) b).getMineMultiplier() + value );
+                .append( (int) (((Miner) b).getMineMultiplier() + value) );
         } else {
             str.append("Not Applicable");
         }

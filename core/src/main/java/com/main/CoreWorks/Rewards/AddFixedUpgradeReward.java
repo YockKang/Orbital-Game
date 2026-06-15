@@ -1,16 +1,22 @@
 package com.main.CoreWorks.Rewards;
 
 import com.main.CoreWorks.Factory.Building;
-import com.main.CoreWorks.Factory.Upgrade.Upgrade;
+import com.main.CoreWorks.Factory.Upgrade.*;
 import com.main.CoreWorks.RunPersistence.RunState;
 
-public class AddFixedUpgradeReward extends AddUpgradeReward{
+public class AddFixedUpgradeReward extends Reward{
     protected Building building;
+    protected Upgrade upgrade;
 
     public AddFixedUpgradeReward(Building bldg, Upgrade upg) {
-        super(String.format("Give %s %s", bldg.displayName(), upg.display()), upg);
+        super("Upgrade a building", String.format("Give %s %s", bldg.displayName(), upg.display()));
         this.building = bldg;
         this.upgrade = upg;
+    }
+
+    @Override
+    public boolean needTarget() {
+        return false;
     }
 
     @Override

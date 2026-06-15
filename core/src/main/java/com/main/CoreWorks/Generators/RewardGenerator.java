@@ -39,6 +39,12 @@ public class RewardGenerator {
     private static Reward randomUpgradeReward(RunState runState) {
         Random random = runState.getRandom();
         MapNode node = runState.getCurrNode();
+        return new AddUpgradeReward(UpgradeFactory.randomUpgrade(random, node.getMultiplier()));
+    }
+
+    private static Reward randomFixedUpgradeReward(RunState runState) {
+        Random random = runState.getRandom();
+        MapNode node = runState.getCurrNode();
         return new AddFixedUpgradeReward(
             runState.getOwnedBuildings().get(
                 random.nextInt(runState.getOwnedBuildings().size - 1)),

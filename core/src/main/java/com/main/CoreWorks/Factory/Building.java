@@ -569,6 +569,13 @@ public abstract class Building {
         return speedBase * speedMultiplier + speedFlat;
     }
 
+    public float getSpeedFlat() {
+        return speedFlat;
+    }
+
+    public float getSpeedMult() {
+        return speedMultiplier;
+    }
     public void addSpeedMult(float mult) {
         speedMultiplier += mult;
     }

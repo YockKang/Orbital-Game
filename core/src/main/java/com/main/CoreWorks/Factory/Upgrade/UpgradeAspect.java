@@ -1,5 +1,6 @@
 package com.main.CoreWorks.Factory.Upgrade;
 
+import com.badlogic.gdx.utils.*;
 import com.main.CoreWorks.Factory.Building;
 
 public abstract class UpgradeAspect {
@@ -12,6 +13,8 @@ public abstract class UpgradeAspect {
     }
 
     public abstract void execute(Building b);
+
+    public abstract Array<String> changes(Building b);
 
     public String display() {
         return description + value;

@@ -36,30 +36,30 @@ public class UpgradeFactory {
         if (strength <= 1) {
             /*
             est. distribution
-            1: 93.8%
-            2: 5%
-            3: 1%
-            4: .15%
+            1: 90%
+            2: 8%
+            3: 1.5%
+            4: .5%
              */
-            numUpgrades = Math.min(Math.max((int) random.nextGaussian(-1.16, 1.4), 0), 3) + 1;
+            numUpgrades = Math.min(Math.max((int) Math.expm1(random.nextGaussian(-1.135, .886)) + 1, 0), 3) + 1;
         } else if (strength < 1.2) {
             /*
             est. distribution
             1: 50%
-            2: 30%
-            3: 15%
-            4: 4.5%
+            2: 35%
+            3: 10%
+            4: 5%
              */
-            numUpgrades = Math.min(Math.max((int) random.nextGaussian(1, 1.18), 0), 3) + 1;
+            numUpgrades = Math.min(Math.max((int) Math.expm1(random.nextGaussian(0, .668)) + 1, 0), 3) + 1;
         } else {
             /*
             est. distribution
-            1: 34%
-            2: 33%
-            3: 23%
+            1: 20%
+            2: 50%
+            3: 20%
             4: 10%
              */
-            numUpgrades = Math.min(Math.max((int) random.nextGaussian(1.47, 1.14), 0), 3) + 1;
+            numUpgrades = Math.min(Math.max((int) Math.expm1(random.nextGaussian(.43, .512)) + 1, 0), 3) + 1;
         }
 
         if (upgradesGroup.contains("Speed", true)) {

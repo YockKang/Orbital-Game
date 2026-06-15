@@ -90,4 +90,8 @@ public class Miner extends Building {
     public void addMineMult(float delta) {
         mineMultiplier += delta;
     }
+
+    public float getMineMultiplier() {
+        return mineMultiplier;
+    }
 }

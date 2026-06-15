@@ -2,6 +2,7 @@ package com.main.CoreWorks.Factory.Upgrade;
 
 import com.badlogic.gdx.utils.*;
 import com.main.CoreWorks.Factory.*;
+import org.checkerframework.checker.units.qual.A;
 
 public class Upgrade {
     private final Array<UpgradeAspect> upgrades;
@@ -30,6 +31,17 @@ public class Upgrade {
 
     public void execute(Building b) {
         upgrades.forEach(ua -> { if (ua != null) ua.execute(b); });
+    }
+
+    public Array<Array<String>> displayChanges(Building b) {
+        Array<Array<String>> arr = new Array<>();
+        upgrades.forEach(ua -> {
+            Array<String> changes = ua.changes(b);
+            if (changes != null) {
+                arr.add(changes);
+            }
+        });
+        return arr;
     }
 
     public String display() {

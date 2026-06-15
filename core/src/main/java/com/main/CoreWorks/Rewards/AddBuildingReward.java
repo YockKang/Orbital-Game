@@ -12,6 +12,11 @@ public class AddBuildingReward extends Reward {
     }
 
     @Override
+    public boolean needTarget() {
+        return false;
+    }
+
+    @Override
     public void apply(RunState runState) {
         runState.getPlayer().addBuilding(building);
     }

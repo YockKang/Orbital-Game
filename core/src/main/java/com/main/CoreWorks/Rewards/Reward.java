@@ -19,5 +19,7 @@ public abstract class Reward {
         return description;
     }
 
+    public abstract boolean needTarget();
+
     public abstract void apply(RunState runState);
 }

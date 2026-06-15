@@ -1,10 +1,12 @@
 package com.main.CoreWorks.Rewards;
 
+import com.main.CoreWorks.Factory.Building;
 import com.main.CoreWorks.Factory.Upgrade.Upgrade;
 import com.main.CoreWorks.RunPersistence.RunState;
 
 public class AddUpgradeReward extends Reward{
     protected Upgrade upgrade;
+    protected Building building;
 
     public AddUpgradeReward(Upgrade upg) {
         super("Upgrade a building", String.format("Give a building %s", upg.display()));
@@ -17,7 +19,20 @@ public class AddUpgradeReward extends Reward{
     }
 
     @Override
+    public boolean needTarget() {
+        return true;
+    }
+
+    public Upgrade getUpgrade() {
+        return upgrade;
+    }
+
+    @Override
     public void apply(RunState runState) {
-        // idk gotta go to another screen now
+        upgrade.execute(building);
+    }
+
+    public void setTarget(Building building) {
+        this.building = building;
     }
 }

@@ -489,11 +489,48 @@ public class CombatScreen implements Screen {
         return new Coords(unscaledTileX, unscaledTileY);
     }
 
+    // Get quadrant of a grid (may be helpful for pointing at stuff)
+    private DirectedCoords getGridQuadrantAt(float mouseTranslatedX, float mouseTranslatedY) {
+        boolean insideWholeGridX = mouseTranslatedX >= gridStartX && mouseTranslatedX < gridStartX + gridWidth * tileSize;
+        boolean insideWholeGridY = mouseTranslatedY <= gridEndY && mouseTranslatedY > gridEndY - gridHeight * tileSize;
+
+        if (!insideWholeGridX || !insideWholeGridY) {
+            return null;
+        }
+
+        // Since the whole grid is scaled up by size (including both its x and y coords), we can divide the mouse grid coordinates by the tile size to scale it back down to get the unscaled tile coordinate
+        int unscaledTileX = (int) ((mouseTranslatedX - gridStartX) / (tileSize));
+        int unscaledTileY = (int) ((gridEndY - mouseTranslatedY) / (tileSize));
+
+        int tileX = (int) ((mouseTranslatedX - gridStartX) % tileSize);
+        int tileY = (int) ((gridEndY - mouseTranslatedY) % tileSize);
+        boolean topRight = tileX > tileY;
+        boolean botRight = tileX > (tileSize - tileY);
+
+        int dir;
+
+        if (topRight) {
+            if (botRight) {
+                dir = 1;
+            } else {
+                dir = 0;
+            }
+        } else {
+            if (botRight) {
+                dir = 2;
+            } else {
+                dir = 3;
+            }
+        }
+
+        return new DirectedCoords(unscaledTileX, unscaledTileY, dir);
+    }
+
     /*
     Helper Coordinate class to easily store x and y coordinates (something like Pair class from lectures)
      */
 
-    static final class Coords {
+    static class Coords {
         final int x;
         final int y;
 
@@ -508,6 +545,34 @@ public class CombatScreen implements Screen {
         }
     }
 
+    static class DirectedCoords extends Coords {
+        final int dir;
+
+        DirectedCoords(int x, int y, int direction) {
+            super(x, y);
+            this.dir = direction % 4;
+        }
+
+        @Override
+        public String toString() {
+            String trueDir = "";
+            switch (dir) {
+                case 0:
+                    trueDir = "up";
+                    break;
+                case 1:
+                    trueDir = "right";
+                    break;
+                case 2:
+                    trueDir = "down";
+                    break;
+                case 3:
+                    trueDir = "left";
+                    break;
+            }
+            return "x: "+ x + " y: "+ y + "direction " + dir + "(" + trueDir + ")";
+        }
+    }
 
     @Override
     public void resize(int width, int height) {

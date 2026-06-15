@@ -7,9 +7,7 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.main.CoreWorks.Coreworks;
 import com.main.CoreWorks.Factory.*;
-import com.main.CoreWorks.RunPersistence.RunMap;
 import com.main.CoreWorks.RunPersistence.RunState;
-import com.main.CoreWorks.database.*;
 import com.main.CoreWorks.entities.*;
 import com.main.CoreWorks.simulators.*;
 
@@ -39,7 +37,7 @@ public class CombatScreen implements Screen {
 
     private final int tileSize = Math.min(gridSize / gridWidth, gridSize / gridHeight);
 
-    private final int gridMidX = (int) (Coreworks.WORLD_WIDTH / 2);
+    private final int gridMidX = (int) (Coreworks.VIEWPORT_WIDTH / 2);
     private final int gridMidY = 400;
 
     private final int gridStartX = gridMidX - tileSize * gridWidth / 2 ;
@@ -306,7 +304,6 @@ public class CombatScreen implements Screen {
         // Below draws the screen transitions
         if (controller.isWin()) {
             controller.getFactorySim().clear();
-            runState.getCurrNode().setCompleted(true);
             game.setScreen(new WinScreen(game, runState));
             return;
         } else if (controller.isLost()) {

@@ -33,8 +33,8 @@ public class LoseScreen implements Screen {
 
         // Center the text
         GlyphLayout layout = new GlyphLayout(game.font, "YOU LOST!");
-        float x = (Coreworks.WORLD_WIDTH - layout.width) / 2;
-        float y = (Coreworks.WORLD_HEIGHT - layout.height) / 2;
+        float x = (Coreworks.VIEWPORT_WIDTH - layout.width) / 2;
+        float y = (Coreworks.VIEWPORT_HEIGHT - layout.height) / 2;
 
         game.font.draw(game.batch, layout, x, y);
 

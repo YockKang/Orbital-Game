@@ -27,9 +27,10 @@ public class BaseDamageUpgrade extends UpgradeAspect{
 
     @Override
     public String changes(Building b) {
-        StringBuilder str = new StringBuilder().append("Base Damage");
+        StringBuilder str = new StringBuilder().append("Base Damage: ");
         if (b instanceof Shooter) {
             str.append( ((Shooter) b).getBaseDmg() )
+                .append(" -> ")
                 .append( ((Shooter) b).getBaseDmg() + value );
         } else {
             str.append("Not Applicable");

@@ -21,8 +21,9 @@ public class BufferSizeUpgrade extends UpgradeAspect{
     @Override
     public String changes(Building b) {
         return new StringBuilder()
-            .append("Buffer Size")
+            .append("Buffer Size: ")
             .append( b.getCapacityMult() )
+            .append(" -> ")
             .append( b.getCapacityMult() + value )
             .toString();
     }

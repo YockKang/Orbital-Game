@@ -27,9 +27,10 @@ public class FlatDamageUpgrade extends UpgradeAspect {
 
     @Override
     public String changes(Building b) {
-        StringBuilder str = new StringBuilder().append("Flat Damage");
+        StringBuilder str = new StringBuilder().append("Flat Damage: ");
         if (b instanceof Shooter) {
             str.append( ((Shooter) b).getFlatDmg() )
+                .append(" -> ")
                 .append( ((Shooter) b).getFlatDmg() + (int) value );
         } else {
             str.append("Not Applicable");

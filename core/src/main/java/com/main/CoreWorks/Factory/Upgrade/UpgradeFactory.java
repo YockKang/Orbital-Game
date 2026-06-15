@@ -22,7 +22,17 @@ public class UpgradeFactory {
             buildingName = "Random";
         }
 
-        Array<String> upgradesGroup = new Array<>(UpgradeTypeRegistry.get(buildingName));
+        return randomTypedUpgrade(random, strength, buildingName);
+
+    }
+
+    private static float roundDP(float input, int n) {
+        return (float) (Math.round((double) input * Math.pow(10, n)) / Math.pow(10, n));
+    }
+
+    public static Upgrade randomTypedUpgrade(Random random, float strength, String type) {
+
+        Array<String> upgradesGroup = new Array<>(UpgradeTypeRegistry.get(type));
 
         int numUpgrades = 1;
 
@@ -150,9 +160,5 @@ public class UpgradeFactory {
 
         return new Upgrade(upgrades);
 
-    }
-
-    private static float roundDP(float input, int n) {
-        return (float) (Math.round((double) input * Math.pow(10, n)) / Math.pow(10, n));
     }
 }

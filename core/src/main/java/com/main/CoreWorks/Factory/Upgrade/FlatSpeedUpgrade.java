@@ -21,8 +21,9 @@ public class FlatSpeedUpgrade  extends UpgradeAspect{
     @Override
     public String changes(Building b) {
         return new StringBuilder()
-            .append("Flat Speed")
+            .append("Flat Speed: ")
             .append( b.getSpeedFlat() )
+            .append(" -> ")
             .append( b.getSpeedFlat() + value )
             .toString();
     }

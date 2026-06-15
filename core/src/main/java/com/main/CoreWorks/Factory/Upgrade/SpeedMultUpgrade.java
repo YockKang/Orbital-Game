@@ -21,8 +21,9 @@ public class SpeedMultUpgrade  extends UpgradeAspect {
     @Override
     public String changes(Building b) {
         return new StringBuilder()
-            .append("Speed Multiplier")
+            .append("Speed Multiplier: ")
             .append( b.getSpeedMult() )
+            .append(" -> ")
             .append( b.getSpeedMult() + value )
             .toString();
     }

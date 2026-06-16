@@ -5,12 +5,16 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.main.CoreWorks.Coreworks;
@@ -28,6 +32,11 @@ public class MapScreen implements Screen {
     private Skin skin;
     private Texture texture;
 
+    // The below fields are used to clamp the min / max camera movement
+    private float mapMinX;
+    private float mapMaxX;
+    private float mapMinY;
+    private float mapMaxY;
 
     public MapScreen(Coreworks game, RunState runstate) {
         this.game = game;
@@ -44,9 +53,91 @@ public class MapScreen implements Screen {
         shapeRenderer = new ShapeRenderer();
         texture = createSimpleTexture();
 
+        // Set the boundary of the map
+        computeBoundary();
+
+        // Add the Dragging actor
+        stage.addActor(panningActor());
+
         // Build the stage below
         buildMapUI();
         updateCurrentActor();
+    }
+
+    // Helper method that calculates furthest possible X and Y coords for camera movement
+    private void computeBoundary() {
+        float buffer = Math.max(game.viewport.getWorldWidth(), game.viewport.getWorldHeight()) / 2f;
+
+        mapMinX = Float.MAX_VALUE;
+        mapMinY = Float.MAX_VALUE;
+        mapMaxX = Float.MIN_VALUE;
+        mapMaxY = Float.MIN_VALUE;
+
+        for (MapNode node : runState.getRunMap().getNodes()) {
+            mapMinX = Math.min(mapMinX, node.getX());
+            mapMinY = Math.min(mapMinY, node.getY());
+            mapMaxX = Math.max(mapMaxX, node.getX());
+            mapMaxY = Math.max(mapMaxY, node.getY());
+        }
+
+        mapMinX -= buffer;
+        mapMinY -= buffer;
+        mapMaxX += buffer;
+        mapMaxY += buffer;
+
+    }
+
+    // Helper method that creates a large background actor encompassing the whole map for panning camera
+    private Actor panningActor() {
+        Actor panner = new Actor();
+        panner.setBounds(mapMinX, mapMinY, mapMaxX - mapMinX, mapMaxY - mapMinY);
+
+        panner.addListener(new ActorGestureListener() {
+            @Override
+            public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
+                // We want to move the camera opposite of the direction we move the mouse in, so it is more intuitive (used by a lot of touchscreen apps on mobile)
+                game.camera.position.add(-deltaX, -deltaY, 0f);
+
+                // Clamp the camera to the bounds in case of exceeding boundaries
+                clampCamera();
+
+                // Then update the position
+                game.camera.update();
+            }
+        });
+        return panner;
+    }
+
+    // Helper method to actually clamp the camera
+    private void clampCamera() {
+        // Orthographic camera's position coords is taken from the CENTER of the camera rather than corner, unlike basically every other libGDX class
+        // So, we need to make sure the camera's leftmost / rightmost / top / bottom boundaries do not exceed the map boundaries computed by the other helper function
+        // Finding the camera center position to ensure its 4 boundaries do not exceed the map 4 boundaries is straightforward, just take map boundary - half the camera size to get the center position that the camera must be bound to
+
+        float halfCameraW = game.viewport.getWorldWidth() / 2f;
+        float halfCameraH = game.viewport.getWorldHeight() / 2f;
+        float minCameraX = mapMinX + halfCameraW;
+        float minCameraY = mapMinY + halfCameraH;
+        float maxCameraX = mapMaxX - halfCameraW;
+        float maxCameraY = mapMaxY - halfCameraH;
+
+        // Clamp the x position
+        if (minCameraX > maxCameraX) {
+            // If the map boundary is smaller than the viewport, min will be greater than max, which will cause weird viewport issues
+            // So, we just make the camera completely unable to move by forcing the camera back to the center in this case.
+            game.camera.position.x = (mapMinX + mapMaxX) / 2f;
+        } else {
+            game.camera.position.x = MathUtils.clamp(game.camera.position.x, minCameraX, maxCameraX);
+        }
+
+        // Clamp the y position
+        if (minCameraY > maxCameraY) {
+            // If the map boundary is smaller than the viewport, min will be greater than max, which will cause weird viewport issues
+            // So, we just make the camera completely unable to move by forcing the camera back to the center in this case.
+            game.camera.position.y = (mapMinY + mapMaxY) / 2f;
+        } else {
+            game.camera.position.y = MathUtils.clamp(game.camera.position.y, minCameraY, maxCameraY);
+        }
     }
 
     private Texture createSimpleTexture() {
@@ -65,14 +156,13 @@ public class MapScreen implements Screen {
     }
 
     private void buildMapUI() {
-        stage.clear();
-
         // The below code builds the table that will serve as the base table for all subsequent UI building in the Stage
         Table table = new Table();
         table.setFillParent(true);
 
         // Top align the table + add label in the current row
         table.top().pad(30);
+        table.setTouchable(Touchable.disabled);
         stage.addActor(table);
 
         // Draws the map + its nodes based on the position generated in RunMapGenerator

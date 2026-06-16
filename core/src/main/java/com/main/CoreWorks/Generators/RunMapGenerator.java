@@ -21,17 +21,20 @@ public class RunMapGenerator {
         CombatNode combat2 = new CombatNode(CombatGenerator.createCombat(1, 1f, random), 1, 1f, 450, 500);
         CombatNode combat3 = new CombatNode(CombatGenerator.createCombat(1, 1.1f, random), 1, 1.1f, 750, 500);
         CombatNode combat4 = new CombatNode(CombatGenerator.createCombat(1, 1.5f, random), 1, 1.5f, 1050, 500);
+        CombatNode combat5 = new CombatNode(CombatGenerator.createCombat(1, 1.7f, random), 1, 1.7f, 1700, 500);
 
         // Determine how the nodes link to other nodes
         combat1.addNextNode(combat2);
         combat2.addNextNode(combat3);
         combat3.addNextNode(combat4);
+        combat4.addNextNode(combat5);
 
         // Adds the nodes to the map
         runMap.addNode(combat1);
         runMap.addNode(combat2);
         runMap.addNode(combat3);
         runMap.addNode(combat4);
+        runMap.addNode(combat5);
 
         // Set the starting node
         runMap.setStartNode(combat1);

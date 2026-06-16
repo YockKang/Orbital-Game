@@ -493,6 +493,7 @@ public class CombatScreen implements Screen {
         hoveredGridCoords = getGridAt(mouseTranslatedX, mouseTranslatedY);
         if (hoveredGridCoords != null) {
             selectedBuilding = controller.getFactorySim().getGrid().getBuildingAt(hoveredGridCoords.x, hoveredGridCoords.y);
+            needRefresh = true;
         }
     }
 
@@ -506,6 +507,7 @@ public class CombatScreen implements Screen {
         Coords coords = getGridAt(mouseTranslatedX, mouseTranslatedY);
         if (selectedBuilding != null || coords == null) {
             selectedBuilding = null;
+            needRefresh = true;
         } else {
             Building building = controller.getFactorySim().getGrid().getBuildingAt(coords.x, coords.y);
             if (building == null) {

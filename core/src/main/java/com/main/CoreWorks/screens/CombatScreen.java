@@ -4,6 +4,13 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.*;
 import com.main.CoreWorks.Coreworks;
 import com.main.CoreWorks.Factory.*;
@@ -24,6 +31,11 @@ public class CombatScreen implements Screen {
     private Coords hoveredGridCoords = null;
     private boolean hoveredCanPlace = false;
     private boolean isPaused = true;
+
+    // Below field handles the scene2D UI
+    private Stage stage;
+    private Skin skin;
+    private boolean needRefresh = true;
 
 
     // Hardcoded grid size for milestone 1 testing purposes
@@ -64,9 +76,118 @@ public class CombatScreen implements Screen {
 
     @Override
     public void show() {
+        stage = new Stage(game.viewport, game.batch);
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        Gdx.input.setInputProcessor(stage);
+
         game.viewport.apply();
         game.camera.update();
         shapeRenderer = new ShapeRenderer();
+
+        // The below builds the scene2D UI overlay for everything but the grid and its related functions
+        buildCombatUI();
+    }
+
+    public void buildCombatUI() {
+        stage.clear();
+
+        Table table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
+
+        table.top();
+
+        // The below builds the top part of the UI + pause screen
+        Table topTable = new Table();
+        topTable.top().left().pad(10);
+        topTable.add(new Label("Coreworks", skin)).pad(20);
+        topTable.add(new Label("Ticks: " + tickCount, skin)).pad(20);
+        if (selectedBuilding == null) {
+            topTable.add(new Label("Selected: None ", skin)).pad(20);
+        } else {
+            topTable.add(new Label("Selected: " + selectedBuilding.displayName(), skin)).pad(20);
+            topTable.add(new Label("Press R to rotate \n Current rotation: " + selectedBuilding.getRotation(), skin)).pad(20);
+        }
+        if (isPaused) {
+            topTable.add(new Label("PAUSED \n Press Space to Continue", skin)).pad(20);
+        }
+        table.add(topTable).colspan(3).expandX().row();
+
+        // Create a middle table to handle other parts of the HUD
+        Table middleTable = new Table();
+
+        // The below builds the combat Log
+        Table logTable = new Table();
+        logTable.top().center();
+        logTable.add(new Label("Combat Log:", skin)).row();
+        Array<String> log = controller.getCombatSim().getCombatLog();
+        int start = Math.max(0, log.size - 3); // displays the 3 most recent interactions
+        for (int i = start; i < log.size; i++) {
+            logTable.add(new Label(log.get(i), skin)).right().row();
+            needRefresh = true;
+        }
+        middleTable.add(logTable).expand().right().top().row();
+
+        // The below builds the enemy display
+        Table enemyTable = new Table();
+        enemyTable.top().center().pad(10);
+        enemyTable.defaults().width(200);
+        enemyTable.add(new Label("Enemies:", skin)).row();
+        Array<Enemy> enemies = controller.getCombatSim().getEnemies();
+        int enemyCount = 0;
+        int maxEnemyPerRow = 2;
+        for (Enemy enemy : enemies) {
+            // Draw the enemy in a table (disguised as a card) to look neater
+            Table enemyCard = new Table(skin);
+            enemyCard.setBackground("default-round");
+            enemyCard.defaults().pad(5);
+            enemyCard.add(new Label(enemy.displayName(), skin)).row();
+            enemyCard.add(new Label(String.format("HP: %s/%s", enemy.displayCurrentHp(), enemy.displayMaxHp()), skin)).row();
+            enemyCard.add(new Label("Shield: " + enemy.displayShield(), skin)).row();
+            enemyCard.add(new Label(String.format("Next move in %s ticks", enemy.getMoveTimer()), skin)).row();
+            enemyTable.add(enemyCard).pad(5);
+            enemyCount++;
+            if (enemyCount % maxEnemyPerRow == 0) {
+                enemyTable.row();
+            }
+        }
+        middleTable.add(enemyTable).right().top();
+
+        // The below builds the inventoryTable
+        Table inventoryTable = new Table();
+        inventoryTable.left();
+        inventoryTable.add(new Label("Inventory", skin)).row();
+        Table buildingsInInv = new Table();
+        buildingsInInv.defaults().width(130).height(65).pad(5);
+        Array<Building> inventory = controller.getCombatSim().getPlayer().getInventory();
+        int maxBuildingsPerRow = 3;
+        int buildingCount = 0;
+
+        for (Building building : inventory) {
+            TextButton buildingButton = new TextButton(building.displayName(), skin);
+            if (building == selectedBuilding) {
+                buildingButton.setColor(Color.GREEN);
+            }
+            buildingButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    selectedBuilding = building;
+                    needRefresh = true;
+                }
+            });
+            buildingsInInv.add(buildingButton);
+            buildingCount++;
+            if (buildingCount % maxBuildingsPerRow == 0) {
+                buildingsInInv.row();
+            }
+        }
+        inventoryTable.add(buildingsInInv);
+
+        table.add(inventoryTable).bottom().right();
+
+        table.add(middleTable).expand().fill().row();
+
+        needRefresh = false;
     }
 
     @Override
@@ -85,6 +206,7 @@ public class CombatScreen implements Screen {
                 controller.advanceTick(tickCount);
                 tickCount += 1;
                 accumulator -= TIME_STEP;
+                needRefresh = true;
             }
         }
 
@@ -101,8 +223,16 @@ public class CombatScreen implements Screen {
         drawPlacementPreview();
         drawBuildings();
         drawIOPorts();
-        drawInventory();
-        drawCombatHUD();
+
+        // Draws the Scene2D UI
+        if (needRefresh) {
+            buildCombatUI();
+        }
+        stage.act(delta);
+        stage.draw();
+
+        // Handles win/loss screen transitions
+        checkWinLoss();
     }
 
     /*
@@ -265,42 +395,7 @@ public class CombatScreen implements Screen {
         game.batch.end();
     }
 
-    public void drawCombatHUD() {
-        game.batch.begin();
-        // Below draws the combat log
-        Array<String> log = controller.getCombatSim().getCombatLog();
-        for (int i = 0; i < log.size; i++) {
-            game.font.draw(game.batch, log.get(i), inventoryStartX, 700 - i * 20);
-        }
-
-        // Below draws the Entities HUD
-        game.font.draw(game.batch, "Coreworks - Milestone 1", 40, 710);
-        game.font.draw(game.batch, "Ticks: " + tickCount, 40, 680);
-        game.font.draw(game.batch, controller.getCombatSim().getPlayer().toString(), 210, 675);
-        game.font.draw(game.batch, controller.getCombatSim().getEnemies().toString(), 940, 675);
-
-        // Below draws the selected building HUD
-        game.font.draw(game.batch, selectedBuilding == null ? "Selected: None" : "Selected: " + selectedBuilding, 60, 575);
-
-        // Below draws the rotation
-        if (selectedBuilding != null) {
-            game.font.draw(game.batch, "Current rotation: " + selectedBuilding.getRotation(), 940, 175);
-            game.font.draw(game.batch, "Press R to rotate", 940, 200);
-        }
-
-        // Below draws the pause Screen
-        if (isPaused) {
-            game.font.draw(game.batch, "PAUSED", 600, 420);
-            game.font.draw(game.batch, "Press Space to Resume", 540, 380);
-        }
-
-        // Below draws the hints
-        game.font.draw(game.batch, "Left click Inventory - Select", 40, 225);
-        game.font.draw(game.batch, "Left click Grid - Place", 40, 175);
-        game.font.draw(game.batch, "Right click - Deselect or Remove building", 40, 125);
-
-        game.batch.end();
-
+    public void checkWinLoss() {
         // Below draws the screen transitions
         if (controller.isWin()) {
             controller.getFactorySim().clear();
@@ -313,40 +408,6 @@ public class CombatScreen implements Screen {
         }
     }
 
-    public void drawInventory() {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-
-        // Draws the Outline of the grid
-        for (int i = 0; i < controller.getCombatSim().getPlayer().getInventory().size; i++) {
-            int leftBoundInventoryBorder = inventoryStartX + i * (inventorySlotSize + inventorySlotGap);
-
-            // Highlight the building if it is currently selected
-            if (selectedBuilding == controller.getCombatSim().getPlayer().getBuildingAt(i)) {
-                shapeRenderer.setColor(Color.GREEN);
-            } else {
-                shapeRenderer.setColor(Color.WHITE);
-            }
-
-            shapeRenderer.rect(leftBoundInventoryBorder, inventoryStartY, inventorySlotSize, inventorySlotSize);
-        }
-
-        shapeRenderer.end();
-
-        game.batch.begin();
-
-        // Below draws the Inventory itself
-        game.font.draw(game.batch, "Inventory", inventoryStartX, inventoryStartY + 125);
-
-        for (int i = 0; i < controller.getCombatSim().getPlayer().getInventory().size; i++) {
-            Building building = controller.getCombatSim().getPlayer().getBuildingAt(i);
-            int leftBoundInventoryBorder = inventoryStartX + i * (inventorySlotSize + inventorySlotGap);
-            game.font.draw(game.batch, building.displayName(), leftBoundInventoryBorder + 10, inventoryStartY + 56);
-        }
-
-        game.batch.end();
-    }
-
-
     /*
     All mouse inputs should be handled here
      */
@@ -356,7 +417,7 @@ public class CombatScreen implements Screen {
 
         // Press R to rotate building
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            if (selectedBuilding == null) {
+            if (selectedBuilding == null || selectedBuilding.isOnGrid()) {
                 return;
             }
             int nextRotation = (selectedBuilding.getRotation() + 1) % 4;
@@ -366,6 +427,7 @@ public class CombatScreen implements Screen {
         // Pause will be tied to Spacebar
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             isPaused = !isPaused;
+            needRefresh = true;
         }
 
         // Mouse inputs handled below
@@ -373,6 +435,11 @@ public class CombatScreen implements Screen {
 
         float mouseTranslatedX = mouseTranslatedCoords.x;
         float mouseTranslatedY = mouseTranslatedCoords.y;
+
+        // Handles potential bugs with scene2D UI and grid inputs by prioritizing scene2D UI if there is an overlap
+        if (stage.hit(mouseTranslatedX, mouseTranslatedY, true) != null) {
+            return;
+        }
 
         // Handles Placement preview via mouse hovering
         hoveredGridCoords = getGridAt(mouseTranslatedX, mouseTranslatedY);
@@ -415,15 +482,11 @@ public class CombatScreen implements Screen {
      */
 
     private void leftClick(float mouseTranslatedX, float mouseTranslatedY) {
-        Building clickedBuilding = getInventoryBuildingAt(mouseTranslatedX, mouseTranslatedY);
-        if (clickedBuilding != null) {
-            selectedBuilding = clickedBuilding;
-            return;
-        }
         if (hoveredGridCoords != null && selectedBuilding != null && !selectedBuilding.isOnGrid()) {
             boolean successfulPlacement = controller.getFactorySim().getGrid().placeBuilding(selectedBuilding, hoveredGridCoords.x, hoveredGridCoords.y, selectedBuilding.getRotation());
             if (successfulPlacement) {
                 controller.getCombatSim().getPlayer().removeBuilding(selectedBuilding);
+                needRefresh = true;
                 selectedBuilding = null;
             }
         }
@@ -450,24 +513,8 @@ public class CombatScreen implements Screen {
             }
             controller.getFactorySim().getGrid().removeBuilding(building);
             controller.getCombatSim().getPlayer().addBuilding(building);
+            needRefresh = true;
         }
-    }
-
-    // Returns the inventory building clicked by mouse if mouse over inventory
-    private Building getInventoryBuildingAt(float mouseTranslatedX, float mouseTranslatedY) {
-        for (int i = 0; i < controller.getCombatSim().getPlayer().getInventory().size; i++) {
-            int leftBoundInventorySlot = inventoryStartX + i * (inventorySlotSize + inventorySlotGap);
-            int rightBoundInventorySlot = leftBoundInventorySlot + inventorySlotSize;
-            int topBoundInventorySlot = inventoryStartY + inventorySlotSize;
-
-            boolean clickedSlotX = mouseTranslatedX >= leftBoundInventorySlot && mouseTranslatedX < rightBoundInventorySlot;
-            boolean clickedSlotY = mouseTranslatedY >= inventoryStartY && mouseTranslatedY < topBoundInventorySlot;
-
-            if (clickedSlotX && clickedSlotY) {
-                return controller.getCombatSim().getPlayer().getBuildingAt(i);
-            }
-        }
-        return null;
     }
 
     // Generic code that translates mouse clicks on grid into an x and y coord of a 2D array (in this case grid's 2D array)
@@ -594,5 +641,7 @@ public class CombatScreen implements Screen {
     @Override
     public void dispose() {
         shapeRenderer.dispose();
+        stage.dispose();
+        skin.dispose();
     }
 }

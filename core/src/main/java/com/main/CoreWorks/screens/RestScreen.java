@@ -95,14 +95,16 @@ public class RestScreen implements Screen {
         }
 
         if (state == RestScreenState.CONFIRMING) {
-            table.add(new Label("Confirm your choice", skin)).pad(10).row();
+            table.add(new Label("Confirm your choice!", skin)).pad(10).row();
             table.add(new Label("Once confirmed, you cannot go back!", skin)).pad(10).row();
 
             if (pendingChoice == ChoiceMade.HEAL) {
-                table.add(new Label(String.format("You will heal %s HP", this.healAmt), skin)).pad(20).row();
+                table.add(new Label("You chose to heal.", skin)).pad(10).row();
+                table.add(new Label(String.format("You will heal %s HP.", this.healAmt), skin)).pad(10).row();
             }
             if (pendingChoice == ChoiceMade.REWARD) {
-                table.add(new Label("You will get a mystery reward", skin)).pad(20).row();
+                table.add(new Label("You chose to upgrade a building.", skin)).pad(10).row();
+                table.add(new Label("You will get a randomised building upgrade.", skin)).pad(10).row();
             }
 
             TextButton confirmButton = new TextButton("Confirm", skin);

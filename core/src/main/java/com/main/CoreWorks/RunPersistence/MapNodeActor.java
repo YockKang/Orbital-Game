@@ -8,6 +8,10 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+/*
+The color of the different nodes are drawn here
+ */
+
 public class MapNodeActor extends Actor {
     protected MapNode node;
     protected Texture texture;
@@ -71,6 +75,10 @@ public class MapNodeActor extends Actor {
         // Sets the colors of the different node types below
         if (node instanceof CombatNode) {
             return Color.ORANGE;
+        }
+
+        if (node instanceof RestNode) {
+            return Color.GREEN;
         }
 
         // Default color for everything else not specifically included

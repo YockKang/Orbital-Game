@@ -16,7 +16,7 @@ public abstract class Move {
 
     @Override
     public String toString() {
-        return String.format("Name: %s \n Description: %s \n Preparation time: %s", this.name, this.description, this.chargeTime);
+        return String.format("Name: %s \n %s \nCooldown: %s ticks", this.name, this.description, this.chargeTime);
     }
 
     public int getChargeTime() {

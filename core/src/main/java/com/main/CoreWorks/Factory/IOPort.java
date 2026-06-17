@@ -5,7 +5,7 @@ public class IOPort {
     protected int yCoord;
     protected int dir;
     protected int transferPerTick;
-    protected Structure target;
+    protected Building target;
 
     public IOPort(int x, int y, int d, int speed) {
         this.xCoord = x;
@@ -35,7 +35,7 @@ public class IOPort {
         return transferPerTick;
     }
 
-    public void setTarget(Structure b) {
+    public void setTarget(Building b) {
         this.target = b;
     }
 

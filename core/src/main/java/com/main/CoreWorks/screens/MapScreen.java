@@ -18,10 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.main.CoreWorks.Coreworks;
-import com.main.CoreWorks.RunPersistence.CombatNode;
-import com.main.CoreWorks.RunPersistence.MapNode;
-import com.main.CoreWorks.RunPersistence.MapNodeActor;
-import com.main.CoreWorks.RunPersistence.RunState;
+import com.main.CoreWorks.RunPersistence.*;
 
 public class MapScreen implements Screen {
 
@@ -169,6 +166,12 @@ public class MapScreen implements Screen {
         table.add(new Label("Dungeon Map", skin)).row();
         table.add(new Label("Click a unlocked node to continue", skin)).pad(10).row();
         for (MapNode node : runState.getRunMap().getNodes()) {
+            // Relock all nodes that are not adjacent to the current node
+            if (node.isUnlocked() && !node.isCompleted() && !(runState.getCurrNode() == node)) {
+                if (!runState.getCurrNode().getNextNodes().contains(node, true)) {
+                    node.setUnlocked(false);
+                }
+            }
             // For now, all MapNodes have the exact same size, texture and skin, but eventually when we add more node types, their sizes / sprites will be more unique
             // which will be changed here by changing the input params in MapNodeActor
             MapNodeActor nodeActor = new MapNodeActor(node, texture, skin, 70, 70);
@@ -187,13 +190,19 @@ public class MapScreen implements Screen {
         if (!node.isUnlocked() || node.isCompleted()) {
             return;
         }
-
         // Add all the different types of nodes and what to do in them below
 
         // Handles combatNode
         if (node instanceof CombatNode combatNode) {
             runState.setCurrNode(node);
             game.setScreen(new CombatScreen(game, runState, combatNode.getEnemies()));
+            return;
+        }
+
+        // Handles RestNode
+        if (node instanceof RestNode restNode) {
+            runState.setCurrNode(node);
+            game.setScreen(new RestScreen(game, runState));
             return;
         }
     }

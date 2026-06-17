@@ -62,7 +62,7 @@ public class WinScreen implements Screen {
             for (MapNode next : runState.getCurrNode().getNextNodes()) {
                 next.setUnlocked(true);
             }
-            Array<Reward> rewards = RewardGenerator.generateReward(runState);
+            Array<Reward> rewards = RewardGenerator.generateCombatReward(runState);
             game.setScreen(new RewardScreen(game, runState, rewards));
             dispose();
         }

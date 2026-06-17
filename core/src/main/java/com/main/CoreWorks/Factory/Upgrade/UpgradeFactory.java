@@ -51,7 +51,7 @@ public class UpgradeFactory {
             3: 1.5%
             4: .5%
              */
-            numUpgrades = Math.min(Math.max((int) (Math.expm1(random.nextGaussian(-1.135, .886)) + 1), 0), 3) + 1;
+            numUpgrades = Math.min(Math.max((int) Math.expm1(random.nextGaussian(-1.135, .886)) + 1, 0), 3) + 1;
         } else if (strength < 1.2) {
             /*
             est. distribution
@@ -60,7 +60,7 @@ public class UpgradeFactory {
             3: 10%
             4: 5%
              */
-            numUpgrades = Math.min(Math.max((int) (Math.expm1(random.nextGaussian(0, .668)) + 1), 0), 3) + 1;
+            numUpgrades = Math.min(Math.max((int) Math.expm1(random.nextGaussian(0, .668)) + 1, 0), 3) + 1;
         } else {
             /*
             est. distribution
@@ -69,7 +69,7 @@ public class UpgradeFactory {
             3: 20%
             4: 10%
              */
-            numUpgrades = Math.min(Math.max((int) (Math.expm1(random.nextGaussian(.43, .512)) + 1), 0), 3) + 1;
+            numUpgrades = Math.min(Math.max((int) Math.expm1(random.nextGaussian(.43, .512)) + 1, 0), 3) + 1;
         }
 
         if (upgradesGroup.contains("Speed", true)) {

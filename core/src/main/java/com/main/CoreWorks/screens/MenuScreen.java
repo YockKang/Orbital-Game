@@ -44,7 +44,7 @@ public class MenuScreen implements Screen {
             // Hardcoded factory grid as well, will eventually tie grid size to different player types
             FactoryGrid factoryGrid = new FactoryGrid(4, 4);
             RunState runState = new RunState(player, factoryGrid);
-            RunMap runMap = RunMapGenerator.generateRunMap(runState.getRandom());
+            RunMap runMap = RunMapGenerator.generateRunMap(runState);
             runState.setRunMap(runMap);
             runState.setCurrNode(runMap.getStartNode());
 

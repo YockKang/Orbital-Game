@@ -17,6 +17,9 @@ import com.main.CoreWorks.Rewards.AddUpgradeReward;
 import com.main.CoreWorks.Rewards.Reward;
 import com.main.CoreWorks.RunPersistence.RunState;
 
+/*
+Note: Reward Screen does NOT handle unlocking of next nodes, it should be settled before coming to this screen
+ */
 public class RewardScreen implements Screen {
 
     private final Coreworks game;

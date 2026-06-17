@@ -79,6 +79,6 @@ public abstract class Character {
 
     @Override
     public String toString() {
-        return String.format("Name: %s \n HP: %s/%s \n Shield: %s", this.name, this.hp, this.maxHp, this.shield);
+        return String.format("Name: %s \nHP: %s/%s \nShield: %s", this.name, this.hp, this.maxHp, this.shield);
     }
 }

@@ -8,7 +8,7 @@ public class DisableBuildingMove extends Move {
     private int duration;
 
     public DisableBuildingMove(int dur, int chargeTime) {
-        super("Disable Building", "May disable a random building for " + dur + " ticks", chargeTime);
+        super("Disable Building", "Disables for " + dur + " ticks", chargeTime);
         this.duration = dur;
     }
 

@@ -9,11 +9,21 @@ import com.main.CoreWorks.database.*;
 import java.util.Random;
 
 public class RewardGenerator {
-    public static Array<Reward> generateReward(RunState runState) {
+    public static Array<Reward> generateCombatReward(RunState runState) {
         Array<Reward> rewards = new Array<>();
 
         // Add the Rewards in the code below
         rewards.add(randomBuildingReward(runState));
+        rewards.add(randomUpgradeReward(runState));
+
+        // Return statement below
+        return rewards;
+    }
+
+    public static Array<Reward> generateRestNodeReward(RunState runState) {
+        Array<Reward> rewards = new Array<>();
+
+        // Add the Rewards in the code below
         rewards.add(randomUpgradeReward(runState));
 
         // Return statement below
@@ -39,15 +49,7 @@ public class RewardGenerator {
     private static Reward randomUpgradeReward(RunState runState) {
         Random random = runState.getRandom();
         MapNode node = runState.getCurrNode();
-        return new AddUpgradeReward(UpgradeFactory.randomUpgrade(random, node.getMultiplier()));
-    }
-
-    private static Reward randomFixedUpgradeReward(RunState runState) {
-        Random random = runState.getRandom();
-        MapNode node = runState.getCurrNode();
-        return new AddFixedUpgradeReward(
-            runState.getOwnedBuildings().get(
-                random.nextInt(runState.getOwnedBuildings().size - 1)),
+        return new AddUpgradeReward(
             UpgradeFactory.randomUpgrade(random, node.getMultiplier()));
     }
 }

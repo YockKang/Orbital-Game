@@ -56,5 +56,33 @@
         "Charge": 10
       }
     ]
+  },
+  {
+    "id": "FirstBoss",
+    "Name": "Deadly Drone",
+    "HP": 150,
+    "GracePeriod": 3,
+    "Moveset": [
+      {
+        "Type": "Disable",
+        "Value": 10,
+        "Charge": 10
+      },
+      {
+        "Type": "Shield",
+        "Value": 10,
+        "Charge": 10
+      },
+      {
+        "Type": "Heal",
+        "Value": 10,
+        "Charge": 10
+      },
+      {
+        "Type": "Damage",
+        "Value": 10,
+        "Charge": 10
+      }
+    ]
   }
 ]

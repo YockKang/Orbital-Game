@@ -10,4 +10,8 @@ public class CombatGenerator {
     public static Array<Enemy> createCombat(int tier, float multiplier, Random random) {
         return EnemyGroupDatabase.getRandomGroup(tier, multiplier, random);
     }
+
+    public static Array<Enemy> createCombat(String tier, float multiplier, Random random) {
+        return EnemyGroupDatabase.getRandomGroup(tier, multiplier, random);
+    }
 }

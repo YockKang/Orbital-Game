@@ -1,9 +1,6 @@
 package com.main.CoreWorks.Generators;
 
-import com.main.CoreWorks.RunPersistence.CombatNode;
-import com.main.CoreWorks.RunPersistence.RestNode;
-import com.main.CoreWorks.RunPersistence.RunMap;
-import com.main.CoreWorks.RunPersistence.RunState;
+import com.main.CoreWorks.RunPersistence.*;
 
 import java.util.Random;
 
@@ -24,8 +21,8 @@ public class RunMapGenerator {
         CombatNode combat2 = new CombatNode(CombatGenerator.createCombat(1, 1f, random), 1, 1f, 450, 500);
         CombatNode combat3 = new CombatNode(CombatGenerator.createCombat(1, 1.1f, random), 1, 1.1f, 750, 500);
         CombatNode combat4 = new CombatNode(CombatGenerator.createCombat(1, 1.5f, random), 1, 1.5f, 1050, 500);
-        CombatNode combat5 = new CombatNode(CombatGenerator.createCombat(1, 1.7f, random), 1, 1.7f, 1700, 500);
         RestNode rest1 = new RestNode(1, 1.1f,750, 250);
+        BossNode boss1 = new BossNode(CombatGenerator.createCombat("Boss1", 1.8f, random), 1, 1.8f, 1500, 500);
 
         // Determine how the nodes link to other nodes
         combat1.addNextNode(combat2);
@@ -33,15 +30,15 @@ public class RunMapGenerator {
         combat2.addNextNode(rest1);
         rest1.addNextNode(combat4);
         combat3.addNextNode(combat4);
-        combat4.addNextNode(combat5);
+        combat4.addNextNode(boss1);
 
         // Adds the nodes to the map
         runMap.addNode(combat1);
         runMap.addNode(combat2);
         runMap.addNode(combat3);
         runMap.addNode(combat4);
-        runMap.addNode(combat5);
         runMap.addNode(rest1);
+        runMap.addNode(boss1);
 
         // Set the starting node
         runMap.setStartNode(combat1);

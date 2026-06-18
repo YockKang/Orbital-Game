@@ -81,6 +81,10 @@ public class MapNodeActor extends Actor {
             return Color.GREEN;
         }
 
+        if (node instanceof BossNode) {
+            return Color.RED;
+        }
+
         // Default color for everything else not specifically included
         return Color.MAGENTA;
     }

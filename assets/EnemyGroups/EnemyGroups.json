@@ -16,7 +16,7 @@
     "Enemies" : ["DisableDrone", "DisableDrone", "DisableDrone"]
   },
   {
-    "Tier" : 2,
+    "Tier" : "Boss1",
     "Enemies" : ["FirstBoss"]
   }
 ]

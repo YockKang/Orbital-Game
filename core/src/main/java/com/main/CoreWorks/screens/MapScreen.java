@@ -197,6 +197,13 @@ public class MapScreen implements Screen {
             game.setScreen(new RestScreen(game, runState));
             return;
         }
+
+        // Handles BossNode
+        if (node instanceof BossNode bossNode) {
+            runState.setCurrNode(node);
+            game.setScreen(new CombatScreen(game, runState, bossNode.getEnemies()));
+            return;
+        }
     }
 
     // Need to update the current MapNodeActor based on runState's current node so it will be highlighted correctly in a different color

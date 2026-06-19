@@ -117,11 +117,13 @@ public class RestScreen implements Screen {
                     }
                     if (pendingChoice == ChoiceMade.HEAL) {
                         runState.getPlayer().heal(healAmt);
+                        game.resetCamera();
                         game.setScreen(new MapScreen(game, runState));
                         return;
                     }
 
                     if (pendingChoice == ChoiceMade.REWARD) {
+                        game.resetCamera();
                         game.setScreen(new RewardScreen(game, runState, mysteryReward));
                         return;
                     }

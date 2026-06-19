@@ -45,6 +45,7 @@ public class LoseScreen implements Screen {
         game.font.getData().setScale(720f / 480f);
 
         if (Gdx.input.justTouched()) {
+            game.resetCamera();
             game.setScreen(new MenuScreen(game));
             dispose();
 

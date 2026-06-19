@@ -77,6 +77,13 @@ public class Coreworks extends Game {
         this.setScreen(new MenuScreen(this)); // eventually will replace with the Main Menu screen
     }
 
+    // Helper method to reset the camera since rn everything uses the same camera
+    public void resetCamera() {
+        camera.zoom = 1f;
+        camera.position.set(VIEWPORT_WIDTH /2f, VIEWPORT_HEIGHT /2f, 0);
+        camera.update();
+    }
+
     @Override
     public void render() {
         // A common mistake is to forget to call super.render() with a Game implementation. Without this call, the Screen that you set in the create() method will not be rendered if you override the render method in your Game class!

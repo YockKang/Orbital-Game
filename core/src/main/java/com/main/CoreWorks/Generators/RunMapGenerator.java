@@ -57,8 +57,8 @@ public class RunMapGenerator {
     // Main RunMap generation code that generates the first floor (can be copy-pasted and edited for generating another floor perhaps?)
     public static RunMap generateRandomRunMapF1(RunState runState) {
         // Determines how many rows and cols the map will have max (will not be using the full number ofc, just to scale the spacing)
-        int totalCols = 7;
-        int totalRows = 6;
+        int totalCols = 6;
+        int totalRows = 7;
 
         // Determines the 4 bounds of the map
         float leftBound = -100f;
@@ -246,7 +246,7 @@ public class RunMapGenerator {
 
         // If it is the 2nd last row (ie before boss), give a higher chance for rest node
         if (row == totalRows - 2) {
-            if (val < 70) {
+            if (val < 50) {
                 return new RestNode(1, row, col, difficulty, x, y);
             } else if (val < 90) {
                 return new CombatNode(CombatGenerator.createCombat(1, difficulty, random), row, col, 1, difficulty, x, y);
@@ -256,9 +256,9 @@ public class RunMapGenerator {
         }
 
         // Else, most likely should be a combat node
-        if (val < 20) {
+        if (val < 15) {
             return new RestNode(1, row, col, difficulty, x, y);
-        } else if (val < 90) {
+        } else if (val < 75) {
             return new CombatNode(CombatGenerator.createCombat(1, difficulty, random), row, col, 1, difficulty, x, y);
         } else {
             return new EliteNode(CombatGenerator.createCombat("Elite", difficulty, random), row, col, 1, difficulty, x, y);

@@ -428,10 +428,12 @@ public class CombatScreen implements Screen {
         // Below draws the screen transitions
         if (controller.isWin()) {
             controller.getFactorySim().clear();
+            game.resetCamera();
             game.setScreen(new WinScreen(game, runState));
             return;
         } else if (controller.isLost()) {
             controller.getFactorySim().clear();
+            game.resetCamera();
             game.setScreen(new LoseScreen(game));
             return;
         }

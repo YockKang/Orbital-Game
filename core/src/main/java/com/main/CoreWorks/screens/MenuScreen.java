@@ -52,6 +52,7 @@ public class MenuScreen implements Screen {
             runState.setCurrNode(runMap.getStartNode());
 
             // Moves to map screen
+            game.resetCamera();
             game.setScreen(new MapScreen(game, runState));
             dispose();
 

@@ -63,6 +63,7 @@ public class WinScreen implements Screen {
                 next.setUnlocked(true);
             }
             Array<Reward> rewards = RewardGenerator.generateCombatReward(runState);
+            game.resetCamera();
             game.setScreen(new RewardScreen(game, runState, rewards));
             dispose();
         }

@@ -261,6 +261,7 @@ public class RewardScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 reward.setTarget(selectedBuilding);
                 reward.apply(runState);
+                game.resetCamera();
                 game.setScreen(new MapScreen(game, runState));
             }
         });

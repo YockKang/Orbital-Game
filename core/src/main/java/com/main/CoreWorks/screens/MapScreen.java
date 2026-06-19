@@ -26,6 +26,12 @@ public class MapScreen implements Screen {
     private float mapMinY;
     private float mapMaxY;
 
+    // The below fields are used to clamp min and max zoom
+    // Note that zoom < 1 is zooming IN, while zoom > 1 is zooming OUT
+    private float minZoom = 0.5f;
+    private float maxZoom = 2f;
+    private float zoomRate = 0.1f;
+
     public MapScreen(Coreworks game, RunState runstate) {
         this.game = game;
         this.runState = runstate;
@@ -34,7 +40,20 @@ public class MapScreen implements Screen {
     @Override
     public void show() {
         stage = new Stage(game.viewport, game.batch);
-        Gdx.input.setInputProcessor(stage);
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(new InputAdapter() {
+            @Override
+            public boolean scrolled(float amountX, float amountY) {
+                // MouseWheel up is a negative value on the y-axis, so zooming in is an addition function
+                game.camera.zoom += amountY * zoomRate;
+                game.camera.zoom = MathUtils.clamp(game.camera.zoom, minZoom, maxZoom);
+                clampCamera();
+                game.camera.update();
+                return true;
+            }
+        });
+        Gdx.input.setInputProcessor(multiplexer);
 
         // Uses the default libgdx skin, eventually will replace with our own
         skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -101,9 +120,11 @@ public class MapScreen implements Screen {
         // Orthographic camera's position coords is taken from the CENTER of the camera rather than corner, unlike basically every other libGDX class
         // So, we need to make sure the camera's leftmost / rightmost / top / bottom boundaries do not exceed the map boundaries computed by the other helper function
         // Finding the camera center position to ensure its 4 boundaries do not exceed the map 4 boundaries is straightforward, just take map boundary - half the camera size to get the center position that the camera must be bound to
+        // Need to account for camera zoom as well
 
-        float halfCameraW = game.viewport.getWorldWidth() / 2f;
-        float halfCameraH = game.viewport.getWorldHeight() / 2f;
+        float halfCameraW = (game.viewport.getWorldWidth() * game.camera.zoom) / 2f;
+        float halfCameraH = (game.viewport.getWorldHeight() * game.camera.zoom) / 2f;
+
         float minCameraX = mapMinX + halfCameraW;
         float minCameraY = mapMinY + halfCameraH;
         float maxCameraX = mapMaxX - halfCameraW;
@@ -187,6 +208,7 @@ public class MapScreen implements Screen {
         // Handles combatNode
         if (node instanceof CombatNode combatNode) {
             runState.setCurrNode(node);
+            game.resetCamera();
             game.setScreen(new CombatScreen(game, runState, combatNode.getEnemies()));
             return;
         }
@@ -194,6 +216,7 @@ public class MapScreen implements Screen {
         // Handles RestNode
         if (node instanceof RestNode restNode) {
             runState.setCurrNode(node);
+            game.resetCamera();
             game.setScreen(new RestScreen(game, runState));
             return;
         }
@@ -201,6 +224,7 @@ public class MapScreen implements Screen {
         // Handles BossNode
         if (node instanceof BossNode bossNode) {
             runState.setCurrNode(node);
+            game.resetCamera();
             game.setScreen(new CombatScreen(game, runState, bossNode.getEnemies()));
             return;
         }
@@ -208,6 +232,7 @@ public class MapScreen implements Screen {
         // Handles EliteNode
         if (node instanceof EliteNode eliteNode) {
             runState.setCurrNode(node);
+            game.resetCamera();
             game.setScreen(new CombatScreen(game, runState, eliteNode.getEnemies()));
             return;
         }

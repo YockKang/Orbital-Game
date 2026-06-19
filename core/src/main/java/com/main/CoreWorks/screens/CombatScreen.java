@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.*;
 import com.main.CoreWorks.Coreworks;
+import com.main.CoreWorks.Coords.*;
 import com.main.CoreWorks.Factory.*;
 import com.main.CoreWorks.Factory.Tubes.Tube;
 import com.main.CoreWorks.RunPersistence.RunState;
@@ -297,13 +298,12 @@ public class CombatScreen implements Screen {
         for (Building building : controller.getFactorySim().getGrid().getBuildings()) {
             // Code here handles the IOPort drawing, Line for now until we get proper sprites
             for (IOPort port : building.getPorts()) {
-                int[] globalPortCoords = building.getPortGlobalCoords(port);
-                int portDir = building.getPortGlobalDirection(port);
+                DirectedCoords globalPortCoords = building.getPortGlobalCoords(port);
 
-                float drawX = gridStartX + globalPortCoords[0] * tileSize + tileSize / 2f;
-                float drawY = gridEndY - globalPortCoords[1] * tileSize - tileSize / 2f;
+                float drawX = gridStartX + globalPortCoords.x * tileSize + tileSize / 2f;
+                float drawY = gridEndY - globalPortCoords.y * tileSize - tileSize / 2f;
 
-                drawCardinalArrow(drawX, drawY, portDir, 20, 4);
+                drawCardinalArrow(drawX, drawY, globalPortCoords.dir, 20, 4);
             }
         }
 
@@ -415,9 +415,9 @@ public class CombatScreen implements Screen {
         game.batch.begin();
 
         for (Building building : controller.getFactorySim().getGrid().getBuildings()) {
-            int[] coords = building.getGlobalCoord(0, 0);
-            float nameX = gridStartX + coords[0] * tileSize + 15;
-            float nameY = gridEndY - coords[1] * tileSize - 35;
+            Coords coords = building.getGlobalCoord(0, 0);
+            float nameX = gridStartX + coords.x * tileSize + 15;
+            float nameY = gridEndY - coords.y * tileSize - 35;
             game.font.draw(game.batch, building.displayName(), nameX, nameY);
         }
 
@@ -690,54 +690,6 @@ public class CombatScreen implements Screen {
         }
 
         return new DirectedCoords(unscaledTileX, unscaledTileY, dir);
-    }
-
-    /*
-    Helper Coordinate class to easily store x and y coordinates (something like Pair class from lectures)
-     */
-
-    static class Coords {
-        final int x;
-        final int y;
-
-        Coords(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public String toString() {
-            return "x: "+ x + " y: "+ y;
-        }
-    }
-
-    static class DirectedCoords extends Coords {
-        final int dir;
-
-        DirectedCoords(int x, int y, int direction) {
-            super(x, y);
-            this.dir = direction % 4;
-        }
-
-        @Override
-        public String toString() {
-            String trueDir = "";
-            switch (dir) {
-                case 0:
-                    trueDir = "up";
-                    break;
-                case 1:
-                    trueDir = "right";
-                    break;
-                case 2:
-                    trueDir = "down";
-                    break;
-                case 3:
-                    trueDir = "left";
-                    break;
-            }
-            return "x: "+ x + " y: "+ y + "direction " + dir + "(" + trueDir + ")";
-        }
     }
 
     @Override

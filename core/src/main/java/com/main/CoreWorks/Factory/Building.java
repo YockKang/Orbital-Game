@@ -1,6 +1,7 @@
 package com.main.CoreWorks.Factory;
 
 import com.badlogic.gdx.utils.*;
+import com.main.CoreWorks.Coords.*;
 import com.main.CoreWorks.Factory.ResourceRequest.*;
 import com.main.CoreWorks.Factory.Tubes.*;
 import com.main.CoreWorks.Recipe.Recipe;
@@ -8,9 +9,7 @@ import com.main.CoreWorks.Resources.Resource;
 import com.main.CoreWorks.database.*;
 import com.main.CoreWorks.moveset.*;
 
-import java.util.Arrays;
-import java.util.Objects;
-
+import java.util.*;
 
 public abstract class Building extends Structure implements Updatable, Comparable<Building> {
 
@@ -28,19 +27,18 @@ public abstract class Building extends Structure implements Updatable, Comparabl
     protected int capacityMult = 5;
     protected int rotation = 0; // 0 is "up", +1 for clockwise rotation
     protected Recipe recipe = null;
-    protected Array<IOPort> ports = new Array<>(0);
+    protected Array<IOPort> ports = new Array<>(3);
     protected int priority = 0;
     protected float speedBase = 1f;
     protected float speedMultiplier = 1f;
     protected float speedFlat = 0f;
 
-    protected ObjectMap<Building, Array<String>> inputBuildings = new ObjectMap<>();
+    protected ObjectMap<Building, ObjectSet<IOPort>> inputBuildings = new ObjectMap<>();
+    protected ObjectMap<Tube, ObjectSet<Integer>> connectedTubes = new ObjectMap<>();
     protected ObjectSet<TubeNet> connectedTubeNet = new ObjectSet<>();
-    protected ObjectMap<Building, Array<IOPort>> outputBuildings = new ObjectMap<>();
 
     protected Array<String> whitelist = null;
     protected Array<Recipe> validRecipes = null;
-
 
 
     protected boolean[][] shape;
@@ -176,57 +174,53 @@ public abstract class Building extends Structure implements Updatable, Comparabl
         return name;
     }
 
-    public int[] getGlobalCoord(int x, int y) {
+    public Coords getGlobalCoord(int x, int y) {
         return tryGlobalCoord(x, y, xCoord, yCoord);
     }
 
-    public int[] tryGlobalCoord(int x, int y, int tryPosX, int tryPosY) {
+    public Coords tryGlobalCoord(int x, int y, int tryPosX, int tryPosY) {
         return getGlobalCoord(x, y, tryPosX, tryPosY, this.rotation, this.shape);
     }
 
-    public static int[] getGlobalCoord(int locX, int locY, int posX, int posY, int rot, boolean[][] shape) {
+    public static Coords getGlobalCoord(int locX, int locY, int posX, int posY, int rot, boolean[][] shape) {
         return getGlobalCoord(locX, locY, posX, posY, rot, shape.length, shape[0].length);
     }
 
-    public static int[] getGlobalCoord(int locX, int locY, int posX, int posY, int rot, int height, int width) {
+    public static Coords getGlobalCoord(int locX, int locY, int posX, int posY, int rot, int height, int width) {
         int globalX = 0;
-        int globalY = 0;
-
-        switch (rot) {
-            case 0:
+        int globalY = switch (rot) {
+            case 0 -> {
                 globalX = locX;
-                globalY = locY;
-                break;
-            case 1:
+                yield locY;
+            }
+            case 1 -> {
                 globalX = height - 1 - locY;
-                globalY = locX;
-                break;
-            case 2:
+                yield locX;
+            }
+            case 2 -> {
                 globalX = width - 1 - locX;
-                globalY = height - 1 - locY;
-                break;
-            case 3:
+                yield height - 1 - locY;
+            }
+            case 3 -> {
                 globalX = locY;
-                globalY = width - 1 - locX;
-                break;
-        }
+                yield width - 1 - locX;
+            }
+            default -> 0;
+        };
 
         globalX += posX;
         globalY += posY;
 
-        return new int[]{globalX, globalY};
+        return new Coords(globalX, globalY);
     }
 
     public boolean[][] getProjectedShape() {
         boolean[][] newshape = {{}};
-        switch (rotation & 1) {
-            case 0:
-                newshape = new boolean[shape.length][shape[0].length];
-                break;
-            case 1:
-                newshape = new boolean[shape[0].length][shape.length];
-                break;
-        }
+        newshape = switch (rotation & 1) {
+            case 0 -> new boolean[shape.length][shape[0].length];
+            case 1 -> new boolean[shape[0].length][shape.length];
+            default -> newshape;
+        };
 
         int newHeight = newshape.length;
         int newWidth = newshape[0].length;
@@ -276,49 +270,46 @@ public abstract class Building extends Structure implements Updatable, Comparabl
     }
 
 
-    protected int[] getLocalCoord(int x, int y) {
+    protected Coords getLocalCoord(int x, int y) {
         return getLocalCoord(x, y, this.xCoord, this.yCoord, this.rotation, this.shape);
     }
 
 
-    public static int[] getLocalCoord(int gloX, int gloY, int posX, int posY, int rot, boolean[][] shape) {
+    public static Coords getLocalCoord(int gloX, int gloY, int posX, int posY, int rot, boolean[][] shape) {
         return getLocalCoord(gloX, gloY, posX, posY, rot, shape.length, shape[0].length);
     }
 
-    public static int[] getLocalCoord(int gloX, int gloY, int posX, int posY, int rot, int height, int width) {
+    public static Coords getLocalCoord(int gloX, int gloY, int posX, int posY, int rot, int height, int width) {
         int offsetX = gloX - posX;
         int offsetY = gloY - posY;
         int localX = 0;
-        int localY = 0;
-
-        switch (rot & 3) {
-            case 0:
+        int localY = switch (rot & 3) {
+            case 0 -> {
                 localX = offsetX;
-                localY = offsetY;
-                break;
-            case 1:
+                yield offsetY;
+            }
+            case 1 -> {
                 localX = offsetY;
-                localY = height - 1 - offsetX;
-                break;
-            case 2:
+                yield height - 1 - offsetX;
+            }
+            case 2 -> {
                 localX = width - 1 - offsetX;
-                localY = height - 1 - offsetY;
-                break;
-            case 3:
+                yield height - 1 - offsetY;
+            }
+            case 3 -> {
                 localX = width - 1 - offsetY;
-                localY = offsetX;
-                break;
-        }
+                yield offsetX;
+            }
+            default -> 0;
+        };
 
-        return new int[]{localX, localY};
+        return new Coords(localX, localY);
     }
 
     public void clearNeighbours() {
-        inputBuildings.keys().forEach(building -> building.removeOutput(this));
-        outputBuildings.keys().forEach(building -> building.removeInput(this));
         connectedTubeNet.clear();
+        connectedTubes.clear();
         inputBuildings.clear();
-        outputBuildings.clear();
     }
 
     public void updateInputs(Array<Array<Structure>> grid) {
@@ -327,102 +318,154 @@ public abstract class Building extends Structure implements Updatable, Comparabl
         for (int lr = 0; lr < shape.length; lr++) {
             for (int lc = 0; lc < shape[lr].length; lc++) {
                 for (int r = 0; r < 4; r++) {
-                    int[] gc = getGlobalCoord(lc, lr);
+                    Coords gc = getGlobalCoord(lc, lr);
+                    int x = gc.x;
+                    int y = gc.y;
                     switch (r) {
                         case 0 -> {
-                            gc[1]--;
+                            y--;
                         }
                         case 1 -> {
-                            gc[0]++;
+                            x++;
                         }
                         case 2 -> {
-                            gc[1]++;
+                            y++;
                         }
                         case 3 -> {
-                            gc[0]--;
+                            x--;
                         }
                     }
                     Structure maybeNeighbour = null;
                     try {
-                        maybeNeighbour = grid.get(gc[1]).get(gc[0]);
+                        maybeNeighbour = grid.get(y).get(x);
                     } catch (Exception e) {
                         continue;
                     }
                     if ((maybeNeighbour != null) &&
                         (maybeNeighbour != this)) {
                         if (maybeNeighbour instanceof Tube tubeNeighbour) {
-                            TubeNet network = tubeNeighbour.getNetwork((r + 2) % 4);
-                            if (network != null) {
-                                connectedTubeNet.add(network);
+                            System.out.println();
+                            System.out.println(tubeNeighbour);
+                            System.out.println((r + 2) % 4);
+                            System.out.println(tubeNeighbour.getNetworkNum((r + 2) % 4));
+                            if (tubeNeighbour.getNetworkNum((r + 2) % 4) != 0) {
+                                addTubeInput(tubeNeighbour, (r + 2) % 4);
                             }
                         } else if (maybeNeighbour instanceof Building bldg) {
-                            neighbours.add(bldg);
+                            IOPort port = bldg.getPortFor(x, y, (r + 2) % 4);
+                            if (port != null) {
+                                if (!inputBuildings.containsKey(bldg)) {
+                                    inputBuildings.put(bldg, new ObjectSet<>());
+                                }
+                                inputBuildings.get(bldg).add(port);
+                            }
                         }
                     }
                 }
             }
         }
-
-        neighbours.iterator().forEachRemaining(b -> b.updateOutputs(grid));
-
-
     }
 
     public void updateOutputs(Array<Array<Structure>> grid) {
         if (this.ports != null) {
             for (IOPort p : ports) {
-                int[] targetCoord = getGlobalCoord(p.getX(), p.getY());
+                Coords targetCoord = getGlobalCoord(p.getX(), p.getY());
                 int portGlobalDir = (p.getDir() + rotation) % 4;
-
+                int x = targetCoord.x;
+                int y = targetCoord.y;
                 switch (portGlobalDir) {
                     case 0 -> {
-                        targetCoord[1]--;
+                        y--;
                     }
                     case 1 -> {
-                        targetCoord[0]++;
+                        x++;
                     }
                     case 2 -> {
-                        targetCoord[1]++;
+                        y++;
                     }
                     case 3 -> {
-                        targetCoord[0]--;
+                        x--;
                     }
                 }
                 Structure target;
                 try {
-                    target = grid.get(targetCoord[1]).get(targetCoord[0]);
+                    target = grid.get(y).get(x);
                 } catch (Exception e) {
                     target = null;
                 }
-                p.setTarget(target);
-            }
-
-            for (IOPort p : ports) {
-                if (p.target instanceof Building bldg) {
-                    addOutput(bldg, p);
+                if (target instanceof Tube tube) {
+                    tube.getNetwork((portGlobalDir + 2) % 4).addInput(this, p);
+                } else if (target instanceof Building building) {
+                    building.addInput(this, p);
                 }
             }
         }
-
     }
 
-
-    public void addOutput(Building b, IOPort p) {
-        Array<String> matches = matchResource(b, true);
-        if (!outputBuildings.containsKey(b)) {
-            outputBuildings.put(b, new Array<IOPort>());
+    private void addInput(Building building, IOPort p) {
+        if (inputBuildings.containsKey(building)) {
+            inputBuildings.get(building).add(p);
+        } else {
+            ObjectSet<IOPort> portSet = new ObjectSet<>(10);
+            portSet.add(p);
+            inputBuildings.put(building, portSet);
         }
-        outputBuildings.get(b).add(p);
-        b.inputBuildings.put(this, matches);
     }
+
+
+    public void addTubeInput(Tube tube, int dir) {
+        if (!connectedTubes.containsKey(tube)) {
+            connectedTubes.put(tube, new ObjectSet<>(5));
+        }
+        connectedTubes.get(tube).add(dir);
+        connectedTubeNet.add(tube.getNetwork(dir));
+    }
+
+    public void updateNets() {
+        connectedTubeNet.clear();
+        for (ObjectMap.Entry<Tube, ObjectSet<Integer>> entry : connectedTubes) {
+            System.out.println("found tube: " + entry.key);
+            for (int dir : entry.value) {
+                System.out.println("dir: " + dir);
+                System.out.println("new net: " + entry.key.getNetwork(dir));
+                connectedTubeNet.add(entry.key.getNetwork(dir));
+            }
+        }
+    }
+
+    public void removeTubeInput(Tube tube, int dir) {
+        System.out.println();
+        System.out.println(this);
+        System.out.println(connectedTubes.containsKey(tube));
+        System.out.println(connectedTubes.get(tube));
+        if (connectedTubes.containsKey(tube)) {
+            connectedTubes.get(tube).remove(dir);
+        };
+        System.out.println(connectedTubes.get(tube));
+        System.out.println(connectedTubes.get(tube).size);
+        if (connectedTubes.get(tube).size == 0) {
+            connectedTubes.remove(tube);
+        }
+        TubeNet net = tube.getNetwork(dir);
+        boolean stillConnected = false;
+        for (ObjectMap.Entry<Tube, ObjectSet<Integer>> entry : connectedTubes) {
+            for (int dirs : entry.value) {
+                if (entry.key.getNetwork(dirs) == net) {
+                    stillConnected = true;
+                    break;
+                }
+            }
+        }
+        if (!stillConnected) {
+            connectedTubeNet.remove(net);
+        }
+    }
+
 
     public void removeInput(Building b) {
         inputBuildings.remove(b);
     }
 
-    public void removeOutput(Building b) {
-        outputBuildings.remove(b);
-    }
 
     public Array<String> matchResource(Building b, boolean thisSupplier) {
         if (this.recipe != null && b.recipe != null) {
@@ -490,13 +533,14 @@ public abstract class Building extends Structure implements Updatable, Comparabl
         return null;
     }
 
-    public ObjectMap<Building, Array<String>> getInputBuildings() {
+    public ObjectSet<TubeNet> getInputTubeNets() {
+        return connectedTubeNet;
+    }
+
+    public ObjectMap<Building, ObjectSet<IOPort>> getInputBuildings() {
         return inputBuildings;
     }
 
-    public ObjectMap<Building, Array<IOPort>> getOutputBuildings() {
-        return outputBuildings;
-    }
 
     public int getPriority() {
         return priority;
@@ -629,12 +673,8 @@ public abstract class Building extends Structure implements Updatable, Comparabl
         return ports;
     }
 
-    public int[] getPortGlobalCoords(IOPort port) {
-        return getGlobalCoord(port.getX(), port.getY());
-    }
-
-    public int getPortGlobalDirection(IOPort port) {
-        return (port.getDir() + rotation) % 4;
+    public DirectedCoords getPortGlobalCoords(IOPort port) {
+        return getGlobalCoord(port.getX(), port.getY()).addDirection((port.getDir() + rotation) % 4);
     }
 
     public void disableFor(int dur) {
@@ -678,12 +718,11 @@ public abstract class Building extends Structure implements Updatable, Comparabl
         }
     }
 
-
-    public boolean hasPortFor(int x, int y, int dir) {
-        int[] local = getLocalCoord(x, y);
-        for (IOPort p :ports) {
-            if (p.getX() == local[0] &&
-                p.getY() == local[1] &&
+    public boolean hasPortAt(int x, int y, int dir) {
+        Coords local = getLocalCoord(x, y);
+        for (IOPort p : ports) {
+            if (p.getX() == local.x &&
+                p.getY() == local.y &&
                 (p.getDir() + rotation) % 4 == dir) {
                 return true;
             }
@@ -691,6 +730,17 @@ public abstract class Building extends Structure implements Updatable, Comparabl
         return false;
     }
 
+    public IOPort getPortFor(int x, int y, int dir) {
+        Coords local = getLocalCoord(x, y);
+        for (IOPort p : ports) {
+            if (p.getX() == local.x &&
+                p.getY() == local.y &&
+                (p.getDir() + rotation) % 4 == dir) {
+                return p;
+            }
+        }
+        return null;
+    }
 
     @Override
     public int compareTo(Building b) {
@@ -708,4 +758,5 @@ public abstract class Building extends Structure implements Updatable, Comparabl
             }
         }
     }
+
 }

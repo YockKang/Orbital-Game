@@ -3,8 +3,11 @@ package com.main.CoreWorks.simulators;
 import com.badlogic.gdx.utils.*;
 import com.main.CoreWorks.Factory.*;
 import com.main.CoreWorks.Factory.ResourceRequest.*;
+import com.main.CoreWorks.Factory.Tubes.TubeNet;
 import com.main.CoreWorks.Resources.Resource;
 import com.main.CoreWorks.moveset.*;
+
+import java.util.Objects;
 
 import static java.lang.Math.min;
 
@@ -32,23 +35,42 @@ public class FactorySim {
         requests.sort((a, b) -> a.getPriority() - b.getPriority());
 
         for (ResourceRequest req : requests) {
-            ObjectMap<Building, Array<String>> suppliers = req.getRequester().getInputBuildings();
+            System.out.println(req);
+            ObjectMap<Building, ObjectSet<IOPort>> suppliers = req.getRequester().getInputBuildings();
 
             Array<Building> suppliersSorted = suppliers.keys().toArray();
             suppliersSorted.sort();
-            switch (req) {
-                case AnythingRequest anythingRequest -> {
-                    for (Building supplier : suppliersSorted) {
-                        if (req.getValue() <= 0) {
-                            break;
-                        }
 
+            ObjectMap<Building, ObjectSet<IOPort>> suppliersTube = new ObjectMap<>();
+            for (TubeNet tn : req.getRequester().getInputTubeNets()) {
+                for (ObjectMap.Entry<Building, ObjectSet<IOPort>> entry : tn.getInputs()) {
+                    if (!suppliersTube.containsKey(entry.key)) {
+                        suppliersTube.put(entry.key, new ObjectSet<>());
+                    }
+                    suppliersTube.get(entry.key).addAll(entry.value);
+                }
+            }
+            Array<Building> suppliersTubeSorted = suppliersTube.keys().toArray();
+            suppliersTubeSorted.sort();
+            System.out.println(req.getRequester().getInputTubeNets());
+
+            System.out.println("direct supppliers");
+            System.out.println(suppliersSorted);
+            System.out.println("tube supppliers");
+            System.out.println(suppliersTubeSorted);
+
+            for (Building supplier : suppliersSorted) {
+                if (req.getValue() <= 0) {
+                    break;
+                }
+                switch (req) {
+                    case AnythingRequest anythingRequest -> {
                         for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
                             if (req.getValue() <= 0) {
                                 break;
                             }
                             int throughput = 0;
-                            Array<IOPort> portArr = supplier.getOutputBuildings().get(req.getRequester());
+                            ObjectSet<IOPort> portArr = suppliers.get(supplier);
                             for (IOPort p : portArr) {
                                 throughput += p.getSpeed();
                             }
@@ -58,23 +80,16 @@ public class FactorySim {
                             transfers.forEach(rsc -> req.getRequester().addToAnythingQueue(rsc));
                         }
                     }
-                }
-                case WhitelistRequest whitelistRequest -> {
-                    for (Building supplier : suppliersSorted) {
-                        if (req.getValue() <= 0) {
-                            break;
-                        }
-
-                        suppliers.get(supplier);
+                    case WhitelistRequest whitelistRequest -> {
                         for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
+                            if (req.getValue() <= 0) {
+                                break;
+                            }
                             if (!whitelistRequest.getWhitelist().contains(drawBuffer.getResourceId(), false)) {
                                 continue;
                             }
-                            if (req.getValue() <= 0) {
-                                break;
-                            }
                             int throughput = 0;
-                            Array<IOPort> portArr = supplier.getOutputBuildings().get(req.getRequester());
+                            ObjectSet<IOPort> portArr = suppliers.get(supplier);
                             for (IOPort p : portArr) {
                                 throughput += p.getSpeed();
                             }
@@ -84,21 +99,75 @@ public class FactorySim {
                             transfers.forEach(rsc -> req.getRequester().addToAnythingQueue(rsc));
                         }
                     }
-                }
-                default -> {
-                    for (Building supplier : suppliersSorted) {
-                        if (req.getValue() <= 0) {
-                            break;
+                    default -> {
+                        for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
+                            if (Objects.equals(drawBuffer.getResourceId(), req.getResource())) {
+                                int throughput = 0;
+                                ObjectSet<IOPort> portArr = suppliers.get(supplier);
+                                for (IOPort p : portArr) {
+                                    throughput += p.getSpeed();
+                                }
+                                int drawAmt = min(throughput, min(drawBuffer.getCurrent(), req.getValue()));
+                                ResourceBuffer.directTransfer(
+                                    drawBuffer,
+                                    req.getRequester().getInputResourceBuffer(req.getResource()),
+                                    drawAmt);
+                                req.reduceValue(drawAmt);
+                            }
                         }
-                        suppliers.get(supplier);
-                        if (suppliers.get(supplier).contains(req.getResource(), false)) {
+                    }
+                }
+            }
+
+            for (Building supplier : suppliersTubeSorted) {
+                if (req.getValue() <= 0) {
+                    break;
+                }
+
+                switch (req) {
+                    case AnythingRequest anythingRequest -> {
+                        for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
+                            if (req.getValue() <= 0) {
+                                break;
+                            }
                             int throughput = 0;
-                            Array<IOPort> portArr = supplier.getOutputBuildings().get(req.getRequester());
+                            ObjectSet<IOPort> portArr = suppliersTube.get(supplier);
                             for (IOPort p : portArr) {
                                 throughput += p.getSpeed();
                             }
-                            ResourceBuffer drawBuffer = supplier.getOutputResourceBuffer(req.getResource());
-                            if (drawBuffer != null) {
+                            int drawAmt = min(throughput, min(drawBuffer.getCurrent(), req.getValue()));
+                            Array<Resource> transfers = drawBuffer.draw(drawAmt);
+                            req.reduceValue(drawAmt);
+                            transfers.forEach(rsc -> req.getRequester().addToAnythingQueue(rsc));
+                        }
+                    }
+                    case WhitelistRequest whitelistRequest -> {
+                        for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
+                            if (req.getValue() <= 0) {
+                                break;
+                            }
+                            if (!whitelistRequest.getWhitelist().contains(drawBuffer.getResourceId(), false)) {
+                                continue;
+                            }
+                            int throughput = 0;
+                            ObjectSet<IOPort> portArr = suppliersTube.get(supplier);
+                            for (IOPort p : portArr) {
+                                throughput += p.getSpeed();
+                            }
+                            int drawAmt = min(throughput, min(drawBuffer.getCurrent(), req.getValue()));
+                            Array<Resource> transfers = drawBuffer.draw(drawAmt);
+                            req.reduceValue(drawAmt);
+                            transfers.forEach(rsc -> req.getRequester().addToAnythingQueue(rsc));
+                        }
+                    }
+                    default -> {
+                        for (ResourceBuffer drawBuffer : supplier.getOutputResourceBuffer()) {
+                            if (Objects.equals(drawBuffer.getResourceId(), req.getResource())) {
+                                int throughput = 0;
+                                ObjectSet<IOPort> portArr = suppliersTube.get(supplier);
+                                for (IOPort p : portArr) {
+                                    throughput += p.getSpeed();
+                                }
                                 int drawAmt = min(throughput, min(drawBuffer.getCurrent(), req.getValue()));
                                 ResourceBuffer.directTransfer(
                                     drawBuffer,
@@ -137,5 +206,16 @@ public class FactorySim {
 
     public void clear() {
         grid.getBuildings().forEach(Building::clear);
+    }
+
+
+    private static class Pair<T, U>{
+        T first;
+        U second;
+
+        Pair(T first, U second) {
+            this.first = first;
+            this.second = second;
+        }
     }
 }

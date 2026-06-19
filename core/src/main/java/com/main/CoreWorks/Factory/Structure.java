@@ -11,6 +11,10 @@ public abstract class Structure {
 
     public Structure() {}
 
+    @Override
+    public String toString() {
+        return xCoord + " " + yCoord;
+    }
 
     public int getX() {
         return xCoord;

@@ -87,7 +87,7 @@ public class ResourceBuffer {
     public Array<Resource> draw(int val) {
         Array<Resource> arr = new Array<>();
         for (int i = 0; i < val; i++) {
-            if (buffer.size == 0){
+            if (buffer.size == 0) {
                 break;
             }
             arr.add(buffer.removeFirst());
@@ -137,8 +137,10 @@ public class ResourceBuffer {
     }
 
     public static void directTransfer(ResourceBuffer from, ResourceBuffer to, int amount) {
-        for (int i = 0; i < amount; i++) {
-            from.buffer.addLast(from.buffer.removeFirst());
+        if (amount > 0) {
+            for (int i = 0; i < amount; i++) {
+                from.buffer.addLast(from.buffer.removeFirst());
+            }
         }
     }
 }

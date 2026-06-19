@@ -1,6 +1,7 @@
 package com.main.CoreWorks.Factory;
 
 import com.badlogic.gdx.utils.*;
+import com.main.CoreWorks.Coords.Coords;
 import com.main.CoreWorks.Factory.Tubes.*;
 
 public class FactoryGrid {
@@ -44,9 +45,9 @@ public class FactoryGrid {
         for (int shpY = 0; shpY < shp.length; shpY++) {
             for (int shpX = 0; shpX < shp[shpY].length; shpX++) {
                 if (shp[shpY][shpX]) {
-                    int[] gc = bldg.tryGlobalCoord(shpX, shpY, x, y);
+                    Coords gc = bldg.tryGlobalCoord(shpX, shpY, x, y);
                     try {
-                        if (grid.get(gc[1]).get(gc[0]) != null) {
+                        if (grid.get(gc.y).get(gc.x) != null) {
                             return false;
                         }
                     } catch (IndexOutOfBoundsException e) {
@@ -67,14 +68,14 @@ public class FactoryGrid {
             for (int shpY = 0; shpY < shp.length; shpY++) {
                 for (int shpX = 0; shpX < shp[shpY].length; shpX++) {
                     if (shp[shpY][shpX]) {
-                        int[] gc = bldg.tryGlobalCoord(shpX, shpY, x, y);
-                        grid.get(gc[1]).set(gc[0], bldg);
+                        Coords gc = bldg.tryGlobalCoord(shpX, shpY, x, y);
+                        grid.get(gc.y).set(gc.x, bldg);
                     }
                 }
             }
             bldg.putOnGrid();
             buildingList.add(bldg);
-            bldg.updateInputs(grid);
+            bldg.updateInputs(grid);;
             bldg.updateOutputs(grid);
             return true;
         }
@@ -89,9 +90,9 @@ public class FactoryGrid {
                 arr[dir2] = true;
                 Tube tube = new Tube(x, y, arr);
                 grid.get(y).set(x, tube);
-                tube.connect(grid);
+                tube.connect(grid, 1, new Array<>(new Integer[]{dir1, dir2}));
             } else if (getStructureAt(x, y) instanceof Tube tube) {
-                tube.addConnection(dir1, dir2);
+                tube.addConnection(grid, dir1, dir2);
             }
         }
     }
@@ -116,12 +117,6 @@ public class FactoryGrid {
         }
     }
 
-    public Structure removeStructure(int x, int y) {
-        Structure struct = grid.get(y).get(x);
-        removeStructure(struct);
-        return struct;
-    }
-
     public void removeStructure(Structure structure) {
         if (structure instanceof Building bldg) {
             if (bldg.onGrid) {
@@ -129,9 +124,9 @@ public class FactoryGrid {
                 for (int shpY = 0; shpY < shp.length; shpY++) {
                     for (int shpX = 0; shpX < shp[shpY].length; shpX++) {
                         if (shp[shpY][shpX]) {
-                            int[] gc = bldg.getGlobalCoord(shpX, shpY);
-                            if (grid.get(gc[1]).get(gc[0]) == bldg) {
-                                grid.get(gc[1]).set(gc[0], null);
+                            Coords gc = bldg.getGlobalCoord(shpX, shpY);
+                            if (grid.get(gc.y).get(gc.x) == bldg) {
+                                grid.get(gc.y).set(gc.x, null);
                             }
                         }
                     }

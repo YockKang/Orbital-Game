@@ -62,10 +62,23 @@
     "Type" : "Shooter",
     "Name" : "OPShooter",
     "Cooldown" : 1,
-    "Shape" : ["S", 2],
+    "Shape" : ["S", 1],
     "MagSize": 5,
     "BaseDmg": 2,
     "AttackCount" : 3
+  },
+  {
+    "id" : "PoisonShooter",
+    "Tier" : 2,
+    "Type" : "Shooter",
+    "Name" : "Poison Shooter",
+    "Cooldown" : 1,
+    "Shape" : ["S", 1],
+    "MagSize": 5,
+    "BaseDmg": 2,
+    "AttackCount" : 1,
+    "Damage Type" : "Poison"
   }
+
 
 ]

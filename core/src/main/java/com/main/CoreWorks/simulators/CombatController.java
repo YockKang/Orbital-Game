@@ -1,6 +1,8 @@
 package com.main.CoreWorks.simulators;
 
 
+import com.main.CoreWorks.RunPersistence.RunState;
+
 public class CombatController {
     private FactorySim factorySim;
     private CombatSim combatSim;
@@ -11,7 +13,7 @@ public class CombatController {
         combatSim.setGrid(factorySim.getGrid());
     }
 
-    public void advanceTick(int tick) {
+    public void advanceTick(RunState runState, int tick) {
         if (combatSim.isWin() || combatSim.isLost()) {
             factorySim.clear();
             return;
@@ -24,7 +26,7 @@ public class CombatController {
         combatSim.enqueueMoves(factorySim.returnMoves());
 
         // Lastly, resolve combat
-        combatSim.advanceTick(tick);
+        combatSim.advanceTick(runState, tick);
     }
 
     public boolean isWin() {

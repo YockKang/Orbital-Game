@@ -48,8 +48,8 @@ public class CombatScreen implements Screen {
 
     // Hardcoded grid size for milestone 1 testing purposes
     // Should be deleted eventually since it should be handled by the global runState which carries over the factory
-    private final int gridWidth = 4;
-    private final int gridHeight = 4;
+    private final int gridWidth = 6;
+    private final int gridHeight = 6;
 
     // Temp Layout since we have not decided how we want the final UI to look like yet
     // Rmb that everything is drawn in a coordinate system (check Coreworks class for the public static final screen size)
@@ -213,7 +213,7 @@ public class CombatScreen implements Screen {
             while (accumulator >= TIME_STEP) {
                 System.out.println();
                 System.out.println("Tick " + tickCount);
-                controller.advanceTick(tickCount);
+                controller.advanceTick(runState, tickCount);
                 tickCount += 1;
                 accumulator -= TIME_STEP;
                 needRefresh = true;

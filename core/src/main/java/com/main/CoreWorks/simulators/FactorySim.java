@@ -35,7 +35,6 @@ public class FactorySim {
         requests.sort((a, b) -> a.getPriority() - b.getPriority());
 
         for (ResourceRequest req : requests) {
-            System.out.println(req);
             ObjectMap<Building, ObjectSet<IOPort>> suppliers = req.getRequester().getInputBuildings();
 
             Array<Building> suppliersSorted = suppliers.keys().toArray();
@@ -54,10 +53,6 @@ public class FactorySim {
             suppliersTubeSorted.sort();
             System.out.println(req.getRequester().getInputTubeNets());
 
-            System.out.println("direct supppliers");
-            System.out.println(suppliersSorted);
-            System.out.println("tube supppliers");
-            System.out.println(suppliersTubeSorted);
 
             for (Building supplier : suppliersSorted) {
                 if (req.getValue() <= 0) {

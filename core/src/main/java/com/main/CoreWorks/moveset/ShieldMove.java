@@ -3,19 +3,17 @@ package com.main.CoreWorks.moveset;
 import com.main.CoreWorks.Factory.Building;
 import com.main.CoreWorks.entities.Character;
 
-public class DamageMove extends Move {
+public class ShieldMove extends Move{
+    private int shield;
 
-    private int damage;
-
-    public DamageMove(int damage, int chargeTime) {
-        super("Attack", "Deals " + damage + " damage", chargeTime);
-        this.damage = damage;
-        this.target = 0;
+    public ShieldMove(int shield, int chargeTime) {
+        super("Shield", "Shield " + shield + " hp", chargeTime);
+        this.shield = shield;
     }
 
     @Override
     public void execute(Character target) {
-        target.takeDamage(damage);
+        target.gainShield(shield);
     }
 
     @Override
@@ -30,6 +28,6 @@ public class DamageMove extends Move {
 
     @Override
     public int getValue() {
-        return this.damage;
+        return this.shield;
     }
 }

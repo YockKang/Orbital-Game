@@ -5,8 +5,11 @@ import com.main.CoreWorks.Factory.ResourceRequest.*;
 import com.main.CoreWorks.Resources.Resource;
 import com.main.CoreWorks.moveset.*;
 
+import java.util.Objects;
+
 public class Defender extends Building{
 
+    private String action;
     protected Queue<Resource> magazine;
     protected int magSize;
     protected float baseDef = 1;;
@@ -21,12 +24,14 @@ public class Defender extends Building{
             "defender");
         this.magazine = new Queue<>(magSize);
         this.magSize = magSize;
+        this.action = "Heal";
     }
 
     public Defender(JsonValue data) {
         super(data);
         this.magSize = data.getInt("MagSize");
         this.magazine = new Queue<>(magSize);
+        this.action = data.getString("Action");
         this.baseDef = data.getFloat("BaseDef");
     }
 
@@ -46,15 +51,17 @@ public class Defender extends Building{
     @Override
     public Array<Move> updateEnabled() {
         currCooldown += getSpeed();
-        if (currCooldown >= cooldownTimer) {
+        Array<Move> moves = new Array<>();
+        while (currCooldown >= cooldownTimer) {
             if (magazine.notEmpty()) {
                 currCooldown -= cooldownTimer;
-                return defend();
+                moves.addAll(defend());
             } else {
-                currCooldown = cooldownTimer - getSpeed();
+                currCooldown = cooldownTimer;
+                break;
             }
         }
-        return null;
+        return moves;
     }
 
     public void addToAnythingQueue(Resource x) {
@@ -65,16 +72,27 @@ public class Defender extends Building{
         magazine.addLast(x);
     }
 
-    private int calculateDef(Resource r) {
+    private int calculateVal(Resource r) {
         return (int) (baseDef * r.getDmgMult() + flatDef);
     }
 
 
     public Array<Move> defend() {
         Array<Move> result = new Array<>();
-        Move dmg = new HealMove(calculateDef(magazine.removeFirst()), 0);
-        for (int i = 0; i < defCount; i++) {
-            result.add(dmg);
+        int value = calculateVal(magazine.removeFirst());
+        Move move = null;
+        switch (action) {
+            case ("Heal") -> {
+                move = new HealMove(value, 0);
+            }
+            case ("Shield") -> {
+                move = new ShieldMove(value, 0);
+            }
+        }
+        if (move!= null) {
+            for (int i = 0; i < defCount; i++) {
+                result.add(move);
+            }
         }
         return result;
     }

@@ -3,19 +3,18 @@ package com.main.CoreWorks.moveset;
 import com.main.CoreWorks.Factory.Building;
 import com.main.CoreWorks.entities.Character;
 
-public class DamageMove extends Move {
+public class TrueDamageMove extends Move {
 
     private int damage;
 
-    public DamageMove(int damage, int chargeTime) {
-        super("Attack", "Deals " + damage + " damage", chargeTime);
+    public TrueDamageMove(int damage, int chargeTime) {
+        super("Attack", "Deals " + damage + " true damage", chargeTime);
         this.damage = damage;
-        this.target = 0;
     }
 
     @Override
     public void execute(Character target) {
-        target.takeDamage(damage);
+        target.takeTrueDamage(damage);
     }
 
     @Override

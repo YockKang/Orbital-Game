@@ -1,0 +1,11 @@
+{
+  "id" : "Healer1",
+  "Tier" : 0,
+  "Type" : "Defender",
+  "Name" : "Healer",
+  "Cooldown" : 1,
+  "Shape" : [[true]],
+  "MagSize": 5,
+  "BaseDef": 1,
+  "Action" : "Heal"
+}

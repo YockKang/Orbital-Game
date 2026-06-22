@@ -14,6 +14,10 @@ public class RewardGenerator {
 
         // Add the Rewards in the code below
         rewards.add(randomBuildingReward(runState));
+        rewards.add(randomBuildingReward(runState));
+        rewards.add(randomBuildingReward(runState));
+        rewards.add(randomUpgradeReward(runState));
+        rewards.add(randomUpgradeReward(runState));
         rewards.add(randomUpgradeReward(runState));
 
         // Return statement below
@@ -24,6 +28,7 @@ public class RewardGenerator {
         Array<Reward> rewards = new Array<>();
 
         // Add the Rewards in the code below
+        rewards.add(randomUpgradeReward(runState));
         rewards.add(randomUpgradeReward(runState));
 
         // Return statement below

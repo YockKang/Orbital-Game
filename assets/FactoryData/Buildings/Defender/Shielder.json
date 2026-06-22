@@ -1,10 +1,11 @@
 {
-  "id" : "defender1",
+  "id" : "Shielder1",
   "Tier" : 0,
   "Type" : "Defender",
-  "Name" : "Healer",
+  "Name" : "Shielder",
   "Cooldown" : 1,
   "Shape" : [[true]],
   "MagSize": 5,
-  "BaseDef": 1
+  "BaseDef": 1,
+  "Action" : "Shield"
 }

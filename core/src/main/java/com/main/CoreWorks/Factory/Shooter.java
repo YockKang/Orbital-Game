@@ -12,6 +12,7 @@ public class Shooter extends Building {
     protected float baseDmg = 1f;
     protected int flatDmg = 0;
     protected int attackCount = 1;
+    protected String forceDmgType = null;
 
     public Shooter(int coolDown, int magSize, boolean[][] shape) {
         super(coolDown,
@@ -30,6 +31,9 @@ public class Shooter extends Building {
         this.baseDmg = data.getFloat("BaseDmg");
         if (data.get("AttackCount") != null) {
             attackCount = data.getInt("AttackCount");
+        }
+        if (data.get("Damage Type") != null) {
+            forceDmgType = data.getString("Damage Type");
         }
     }
 
@@ -78,7 +82,29 @@ public class Shooter extends Building {
 
     public Array<Move> shoot() {
         Array<Move> result = new Array<>();
-        Move dmg = new DamageMove(calculateDmg(magazine.removeFirst()), 0);
+        Resource ammo = magazine.removeFirst();
+        String dmgType;
+        if (forceDmgType != null) {
+            dmgType = forceDmgType;
+        } else if (ammo.getModifiers().containsKey("DamageType")) {
+            dmgType = ammo.getModifiers().get("DamageType").getStrValue();
+        } else {
+            dmgType = "Normal";
+        }
+        Move dmg = null;
+        assert dmgType != null;
+        int damage = calculateDmg(ammo);
+        switch (dmgType) {
+            case "Normal" -> {
+                dmg = new DamageMove(damage, 0);
+            }
+            case "true" -> {
+                dmg = new TrueDamageMove(damage, 0);
+            }
+            case "Poison" -> {
+                dmg = new StatusEffectMove("Poison", damage, 4, 0.5f, true, 0);
+            }
+        }
         for (int i = 0; i < attackCount; i++) {
             result.add(dmg);
         }

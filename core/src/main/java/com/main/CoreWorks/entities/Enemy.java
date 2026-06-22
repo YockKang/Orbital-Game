@@ -23,29 +23,28 @@ public class Enemy extends Character {
         }
         this.multiplier = multiplierIn;
         JsonValue moves = data.get("Moveset");
-        moves.forEach(mv -> {
-                try {
-                    String type = mv.getString("Type");
-                    int value = (int) (mv.getInt("Value") * multiplier);
-                    int charge = (int) Math.ceil(mv.getFloat("Charge") / multiplier);
-                    switch (type) {
-                        case "Damage":
-                            addMove(new DamageMove(value, charge));
-                            break;
-                        case "Heal":
-                            addMove(new HealMove(value, charge));
-                            break;
-                        case "Shield":
-                            addMove(new HealMove(value, charge));
-                            break;
-                        case "Disable":
-                            addMove(new DisableBuildingMove(value, charge));
-                            break;
-                    }
-                } catch (Exception ignored) {
+        for (JsonValue mv : moves) {
+            try {
+                String type = mv.getString("Type");
+                int value = (int) (mv.getInt("Value") * multiplier);
+                int charge = (int) Math.ceil(mv.getFloat("Charge") / multiplier);
+                switch (type) {
+                    case "Damage":
+                        addMove(new DamageMove(value, charge));
+                        break;
+                    case "Heal":
+                        addMove(new HealMove(value, charge));
+                        break;
+                    case "Shield":
+                        addMove(new ShieldMove(value, charge));
+                        break;
+                    case "Disable":
+                        addMove(new DisableBuildingMove(value, charge));
+                        break;
                 }
+            } catch (Exception ignored) {
             }
-        );
+        }
 
         if (data.get("GracePeriod") != null) {
             this.moveTimer = data.getInt("GracePeriod");
@@ -60,6 +59,21 @@ public class Enemy extends Character {
 
     public String displayIntent() {
         return String.format("Next move in %s ticks \n %s", this.moveTimer, moveset.get(currMoveIndex).toString());
+    }
+
+    public Move tick() {
+        if (hp <= 0) {
+            return null;
+        }
+        if (moveTimer > 0) {
+            moveTimer--;
+            return null;
+        }
+        Move move = moveset.get(currMoveIndex);
+
+        currMoveIndex = (currMoveIndex + 1) % moveset.size;
+        moveTimer = moveset.get(currMoveIndex).getChargeTime();
+        return move;
     }
 
     public void tick(Character target) {

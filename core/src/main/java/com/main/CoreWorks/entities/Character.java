@@ -1,6 +1,6 @@
 package com.main.CoreWorks.entities;
 
-import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.*;
 
 public abstract class Character {
     // Implementation of Status effects TBD
@@ -9,6 +9,7 @@ public abstract class Character {
     protected int shield;
     protected int maxHp;
     protected String name;
+    protected ObjectMap<String, StatusEffect> statusEffects = new ObjectMap<>();
 
     public Character(int hp, int shield, String name) {
         this.hp = hp;
@@ -77,8 +78,22 @@ public abstract class Character {
         return this.hp <= 0;
     }
 
+    public void applyStatusEffect(StatusEffect se) {
+        if (se.getValue() > 0) {
+            if (!statusEffects.containsKey(se.getType())) {
+                statusEffects.put(se.getType(), se);
+            } else {
+                statusEffects.get(se.getType()).addValue(se.getValue());
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return String.format("Name: %s \nHP: %s/%s \nShield: %s", this.name, this.hp, this.maxHp, this.shield);
+    }
+
+    public ObjectMap<String, StatusEffect> getStatusEffects() {
+        return statusEffects;
     }
 }

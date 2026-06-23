@@ -6,10 +6,7 @@ import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.*;
 import com.main.CoreWorks.Coreworks;
@@ -53,12 +50,12 @@ public class CombatScreen implements Screen {
 
     // Temp Layout since we have not decided how we want the final UI to look like yet
     // Rmb that everything is drawn in a coordinate system (check Coreworks class for the public static final screen size)
-    private final int gridSize = 400;
+    private final int gridSize = 450;
 
     private final int tileSize = Math.min(gridSize / gridWidth, gridSize / gridHeight);
 
     private final int gridMidX = (int) (Coreworks.VIEWPORT_WIDTH / 2);
-    private final int gridMidY = 400;
+    private final int gridMidY = 300;
 
     private final int gridStartX = gridMidX - tileSize * gridWidth / 2 ;
     private final int gridEndX = gridMidX - tileSize * gridWidth / 2;
@@ -108,23 +105,24 @@ public class CombatScreen implements Screen {
         // The below builds the top part of the UI + pause screen
         Table topTable = new Table();
         topTable.top().left().pad(10);
-        topTable.add(new Label("Coreworks", skin)).pad(20);
-        topTable.add(new Label("Tick:\n" + tickCount, skin)).pad(20);
-        topTable.add(new Label(runState.getPlayer().toString(), skin)).pad(20);
+        topTable.add(new Label("Coreworks", skin)).pad(10);
+        topTable.add(new Label("Tick:\n" + tickCount, skin)).pad(10);
+        topTable.add(new Label(runState.getPlayer().toString(), skin)).pad(10);
         if (selectedBuilding == null) {
-            topTable.add(new Label("Selected: None ", skin)).pad(20);
+            topTable.add(new Label("Selected: None ", skin)).pad(10);
         } else {
-            topTable.add(new Label("Selected: " + selectedBuilding.displayName(), skin)).pad(20);
-            topTable.add(new Label("Press R to rotate \n Current rotation: " + selectedBuilding.getRotation(), skin)).pad(20);
+            topTable.add(new Label("Selected: " + selectedBuilding.displayName(), skin)).pad(10);
+            topTable.add(new Label("Press R to rotate \n Current rotation: " + selectedBuilding.getRotation(), skin)).pad(10);
         }
         if (tubeMode) {
-            topTable.add(new Label("Adding Tubes\nPress T to exit", skin)).pad(20);
+            topTable.add(new Label("Adding Tubes\nPress T to exit", skin)).pad(10);
         } else {
-            topTable.add(new Label("Press T to add Tubes", skin)).pad(20);
+            topTable.add(new Label("Press T to add Tubes", skin)).pad(10);
         }
         if (isPaused) {
-            topTable.add(new Label("PAUSED \n Press Space to Continue", skin)).pad(20);
+            topTable.add(new Label("PAUSED \nPress Space to Continue", skin)).pad(10);
         }
+        topTable.add(new Label("Use Mousewheel to scroll \nthe enemy display \nand combat Log", skin)).pad(10);
         table.add(topTable).colspan(3).expandX().row();
 
         // Create a middle table to handle other parts of the HUD
@@ -139,12 +137,12 @@ public class CombatScreen implements Screen {
         for (int i = start; i < log.size; i++) {
             logTable.add(new Label(log.get(i), skin)).right().row();
         }
-        middleTable.add(logTable).expand().right().top().row();
+        middleTable.add(logTable).expand().top().row();
 
         // The below builds the enemy display
         Table enemyTable = new Table();
         enemyTable.top().center().pad(10);
-        enemyTable.defaults().width(200);
+        enemyTable.defaults().width(185);
         enemyTable.add(new Label("Enemies:", skin)).row();
         Array<Enemy> enemies = controller.getCombatSim().getEnemies();
         int enemyCount = 0;
@@ -153,22 +151,27 @@ public class CombatScreen implements Screen {
             // Draw the enemy in a table (disguised as a card) to look neater
             Table enemyCard = new Table(skin);
             enemyCard.setBackground("default-round");
-            enemyCard.defaults().pad(5);
+            enemyCard.defaults().pad(2);
             enemyCard.add(new Label(enemy.toString(), skin));
-            enemyTable.add(enemyCard).pad(5);
+            enemyTable.add(enemyCard).pad(2);
             enemyCount++;
             if (enemyCount % maxEnemyPerRow == 0) {
                 enemyTable.row();
             }
         }
-        middleTable.add(enemyTable).right().top();
+        middleTable.add(enemyTable).top();
+
+        // Allows both the enemy table and combat log to be scrollable so it doesn't screw over the inventory
+        ScrollPane middleScroll = new ScrollPane(middleTable, skin);
+        middleScroll.setScrollingDisabled(true, false);
+        middleScroll.setColor(Color.BLACK);
 
         // The below builds the inventoryTable
         Table inventoryTable = new Table();
         inventoryTable.left();
         inventoryTable.add(new Label("Inventory", skin)).row();
         Table buildingsInInv = new Table();
-        buildingsInInv.defaults().width(130).height(65).pad(5);
+        buildingsInInv.defaults().width(120).height(60).pad(5);
         Array<Building> inventory = controller.getCombatSim().getPlayer().getInventory();
         int maxBuildingsPerRow = 3;
         int buildingCount = 0;
@@ -193,9 +196,13 @@ public class CombatScreen implements Screen {
         }
         inventoryTable.add(buildingsInInv);
 
-        table.add(inventoryTable).bottom().right();
+        // Create a body table with a center spacer for the grid, left is inventory and right is the combat log & enemy list
+        Table body = new Table();
+        body.add(inventoryTable).width(250).left();
+        body.add().expandX();
+        body.add(middleScroll).expandX().right();
 
-        table.add(middleTable).expand().fill().row();
+        table.add(body).expand().fill().row();
 
         needRefresh = false;
     }

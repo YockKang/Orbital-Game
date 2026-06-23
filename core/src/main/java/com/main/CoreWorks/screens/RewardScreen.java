@@ -91,7 +91,11 @@ public class RewardScreen implements Screen {
         // Create a new table to standardize the size of each reward card in a row
         // Current size: 350 by 250
         Table rewardCards = new Table();
-        rewardCards.defaults().pad(15).width(350).height(250);
+        rewardCards.defaults().pad(5).width(300).height(250);
+
+        // Set how many rewards per row
+        int count = 0;
+        int rewardsPerRow = 4;
 
         // Within the table, use another table to standardize the name, description and a choose button within each cell in the middle layered table
         for (int i = 0; i < rewards.size; i++) {
@@ -129,9 +133,15 @@ public class RewardScreen implements Screen {
                 }
             });
             rewardCard.add(select).pad(15);
+            count++;
 
             // Add the reward card into the row of cards
             rewardCards.add(rewardCard);
+
+            // New row if too many rewards in a row
+            if (count % rewardsPerRow == 0) {
+                rewardCards.row();
+            }
         }
 
         // Adds the entire row of reward cards into the original table

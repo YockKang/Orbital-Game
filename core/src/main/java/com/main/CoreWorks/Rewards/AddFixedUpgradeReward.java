@@ -9,7 +9,7 @@ public class AddFixedUpgradeReward extends Reward{
     protected Building building;
 
     public AddFixedUpgradeReward(Building bldg, Upgrade upg) {
-        super("Upgrade a building", String.format("Give %s %s", bldg.displayName(), upg.display()));
+        super("Upgrade a building", String.format("Give %s \n %s", bldg.displayName(), upg.display()));
         this.building = bldg;
         this.upgrade = upg;
     }

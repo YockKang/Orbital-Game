@@ -48,8 +48,8 @@ public class Resource {
         return modifiers;
     }
 
-    public void addModifiers(String name, Modifier m) {
-        modifiers.put(name, m);
+    public void addModifiers(Modifier m) {
+        modifiers.put(m.getType(), m);
     }
 
     public void addModifiers(ObjectMap<String, Modifier> m) {

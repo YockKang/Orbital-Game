@@ -77,7 +77,11 @@ public class Shooter extends Building {
     }
 
     private int calculateDmg(Resource r) {
-        return (int) (baseDmg * r.getDmgMult() + flatDmg);
+        if (r.getModifiers().containsKey("ExtraDmg")) {
+            return (int) (baseDmg * r.getDmgMult() + flatDmg + r.getModifiers().get("ExtraDmg").getValue());
+        } else {
+            return (int) (baseDmg * r.getDmgMult() + flatDmg);
+        }
     }
 
     public Array<Move> shoot() {
@@ -98,7 +102,7 @@ public class Shooter extends Building {
             case "Normal" -> {
                 dmg = new DamageMove(damage, 0);
             }
-            case "true" -> {
+            case "True" -> {
                 dmg = new TrueDamageMove(damage, 0);
             }
             case "Poison" -> {

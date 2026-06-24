@@ -39,9 +39,7 @@ public class BuildingTierDatabase {
     }
 
     public static Building getRandomBuilding(Random random, int tierIn) {
-        System.out.println("getting tier " + tierIn);
         Array<String> tier = BuildingTierDB.get(tierIn);
-        System.out.println(tier);
         if (tier == null) {
             return null;
         } else if (tier.size == 1) {

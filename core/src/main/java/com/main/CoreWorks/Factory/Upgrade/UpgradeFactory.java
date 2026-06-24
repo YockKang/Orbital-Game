@@ -1,13 +1,18 @@
 package com.main.CoreWorks.Factory.Upgrade;
 
 import com.badlogic.gdx.utils.*;
+import com.main.CoreWorks.Resources.Modifier;
+import com.main.CoreWorks.Resources.ModifierRegistry;
+import com.main.CoreWorks.util.Pair;
+
 import java.util.Random;
 
 public class UpgradeFactory {
 
     public static Upgrade randomUpgrade(Random random, float strength) {
-        float buildingType = random.nextFloat();
+        double buildingType = random.nextDouble();
         String buildingName = "";
+
         if (buildingType < 0.25) {
             buildingName = "Shooter";
         } else if (buildingType < 0.45) {
@@ -73,13 +78,13 @@ public class UpgradeFactory {
         }
 
         if (upgradesGroup.contains("Speed", true)) {
-            upgradesGroup.removeValue("Speed", true);
+            upgradesGroup.removeValue("Speed", false);
             upgradesGroup.add("FlatSpeed");
             upgradesGroup.add("SpeedMult");
         }
 
         if (upgradesGroup.contains("Damage", true)) {
-            upgradesGroup.removeValue("Damage", true);
+            upgradesGroup.removeValue("Damage", false);
             upgradesGroup.add("BaseDamage");
             upgradesGroup.add("DamageMult");
         }
@@ -91,7 +96,7 @@ public class UpgradeFactory {
             UpgradeAspect thisUpgrade = null;
             String category = "";
             if (upgradesGroup.size > 1) {
-                category = upgradesGroup.get(random.nextInt(upgradesGroup.size - 1));
+                category = upgradesGroup.get(random.nextInt(upgradesGroup.size));
                 upgradesGroup.removeValue(category, true);
             } else {
                 category = upgradesGroup.get(0);
@@ -104,7 +109,7 @@ public class UpgradeFactory {
             double power = Math.expm1(random.nextGaussian(mu, Math.sqrt(s2)))+ 1;
             float adjPower = 0;
             switch (category) {
-                case "FlatSpeed":
+                case "FlatSpeed" -> {
                     adjPower = (float) (power * 0.2);
                     if (adjPower > 0.05) {
                         adjPower = roundDP(adjPower, 2);
@@ -112,8 +117,8 @@ public class UpgradeFactory {
                         adjPower = 0.05f;
                     }
                     thisUpgrade = new FlatSpeedUpgrade(adjPower);
-                    break;
-                case "SpeedMult":
+                }
+                case "SpeedMult" -> {
                     adjPower = (float) (power * 0.1);
                     if (adjPower > 0.05) {
                         adjPower = roundDP(adjPower, 2);
@@ -121,29 +126,29 @@ public class UpgradeFactory {
                         adjPower = 0.05f;
                     }
                     thisUpgrade = new SpeedMultUpgrade(adjPower);
-                    break;
-                case "Buffer":
+                }
+                case "Buffer" -> {
                     adjPower = (float) (power * 2);
                     if (!((int) adjPower > 0)) {
                         adjPower = 1;
                     }
                     thisUpgrade = new BufferSizeUpgrade((int) adjPower);
-                    break;
-                case "MineMult":
+                }
+                case "MineMult" -> {
                     adjPower = (float) (power / 2);
                     if (!((int) adjPower > 0)) {
                         adjPower = 0;
                     }
                     thisUpgrade = new MineMultUpgrade((int) adjPower);
-                    break;
-                case "BaseDamage":
+                }
+                case "BaseDamage" -> {
                     adjPower = (float) power;
                     if (!((int) adjPower > 0)) {
                         adjPower = 1;
                     }
                     thisUpgrade = new FlatDamageUpgrade(Math.round(adjPower));
-                    break;
-                case "DamageMult":
+                }
+                case "DamageMult" -> {
                     adjPower = (float) (power * 0.1);
                     if (adjPower > 0.05) {
                         adjPower = roundDP(adjPower, 2);
@@ -151,7 +156,20 @@ public class UpgradeFactory {
                         adjPower = 0.05f;
                     }
                     thisUpgrade = new BaseDamageUpgrade(adjPower);
-                    break;
+                }
+                case "ResourceMod" -> {
+                    Pair<String, Pair<Float, Array<String>>> mod = ModifierRegistry.getRandom(random);
+                    String modType = mod.first;
+                    float modVal = 0f;
+                    String modStr = null;
+                    if (mod.second.second == null) {
+                        modVal = (float) (power * mod.second.first);
+                    } else {
+                        modStr = mod.second.second.get(random.nextInt(mod.second.second.size));
+                    }
+                    Modifier newMod = new Modifier(modType, modVal, modStr);
+                    thisUpgrade = new ResourceModifierUpgrade(newMod);
+                }
             }
             if (thisUpgrade != null) {
                 upgrades.add(thisUpgrade);

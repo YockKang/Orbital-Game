@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.*;
 import com.main.CoreWorks.Coreworks;
-import com.main.CoreWorks.Coords.*;
+import com.main.CoreWorks.util.*;
 import com.main.CoreWorks.Factory.*;
 import com.main.CoreWorks.Factory.Tubes.Tube;
 import com.main.CoreWorks.RunPersistence.RunState;
@@ -462,6 +462,7 @@ public class CombatScreen implements Screen {
             }
             int nextRotation = (selectedBuilding.getRotation() + 1) % 4;
             selectedBuilding.setRotation(nextRotation);
+            needRefresh = true;
         }
 
         // Pause will be tied to Spacebar

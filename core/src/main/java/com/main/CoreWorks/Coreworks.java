@@ -6,7 +6,8 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.viewport.*;
-import com.main.CoreWorks.Factory.Upgrade.UpgradeTypeRegistry;
+import com.main.CoreWorks.Factory.Upgrade.*;
+import com.main.CoreWorks.Resources.*;
 import com.main.CoreWorks.database.*;
 import com.main.CoreWorks.screens.*;
 
@@ -75,6 +76,7 @@ public class Coreworks extends Game {
 
 
         UpgradeTypeRegistry.registerDefault();
+        ModifierRegistry.registerDefault();
 
 
 

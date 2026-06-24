@@ -83,7 +83,7 @@ public class Miner extends Building {
         Array<Integer> mults = this.recipe.getOutputMultipliers();
         for (int i = 0; i < mults.size; i++) {
             ResourceBuffer currentBuffer = this.outputBuffer.get(i);
-            currentBuffer.addNew((int) (mults.get(i) * this.mineMultiplier));
+            currentBuffer.addNew((int) (mults.get(i) * this.mineMultiplier), modifiers);
         }
     }
 

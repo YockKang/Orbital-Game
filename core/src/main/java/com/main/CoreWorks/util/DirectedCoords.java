@@ -1,4 +1,4 @@
-package com.main.CoreWorks.Coords;
+package com.main.CoreWorks.util;
 
 
 public class DirectedCoords extends Coords {

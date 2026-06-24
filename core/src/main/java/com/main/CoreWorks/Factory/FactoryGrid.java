@@ -1,7 +1,7 @@
 package com.main.CoreWorks.Factory;
 
 import com.badlogic.gdx.utils.*;
-import com.main.CoreWorks.Coords.Coords;
+import com.main.CoreWorks.util.Coords;
 import com.main.CoreWorks.Factory.Tubes.*;
 
 public class FactoryGrid {

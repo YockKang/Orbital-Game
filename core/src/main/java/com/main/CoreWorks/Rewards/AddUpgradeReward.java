@@ -9,7 +9,7 @@ public class AddUpgradeReward extends Reward{
     protected Building building;
 
     public AddUpgradeReward(Upgrade upg) {
-        super("Upgrade a building", String.format("Give a building %s", upg.display()));
+        super("Upgrade a building", String.format("Give a building \n %s", upg.display()));
         this.upgrade = upg;
     }
 

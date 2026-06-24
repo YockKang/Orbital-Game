@@ -1,11 +1,11 @@
 package com.main.CoreWorks.Factory;
 
 import com.badlogic.gdx.utils.*;
-import com.main.CoreWorks.Coords.*;
+import com.main.CoreWorks.util.*;
 import com.main.CoreWorks.Factory.ResourceRequest.*;
 import com.main.CoreWorks.Factory.Tubes.*;
 import com.main.CoreWorks.Recipe.Recipe;
-import com.main.CoreWorks.Resources.Resource;
+import com.main.CoreWorks.Resources.*;
 import com.main.CoreWorks.database.*;
 import com.main.CoreWorks.moveset.*;
 
@@ -40,6 +40,7 @@ public abstract class Building extends Structure implements Updatable, Comparabl
     protected Array<String> whitelist = null;
     protected Array<Recipe> validRecipes = null;
 
+    protected ObjectMap<String, Modifier> modifiers = new ObjectMap<>();
 
     protected boolean[][] shape;
     /*
@@ -569,6 +570,20 @@ public abstract class Building extends Structure implements Updatable, Comparabl
         for (int i = 0; i < outputs.size; i++) {
             this.outputBuffer.add(new ResourceBuffer(outputs.get(i), capacityMult * outputMults.get(i)));
         }
+    }
+
+    public void addModifier(Modifier mod) {
+        if (!modifiers.containsKey(mod.getType())) {
+            modifiers.put(mod.getType(), mod);
+        } else {
+            Modifier oldMod = modifiers.get(mod.getType());
+            oldMod.changeValue(mod.getValue());
+            oldMod.setStrValue(mod.getStrValue());
+        }
+    }
+
+    public ObjectMap<String, Modifier> getModifiers() {
+        return modifiers;
     }
 
     @Override

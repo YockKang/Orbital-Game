@@ -2,6 +2,7 @@ package com.main.CoreWorks.Factory;
 
 import com.badlogic.gdx.utils.*;
 import com.main.CoreWorks.Factory.ResourceRequest.*;
+import com.main.CoreWorks.Resources.Modifier;
 import com.main.CoreWorks.Resources.Resource;
 import com.main.CoreWorks.database.ResourceDatabase;
 
@@ -76,6 +77,15 @@ public class ResourceBuffer {
         }
     }
 
+    public void addNew(int val, ObjectMap<String, Modifier> modifiers) {
+        if (modifiers == null || modifiers.size == 0) {
+            addNew(val);
+        } else {
+            for (int i = 0; i < val; i++) {
+                buffer.addLast(ResourceDatabase.get(resourceId, modifiers));
+            }
+        }
+    }
     public boolean tryDraw(int val) {
         return buffer.size >= val;
     }

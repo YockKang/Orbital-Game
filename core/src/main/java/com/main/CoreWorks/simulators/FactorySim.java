@@ -52,12 +52,6 @@ public class FactorySim {
             Array<Building> suppliersTubeSorted = suppliersTube.keys().toArray();
             suppliersTubeSorted.sort();
 
-            System.out.println();
-            System.out.println(req);
-            System.out.println(suppliersSorted);
-            System.out.println(suppliersTubeSorted);
-
-
             for (Building supplier : suppliersSorted) {
                 if (req.getValue() <= 0) {
                     break;
@@ -106,9 +100,6 @@ public class FactorySim {
                                 for (IOPort p : portArr) {
                                     throughput += p.getSpeed();
                                 }
-                                System.out.println("drawing from");
-                                System.out.println(drawBuffer);
-                                System.out.println(throughput);
                                 int drawAmt = min(throughput, min(drawBuffer.getCurrent(), req.getValue()));
                                 ResourceBuffer.directTransfer(
                                     drawBuffer,

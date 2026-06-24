@@ -2,11 +2,16 @@ package com.main.CoreWorks.Factory;
 
 import com.badlogic.gdx.utils.*;
 import com.main.CoreWorks.Recipe.Recipe;
+import com.main.CoreWorks.Resources.*;
 import com.main.CoreWorks.moveset.*;
+
+import java.util.Objects;
 
 public class Refiner extends Building{
 
     boolean isCrafting = false;
+
+    ObjectMap<String, Modifier> productMods = new ObjectMap<>();
 
     public Refiner(int coolDown, boolean[][] shape, int mineMult, String name) {
         super(coolDown,
@@ -92,10 +97,44 @@ public class Refiner extends Building{
     }
 
     public void startCraft() {
+        productMods.clear();
         Array<Integer> mults = this.recipe.getInputMultipliers();
+        Array<ObjectMap<String, Modifier>> inputModifiers = new Array<>();
+        ObjectMap<String, Array<Modifier>> craftModifiers = new ObjectMap<>();
         for (int i = 0; i < mults.size; i++) {
-            this.inputBuffer.get(i).draw(mults.get(i));
+            Array<Resource> consumed = this.inputBuffer.get(i).draw(mults.get(i));
+            for (Resource rsc : consumed) {
+                inputModifiers.add(rsc.getModifiers());
+            }
         }
+        for (ObjectMap<String, Modifier> mods : inputModifiers) {
+            for (ObjectMap.Entry<String, Modifier> entry : mods) {
+                if (!craftModifiers.containsKey(entry.key)) {
+                    craftModifiers.put(entry.key, new Array<>());
+                }
+                craftModifiers.get(entry.key).add(entry.value);
+            }
+        }
+        for (ObjectMap.Entry<String, Array<Modifier>> entry : craftModifiers) {
+            float avgVal = 0;
+            String newStrVal = entry.value.first().getStrValue();
+            if (newStrVal == null) {
+                float sum = 0;
+                for (Modifier mod : entry.value) {
+                    sum += mod.getValue();
+                }
+                avgVal = sum / entry.value.size;
+            } else {
+                for (Modifier mod : entry.value) {
+                    if (!Objects.equals(newStrVal, mod.getStrValue())) {
+                        newStrVal = "";
+                        break;
+                    }
+                }
+            }
+            productMods.put(entry.key, new Modifier(entry.key, avgVal, newStrVal));
+        }
+        productMods.putAll(modifiers);
     }
 
     public boolean tryEndCraft() {
@@ -116,8 +155,9 @@ public class Refiner extends Building{
     public void endCraft() {
         Array<Integer> mults = this.recipe.getOutputMultipliers();
         for (int i = 0; i < mults.size; i++) {
-            this.outputBuffer.get(i).addNew(mults.get(i));
+            this.outputBuffer.get(i).addNew(mults.get(i), productMods);
         }
+        productMods.clear();
     }
 
     @Override

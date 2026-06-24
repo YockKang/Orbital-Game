@@ -1,7 +1,7 @@
 package com.main.CoreWorks.Factory.Tubes;
 
 import com.badlogic.gdx.utils.*;
-import com.main.CoreWorks.Coords.*;
+import com.main.CoreWorks.util.*;
 import com.main.CoreWorks.Factory.*;
 
 public class Tube extends Structure {
@@ -743,16 +743,6 @@ public class Tube extends Structure {
                 building.updateNets();
             }
             System.out.println();
-        }
-    }
-
-    private static class Pair<T, U> {
-        T first;
-        U second;
-
-        Pair(T first, U second) {
-            this.first = first;
-            this.second = second;
         }
     }
 }

@@ -54,7 +54,7 @@ public class RewardGenerator {
     private static Reward randomUpgradeReward(RunState runState) {
         Random random = runState.getRandom();
         MapNode node = runState.getCurrNode();
-        return new AddUpgradeReward(
-            UpgradeFactory.randomUpgrade(random, node.getMultiplier()));
+        return new AddUpgradeReward(UpgradeFactory.randomTypedUpgrade(random, node.getMultiplier(), "Refiner"));
+        // return new AddUpgradeReward(UpgradeFactory.randomUpgrade(random, node.getMultiplier()));
     }
 }

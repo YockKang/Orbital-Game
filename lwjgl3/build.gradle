@@ -189,3 +189,30 @@ startScripts.classpath = project.tasks.jar.outputs.files
 if(enableGraalNative == 'true') {
   apply from: file("nativeimage.gradle")
 }
+
+tasks.register("jpackage", Exec) {
+  dependsOn "dist"
+
+  def libsDir = file("$buildDir/libs")
+  def outputDir = file("$buildDir/jpackage")
+
+  doFirst {
+    outputDir.mkdirs()
+  }
+
+  def jarFile = libsDir.listFiles()
+    .find { it.name.endsWith(".jar") }
+
+  if (jarFile == null) {
+    throw new GradleException("No JAR found in " + libsDir)
+  }
+
+  commandLine "jpackage",
+    "--type", "app-image",
+    "--name", "CoreWorks",
+    "--input", "$buildDir/libs",
+    "--dest", outputDir,
+    "--main-jar", jarFile.name,
+    "--main-class", "com.main.CoreWorks.lwjgl3.Lwjgl3Launcher",
+    "--java-options", "-Xmx2g"
+}

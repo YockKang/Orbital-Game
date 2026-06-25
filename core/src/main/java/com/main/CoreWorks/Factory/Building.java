@@ -16,6 +16,7 @@ public abstract class Building extends Structure implements Updatable, Comparabl
 
     // confirmed fields
     protected String name;
+    protected String gridName;
     protected int idNum;
     protected boolean isEnabled = true;
     protected int disabledDur = 0;
@@ -73,6 +74,11 @@ public abstract class Building extends Structure implements Updatable, Comparabl
         super();
         this.name = data.getString("Name");
         this.idNum = data.getInt("idNum");
+        if (data.get("GridName") != null) {
+            this.gridName = data.getString("GridName");
+        } else {
+            this.gridName = name;
+        }
         this.recipe = null;
 
 
@@ -775,4 +781,7 @@ public abstract class Building extends Structure implements Updatable, Comparabl
         }
     }
 
+    public String gridName() {
+        return gridName;
+    }
 }

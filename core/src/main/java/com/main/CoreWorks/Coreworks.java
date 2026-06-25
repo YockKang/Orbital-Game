@@ -26,7 +26,7 @@ public class Coreworks extends Game {
     private Array<FileHandle> resourceFiles = new Array<>();
     private Array<FileHandle> recipeFiles = new Array<>();
     private Array<FileHandle> buildingFiles = new Array<>();
-    private boolean devMode = true;
+    private boolean devMode = false;
 
     @Override
     public void create() {

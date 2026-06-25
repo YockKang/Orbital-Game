@@ -2,16 +2,43 @@
   {
     "id" : "IronOre",
     "Name" : "Iron Ore",
-    "DmgMult" : 1
-  },
-  {
-    "id" : "IronIngot",
-    "Name" : "Iron Ingot",
-    "DmgMult" : 2
+    "DmgMult" : 0.5
   },
   {
     "id" : "CannonBall",
     "Name" : "Cannonball",
-    "DmgMult" : 5
+    "DmgMult" : 3
+  },
+  {
+    "id" : "CopperOre",
+    "Name" : "Copper Ore",
+    "DmgMult" : 0.5
+  },
+  {
+    "id" : "PoisonBall",
+    "Name" : "Poison Cannonball",
+    "DmgMult" : 1.5,
+    "Modifiers" : [
+      {
+        "type" : "DamageType",
+        "str" : "Poison"
+      }
+    ]
+  },
+  {
+    "id" : "Alloy",
+    "Name" : "Alloy",
+    "DmgMult" : 1
+  },
+  {
+    "id" : "PiercingBall",
+    "Name" : "Piercing Cannonball",
+    "DmgMult" : 2,
+    "Modifiers" : [
+      {
+        "type" : "DamageType",
+        "str" : "True"
+      }
+    ]
   }
 ]

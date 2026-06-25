@@ -1,7 +1,7 @@
 [
   {
-    "id" : "miner1",
-    "Tier" : 0,
+    "id" : "IronMiner",
+    "Tier" : 1,
     "Type" : "Miner",
     "Name" : "Iron Miner",
     "Shape" : [[true]],
@@ -18,11 +18,12 @@
     "DefaultRecipe" : "MineIron"
   },
   {
-    "id" : "miner2",
-    "Tier" : 2,
+    "id" : "BigIronMiner",
+    "Tier" : 0,
     "Type" : "Miner",
-    "Name" : "BigMiner",
-    "Shape" : ["R", 1, 2],
+    "Name" : "Big Iron Miner",
+    "GridName" : "Big\nIron Miner",
+    "Shape" : ["S", 2],
     "MineMult" : 2,
     "Ports" : [
       {
@@ -33,12 +34,56 @@
       },
       {
         "x" : 1,
+        "y" : 1,
+        "dir" : 1,
+        "rate" : 1
+      }
+    ],
+    "Group" : "Miner",
+    "DefaultRecipe" : "MineIron"
+  },
+  {
+  "id" : "CopperMiner",
+  "Tier" : 1,
+  "Type" : "Miner",
+  "Name" : "Copper Miner",
+  "Shape" : [[true]],
+  "MineMult" : 1,
+  "Ports" : [
+    {
+      "x" : 0,
+      "y" : 0,
+      "dir" : 0,
+      "rate" : 1
+    }
+  ],
+  "Group" : "Miner",
+  "DefaultRecipe" : "MineCopper"
+},
+  {
+    "id" : "BigCopperMiner",
+    "Tier" : 0,
+    "Type" : "Miner",
+    "Name" : "Big Copper Miner",
+    "GridName" : "Big\nCopper Miner",
+    "Shape" : ["S", 2],
+    "MineMult" : 2,
+    "Ports" : [
+      {
+        "x" : 0,
+        "y" : 0,
+        "dir" : 3,
+        "rate" : 1
+      },
+      {
+        "x" : 1,
         "y" : 0,
         "dir" : 0,
         "rate" : 1
       }
     ],
     "Group" : "Miner",
-    "DefaultRecipe" : "MineIron"
+    "DefaultRecipe" : "MineCopper"
   }
+
 ]

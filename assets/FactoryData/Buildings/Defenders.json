@@ -4,10 +4,10 @@
     "Tier" : 0,
     "Type" : "Defender",
     "Name" : "Healer",
-    "Cooldown" : 1,
+    "Cooldown" : 2,
     "Shape" : [[true]],
     "MagSize": 5,
-    "BaseDef": 1,
+    "BaseDef": 3.5,
     "Action" : "Heal"
   },
   {
@@ -15,10 +15,34 @@
     "Tier" : 0,
     "Type" : "Defender",
     "Name" : "Shielder",
+    "Cooldown" : 2,
+    "Shape" : [[true]],
+    "MagSize": 5,
+    "BaseDef": 3,
+    "Action" : "Shield"
+  },
+  {
+    "id" : "Shielder2",
+    "Tier" : 1,
+    "Type" : "Defender",
+    "Name" : "Shield Effecter",
+    "GridName" : "Shield\nEffecter",
+    "Cooldown" : 2,
+    "Shape" : ["R", 1 , 2],
+    "MagSize": 5,
+    "BaseDef": 3,
+    "Action" : "ShieldOT"
+  },
+  {
+    "id" : "Shielder3",
+    "Tier" : 3,
+    "Type" : "Defender",
+    "Name" : "Shield Effecter+",
+    "GridName" : "Shield\nEffecter+",
     "Cooldown" : 1,
     "Shape" : [[true]],
     "MagSize": 5,
-    "BaseDef": 1,
-    "Action" : "Shield"
+    "BaseDef": 5.5,
+    "Action" : "ShieldOT"
   }
 ]

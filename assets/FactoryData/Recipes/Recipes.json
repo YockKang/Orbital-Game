@@ -1,32 +1,118 @@
 [
   {
-    "id" : "MineIron",
-    "Name" : "Mine Iron",
-    "InputId"    : [],
-    "InputMult"  : [],
-    "OutputId"   : ["IronOre"],
-    "OutputMult" : [1],
-    "duration" : 2,
-    "Groups" : ["Miner"]
+    "id": "MineIron",
+    "Name": "Mine Iron",
+    "InputId": [],
+    "InputMult": [],
+    "OutputId": [
+      "IronOre"
+    ],
+    "OutputMult": [
+      1
+    ],
+    "duration": 4,
+    "Groups": [
+      "Miner"
+    ]
   },
   {
-    "id" : "SmeltIron",
-    "Name" : "Smelt Iron",
-    "InputId"    : ["IronOre"],
-    "InputMult"  : [1],
-    "OutputId"   : ["IronIngot"],
-    "OutputMult" : [1],
-    "duration" : 2,
-    "Groups" : ["Refiner T1"]
+    "id": "MineCopper",
+    "Name": "Mine Copper",
+    "InputId": [],
+    "InputMult": [],
+    "OutputId": [
+      "CopperOre"
+    ],
+    "OutputMult": [
+      1
+    ],
+    "duration": 4,
+    "Groups": [
+      "Miner"
+    ]
   },
   {
-    "id" : "IronCannonBall",
-    "Name" : "Make Cannonball",
-    "InputId"    : ["IronIngot"],
-    "InputMult"  : [2],
-    "OutputId"   : ["CannonBall"],
-    "OutputMult" : [1],
-    "duration" : 1,
-    "Groups" : ["Refiner T2"]
+    "id": "SmeltAlloy",
+    "Name": "Smelt Alloy",
+    "InputId": [
+      "IronOre",
+      "CopperOre"
+    ],
+    "InputMult": [
+      1,
+      1
+    ],
+    "OutputId": [
+      "Alloy"
+    ],
+    "OutputMult": [
+      1
+    ],
+    "duration": 4,
+    "Groups": [
+      "Refiner T1"
+    ]
+  },
+  {
+    "id": "IronCannonBall",
+    "Name": "Make Cannonball",
+    "InputId": [
+      "IronOre"
+    ],
+    "InputMult": [
+      2
+    ],
+    "OutputId": [
+      "CannonBall"
+    ],
+    "OutputMult": [
+      1
+    ],
+    "duration": 4,
+    "Groups": [
+      "Refiner T1"
+    ]
+  },
+  {
+    "id": "PoisonCannonBall",
+    "Name": "Make Poison Cannonball",
+    "InputId": [
+      "CannonBall",
+      "CopperOre"
+    ],
+    "InputMult": [
+      1,
+      1
+    ],
+    "OutputId": [
+      "PoisonBall"
+    ],
+    "OutputMult": [
+      1
+    ],
+    "duration": 2,
+    "Groups": [
+      "Refiner T2"
+    ]
+  },
+  {
+    "id": "PiercingCannonBall",
+    "Name": "Make Piercing Cannonball",
+    "InputId": [
+      "Alloy"
+    ],
+    "InputMult": [
+      2
+    ],
+    "OutputId": [
+      "PiercingBall"
+    ],
+    "OutputMult": [
+      1
+    ],
+    "duration": 8,
+    "Groups": [
+      "Refiner T2"
+    ]
   }
 ]

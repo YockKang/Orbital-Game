@@ -2,65 +2,70 @@
   {
     "id": "MissileDrone",
     "Name": "Missile Drone",
-    "HP": 30,
+    "HP": 15,
     "GracePeriod": 3,
     "Moveset": [
       {
         "Type": "Damage",
         "Value": 2,
-        "Charge": 10
+        "Charge": 12
       }
     ]
   },
   {
     "id" : "ShieldDrone",
     "Name" : "Shield Drone",
-    "HP" : 15,
+    "HP" : 10,
     "Shield" : 5,
     "GracePeriod": 3,
     "Moveset": [
       {
         "Type": "Shield",
         "Value": 5,
-        "Charge": 10
+        "Charge": 15
+      },
+      {
+        "Type": "Damage",
+        "Value": 1,
+        "Charge": 1
       }
     ]
   },
   {
     "id": "AnnoyingDrone",
     "Name": "Annoying Drone",
-    "HP": 30,
+    "HP": 12,
     "GracePeriod": 3,
     "Moveset": [
       {
         "Type": "Damage",
         "Value": 2,
-        "Charge": 10
+        "Charge": 12
       },
       {
         "Type": "Shield",
         "Value": 5,
-        "Charge": 10
+        "Charge": 12
       }
     ]
   },
   {
     "id": "DisableDrone",
     "Name": "Disabling Drone",
-    "HP": 20,
+    "HP": 12,
     "GracePeriod": 3,
     "Moveset": [
       {
         "Type": "Disable",
-        "Value": 10,
-        "Charge": 10
+        "Value": 5,
+        "Charge": 15
       }
     ]
   },
   {
     "id": "FirstBoss",
     "Name": "Deadly Drone",
-    "HP": 150,
+    "HP": 100,
     "GracePeriod": 3,
     "Moveset": [
       {

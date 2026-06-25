@@ -1,12 +1,33 @@
 [
   {
-    "id" : "shooter0",
+    "id" : "Shooter0",
     "Tier" : 0,
     "Type" : "Shooter",
-    "Name" : "Generic Shooter",
-    "Cooldown" : 2,
-    "Shape" : [[true]],
+    "Name" : "Shooter",
+    "Cooldown" : 4,
+    "Shape" : ["S", 2],
     "MagSize": 5,
     "BaseDmg": 1
+  },
+  {
+    "id" : "Shooter1",
+    "Tier" : 1,
+    "Type" : "Shooter",
+    "Name" : "Shooter+",
+    "Cooldown" : 2,
+    "Shape" : ["S", 2],
+    "MagSize": 5,
+    "BaseDmg": 1
+  },
+  {
+    "id" : "Shooter2",
+    "Tier" : 3,
+    "Type" : "Shooter",
+    "Name" : "Shooter++",
+    "Cooldown" : 2,
+    "Shape" : ["S", 1],
+    "MagSize": 5,
+    "BaseDmg": 1.5,
+    "AttackCount" : 2
   }
 ]

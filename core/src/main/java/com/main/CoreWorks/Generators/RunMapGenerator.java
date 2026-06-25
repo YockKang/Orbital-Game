@@ -58,13 +58,13 @@ public class RunMapGenerator {
     public static RunMap generateRandomRunMapF1(RunState runState) {
         // Determines how many rows and cols the map will have max (will not be using the full number ofc, just to scale the spacing)
         int totalCols = 6;
-        int totalRows = 7;
+        int totalRows = 10;
 
         // Determines the 4 bounds of the map
         float leftBound = -100f;
         float rightBound = 1500f;
         float topBound = 575f;
-        float bottomBound = -600f;
+        float bottomBound = -800f;
 
         RunMap runMap = new RunMap();
         Random random = runState.getRandom();
@@ -84,7 +84,15 @@ public class RunMapGenerator {
         // Creates all random nodes in between, except the boss node
         for (int i = 1; i < totalRows - 1; i++) {
             Array<MapNode> middleRowNodes = new Array<>();
-            int numNodes = Math.min(2 + random.nextInt(3), totalCols); // Guarantees a certain number of nodes, but never more than the number of cols available
+
+            // lognormal distribution (dont worry abt it)
+            double m = 1.2;
+            double var = Math.pow(1 / m, 2) / 2;
+            double s2 = Math.log(1 + var / (m*m));
+            double mu  = Math.log(m) - s2/2;
+            double nodes = Math.expm1(random.nextGaussian(mu, Math.sqrt(s2))) + 1;
+
+            int numNodes = (int) Math.min(3 + nodes, totalCols); // Guarantees a certain number of nodes, but never more than the number of cols available
 
             // This will pick random unique columns to draw the node
             Array<Integer> uniqueCols = new Array<>();
@@ -241,7 +249,7 @@ public class RunMapGenerator {
     // Helper function that generates a random node for floor 1, scaling based on the row
     // Eventually when we add more nodes and node screens, there will be more variety
     private static MapNode createRandomNodeF1(int row, int totalRows, int col, float x, float y, Random random) {
-        float difficulty = 0.9f + row * 0.2f;
+        float difficulty = 0.8f + row * 0.1f;
         int val = random.nextInt(100);
 
         // If it is the 2nd last row (ie before boss), give a higher chance for rest node
@@ -251,7 +259,7 @@ public class RunMapGenerator {
             } else if (val < 90) {
                 return new CombatNode(CombatGenerator.createCombat(1, difficulty, random), row, col, 1, difficulty, x, y);
             } else {
-                return new EliteNode(CombatGenerator.createCombat("Elite", difficulty, random), row, col, 1, difficulty, x, y);
+                return new EliteNode(CombatGenerator.createCombat("Elite1", difficulty, random), row, col, 1, difficulty, x, y);
             }
         }
 
@@ -261,7 +269,7 @@ public class RunMapGenerator {
         } else if (val < 75) {
             return new CombatNode(CombatGenerator.createCombat(1, difficulty, random), row, col, 1, difficulty, x, y);
         } else {
-            return new EliteNode(CombatGenerator.createCombat("Elite", difficulty, random), row, col, 1, difficulty, x, y);
+            return new EliteNode(CombatGenerator.createCombat("Elite1", difficulty, random), row, col, 1, difficulty, x, y);
         }
     }
 }

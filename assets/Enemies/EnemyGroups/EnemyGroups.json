@@ -5,22 +5,22 @@
   },
   {
     "Tier" : 1,
-    "Enemies" : ["MissileDrone", "MissileDrone", "MissileDrone"]
+    "Enemies" : ["MissileDrone", "MissileDrone"]
   },
   {
     "Tier" : 1,
-    "Enemies" : ["ShieldDrone", "ShieldDrone", "ShieldDrone"]
+    "Enemies" : ["ShieldDrone", "ShieldDrone"]
   },
   {
     "Tier" : 1,
-    "Enemies" : ["DisableDrone", "DisableDrone", "DisableDrone"]
+    "Enemies" : ["DisableDrone", "DisableDrone"]
   },
   {
     "Tier" : "Boss1",
     "Enemies" : ["FirstBoss"]
   },
   {
-    "Tier" : "Elite",
-    "Enemies" : ["MissileDrone", "MissileDrone","AnnoyingDrone", "DisableDrone","AnnoyingDrone", "DisableDrone"]
+    "Tier" : "Elite1",
+    "Enemies" : ["MissileDrone", "MissileDrone","AnnoyingDrone", "DisableDrone"]
   }
 ]

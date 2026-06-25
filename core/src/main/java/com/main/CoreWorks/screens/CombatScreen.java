@@ -426,7 +426,7 @@ public class CombatScreen implements Screen {
             float nameX = gridStartX + coords.x * tileSize + 15;
             float nameY = gridEndY - coords.y * tileSize - 35;
             game.font.getData().setScale(0.75f);
-            game.font.draw(game.batch, building.displayName(), nameX, nameY);
+            game.font.draw(game.batch, building.gridName(), nameX, nameY);
         }
 
         game.font.getData().setScale(1f);

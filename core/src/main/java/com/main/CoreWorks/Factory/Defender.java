@@ -57,7 +57,7 @@ public class Defender extends Building{
                 currCooldown -= cooldownTimer;
                 moves.addAll(defend());
             } else {
-                currCooldown = cooldownTimer;
+                currCooldown = cooldownTimer - getSpeed();
                 break;
             }
         }

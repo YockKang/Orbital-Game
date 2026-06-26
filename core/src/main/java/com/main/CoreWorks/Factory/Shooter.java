@@ -61,7 +61,7 @@ public class Shooter extends Building {
                 currCooldown -= cooldownTimer;
                 moves.addAll(shoot());
             } else {
-                currCooldown = cooldownTimer;
+                currCooldown = cooldownTimer - getSpeed();
                 break;
             }
         }

@@ -259,11 +259,13 @@ public class CombatSim {
         if (player.isDead()) {
             lost = true;
             player.clearStatusEffects();
+            player.setShield(0);
         }
 
         if (enemies.size == 0) {
             win = true;
             player.clearStatusEffects();
+            player.setShield(0);
         }
     }
 

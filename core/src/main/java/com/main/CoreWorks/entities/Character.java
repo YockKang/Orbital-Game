@@ -100,4 +100,8 @@ public abstract class Character {
     public ObjectMap<String, StatusEffect> getStatusEffects() {
         return statusEffects;
     }
+
+    public void setShield(int i) {
+        shield = i;
+    }
 }

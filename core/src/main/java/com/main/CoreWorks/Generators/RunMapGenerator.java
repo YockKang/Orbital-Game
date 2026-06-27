@@ -251,7 +251,7 @@ public class RunMapGenerator {
         int val = random.nextInt(100);
 
         int restNodeOdds = 15;
-        float eliteCombatRatio = 0.15f;
+        float eliteCombatRatio = 0.2f;
 
         // If it is the 2nd last row (ie before boss), give a higher chance for rest node
         if (row == totalRows - 2) {
@@ -260,7 +260,7 @@ public class RunMapGenerator {
 
         if (val < restNodeOdds) {
             return new RestNode(1, row, col, difficulty, x, y);
-        } else if (val < ((100 - restNodeOdds) / eliteCombatRatio) + restNodeOdds) {
+        } else if (val < ((100 - restNodeOdds) * eliteCombatRatio) + restNodeOdds) {
             return new EliteNode(CombatGenerator.createCombat("Elite1", difficulty, random), row, col, 1, difficulty + .2f, x, y);
         } else {
             return new CombatNode(CombatGenerator.createCombat(1, difficulty, random), row, col, 1, difficulty, x, y);
